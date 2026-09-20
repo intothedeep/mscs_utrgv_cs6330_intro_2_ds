@@ -1,13 +1,11 @@
 #!/bin/bash
-# Description: Launch Claude CLI with Work Account
+# Description: Launch Claude CLI with School Account
 
-# Set the unique directory for work config
-export CLAUDE_CONFIG_DIR="$HOME/.claude-work"
+# Set the unique directory for school config
+export CLAUDE_CONFIG_DIR="$HOME/.claude-school"
 
 # Create the folder if it doesn't exist
 mkdir -p "$CLAUDE_CONFIG_DIR"
-
-echo "--- Starting CLAUDE WORK ---"
 
 if [ "$1" = "danger" ]; then
     echo "--- DANGEROUS MODE ---"

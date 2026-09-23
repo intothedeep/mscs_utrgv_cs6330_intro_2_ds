@@ -297,6 +297,7 @@ $n-1$ 로 나눔)를 쓰면서 분자 $m_3$ 는 $n$ 으로 나눈 값이라, \te
 \end{pitfall}
 
 \subsection{부호와 방향}
+\label{sec:skew-sign}
 
 \begin{center}
 \begin{tabularx}{\linewidth}{@{}l l l X@{}}
@@ -328,7 +329,130 @@ $\gamma < 0$ & 좌측 왜도(Left-skewed)  & 왼쪽 꼬리가 김  & 평균 $<$ 
 적힌 \texttt{gap} 값이 이 표준화된 값이다.
 \end{pitfall}
 
+같은 표본을 강의 5강(Basic Statistics and Visualization)에서 다룬 다섯 가지 그림,
+즉 히스토그램(Histogram, \Cref{sec:histogram}), 선 그래프(Line Chart, 밀도 곡선
+Density Line, \Cref{sec:density-line}), 박스플롯(Box Plot, \Cref{sec:boxplot}),
+바이올린 플롯(Violin Plot, \Cref{sec:violin}), 바코드 차트(Barcode Chart,
+\Cref{sec:barcode})로 나란히 그리면, 왜도의 부호가 그림마다 어떤 흔적을 남기는지
+한눈에 비교할 수 있다(\Cref{tab:skew-by-chart}). \Cref{fig:skew-right}부터
+\Cref{fig:skew-left}까지 세 그림의 데이터는
+\textbf{실제 강의 자료가 아니라 합성(synthetic) 표본}이다. 우측 왜도
+표본은 고정 시드(seed)로 뽑은 감마(Gamma) 분포 난수이고, 좌측 왜도 표본은 그 값을
+$60$에서 뺀 거울상($60-x$)이라 $G_1$ 의 부호가 정확히 뒤집히며, 대칭 표본은 평균과
+표준편차를 맞춘 정규(Normal) 분포 난수다. 각 패널의 검정 실선은 중앙값(median),
+주황 점선은 평균(mean)으로 \Cref{fig:skew-gap}과 같은 인코딩이다.
+
+\begin{example}[세 표본에서 왜도의 부호를 손으로 확인하기]
+\label{ex:skew-three-cases}
+세 표본 모두 $n=300$ 이다. 순서는 (a) $G_1$ 의 부호를 본다, (b) 그 부호가
+평균$-$중앙값의 부호로 이어지는지 확인한다, (c) 그 부호로부터 긴 꼬리가 어느
+쪽인지 결정한다.
+
+\textbf{우측 왜도 표본.} $G_1 = 1.48 > 0$ 이므로 평균이 중앙값보다 커야 한다.
+\begin{align*}
+  &16.32 - 13.95 = 2.37       && \text{평균 $-$ 중앙값 (양수, 예상과 일치)}\\
+  &2.37 / 11.15 = 0.21        && \text{SD 단위로 표준화한 틈}\\
+  &22.06 - 13.95 = 8.11       && \text{$Q_3 - $ 중앙값}\\
+  &13.95 - 8.40 = 5.55        && \text{중앙값 $- Q_1$}
+\end{align*}
+위쪽 거리(8.11)가 아래쪽 거리(5.55)보다 커서, 중앙값 위로 값이 더 퍼져 있다.
+즉 긴 꼬리는 \textbf{오른쪽}이다. $G_1$ 의 부호, 평균$-$중앙값의 부호, 꼬리의
+방향이 셋 다 같은 이야기를 하고 있다.
+
+\textbf{좌측 왜도 표본.} $G_1 = -1.48 < 0$ 이므로 평균이 중앙값보다 작아야 한다.
+\begin{align*}
+  &43.68 - 46.05 = -2.37      && \text{평균 $-$ 중앙값 (음수, 예상과 일치)}\\
+  &-2.37 / 11.15 = -0.21      && \text{SD 단위로 표준화한 틈}\\
+  &51.60 - 46.05 = 5.55       && \text{$Q_3 - $ 중앙값}\\
+  &46.05 - 37.94 = 8.11       && \text{중앙값 $- Q_1$}
+\end{align*}
+이번에는 아래쪽 거리(8.11)가 위쪽 거리(5.55)보다 커서, 긴 꼬리는
+\textbf{왼쪽}이다. 좌측 왜도 표본은 우측 왜도 표본을 $60-x$ 로 뒤집어 만들었으므로,
+틈($0.21 \leftrightarrow -0.21$)과 두 분위수 거리($8.11 \leftrightarrow 5.55$)가
+정확히 자리를 바꾼다. 이것이 \Cref{fig:skew-left}의 표본이 \Cref{fig:skew-right}의 표본을
+좌우로 뒤집은 모습으로 보이는 이유다.
+
+\textbf{대칭 표본.} $G_1 = -0.07$ 로 부호는 음수지만 크기가 매우 작다.
+\begin{align*}
+  &16.48 - 16.78 = -0.30      && \text{평균 $-$ 중앙값}\\
+  &-0.30 / 10.95 = -0.03      && \text{SD 단위로 표준화한 틈}\\
+  &23.49 - 16.78 = 6.71       && \text{$Q_3 - $ 중앙값}\\
+  &16.78 - 9.55 = 7.23        && \text{중앙값 $- Q_1$}
+\end{align*}
+두 분위수 거리(6.71과 7.23)가 서로 가까워서 어느 쪽으로도 뚜렷한 꼬리가
+없다. $G_1$ 이 정확히 $0$ 이 아닌 이유는 유한한 표본이 완벽하게 대칭일 수는
+없기 때문이다. $|G_1|=0.07 < 0.5$ 이므로 \Cref{sec:skew-rule}의 기준으로도
+``거의 대칭''으로 분류된다.
+\end{example}
+
+\begin{figure}[p]\centering
+  \includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{02_skew_right.png}
+  \caption{우측 왜도(Right-skewed, $G_1=1.48$) 표본을 다섯 가지 그림으로 본 모습.
+  히스토그램(Histogram)과 선 그래프(Line Chart, 밀도 곡선 Density Line)는 왼쪽에
+  봉우리가 몰리고 오른쪽으로 긴 꼬리가 남으며, 박스플롯(Box Plot)은
+  중앙값(Median, 검정 실선)이 상자 왼쪽으로 치우치고 오른쪽에
+  이상치(Outlier, 주황 점)가 늘어선다. 바이올린 플롯(Violin Plot)은 오른쪽으로
+  갈수록 가늘어지고, 바코드 차트(Barcode Chart)는 막대가 왼쪽에 몰렸다가
+  오른쪽으로 갈수록 성겨진다.}
+  \label{fig:skew-right}
+\end{figure}
+
+\begin{figure}[p]\centering
+  \includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{02_skew_symmetric.png}
+  \caption{대칭(Symmetric, $G_1=-0.07$) 표본을 다섯 가지 그림으로 본 모습. 중앙값과
+  평균이 거의 겹치고, 박스플롯의 두 수염과 바이올린 플롯의 양쪽 폭, 바코드 차트의
+  양쪽 밀도가 서로 비슷하다.}
+  \label{fig:skew-symmetric}
+\end{figure}
+
+\begin{figure}[p]\centering
+  \includegraphics[width=\linewidth,height=0.85\textheight,keepaspectratio]{02_skew_left.png}
+  \caption{좌측 왜도(Left-skewed, $G_1=-1.48$) 표본을 다섯 가지 그림으로 본 모습.
+  \Cref{fig:skew-right}를 좌우로 뒤집은 모양과 같다. 히스토그램(Histogram)과
+  선 그래프(Line Chart, 밀도 곡선 Density Line)는 오른쪽에 봉우리가 몰리고
+  왼쪽으로 긴 꼬리가 남으며, 박스플롯(Box Plot)은 중앙값(Median)이 상자
+  오른쪽으로 치우치고 왼쪽에 이상치(Outlier)가 늘어선다.}
+  \label{fig:skew-left}
+\end{figure}
+
+\begin{table}[htbp]\centering
+\begin{tabularx}{\linewidth}{@{}l X X X@{}}
+\toprule
+그림(Chart) & 우측 왜도(Right-skewed) & 대칭(Symmetric) & 좌측 왜도(Left-skewed) \\
+\midrule
+히스토그램(Histogram) & 봉우리가 왼쪽, 막대가 오른쪽으로 길게 늘어짐
+  & 봉우리가 가운데, 양쪽 막대 길이가 비슷함
+  & 봉우리가 오른쪽, 막대가 왼쪽으로 길게 늘어짐 \\
+선 그래프(Line Chart, 밀도 곡선 Density Line) & 봉우리가 평균 왼쪽, 오른쪽 꼬리가 김
+  & 봉우리가 평균과 거의 겹침
+  & 봉우리가 평균 오른쪽, 왼쪽 꼬리가 김 \\
+박스플롯(Box Plot) & 중앙값 선이 상자 왼쪽에 치우침, 오른쪽 수염이 길고
+  오른쪽에 이상치
+  & 중앙값 선이 상자 가운데 근처, 양쪽 수염 길이가 비슷함
+  & 중앙값 선이 상자 오른쪽에 치우침, 왼쪽 수염이 길고 왼쪽에 이상치 \\
+바이올린 플롯(Violin Plot) & 오른쪽으로 가늘고 긴 꼬리
+  & 좌우가 거의 대칭인 모양
+  & 왼쪽으로 가늘고 긴 꼬리 \\
+바코드 차트(Barcode Chart) & 막대가 왼쪽에 몰리고 오른쪽으로 갈수록 성겨짐
+  & 막대가 가운데를 중심으로 고르게 퍼짐
+  & 막대가 오른쪽에 몰리고 왼쪽으로 갈수록 성겨짐 \\
+\bottomrule
+\end{tabularx}
+\caption{다섯 가지 그림(Chart)에서 왜도(Skewness)가 남기는 흔적.}
+\label{tab:skew-by-chart}
+\end{table}
+
+\begin{pitfall}[박스플롯에는 평균이 기본으로 그려지지 않는다]
+박스플롯은 원래 $Q_1$과 $Q_3$ 사이의 상자, 중앙값 선, 그리고 $1.5\times\IQR$
+이내의 가장 먼 관측값까지 뻗는 수염만 그리며(\Cref{sec:boxplot}), 그 밖의 값은
+점으로 찍히는 이상치다. 평균은 기본값으로 표시되지 않는다. \Cref{fig:skew-right}와
+\Cref{fig:skew-left}에서는 설명을 위해 평균 점선을 일부러 덧그린 것이다. 평균 선이
+없는 보통의 박스플롯에서 왜도를 읽으려면, 중앙값 선이 상자의 가운데에서 어느 쪽으로
+치우쳤는지, 두 수염의 길이 차이, 그리고 이상치가 어느 쪽에 몰려 있는지를 본다.
+\end{pitfall}
+
 \subsection{판단 기준}
+\label{sec:skew-rule}
 
 \begin{center}
 \begin{tabular}{@{}ll@{}}

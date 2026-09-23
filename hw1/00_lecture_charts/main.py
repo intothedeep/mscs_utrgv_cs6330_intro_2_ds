@@ -2,6 +2,8 @@
 
 import deck5_visualization
 import deck6_distributions
+import deck9_hypothesis
+import skew_cases
 from data import load
 from style import FIG_DIR, apply_style
 
@@ -19,7 +21,15 @@ def main() -> None:
     deck6 = deck6_distributions.build_all(df)
     print(f"  {len(deck6)} figures\n")
 
-    print(f"wrote {len(deck5) + len(deck6)} figures to {FIG_DIR}")
+    print("Deck 9 - Hypothesis Testing")
+    deck9 = deck9_hypothesis.build_all()
+    print(f"  {len(deck9)} figures\n")
+
+    print("Book 2.3.2 - Skew sign and direction")
+    skew = skew_cases.build_all()
+    print(f"  {len(skew)} figures\n")
+
+    print(f"wrote {len(deck5) + len(deck6) + len(deck9) + len(skew)} figures to {FIG_DIR}")
 
 
 if __name__ == "__main__":

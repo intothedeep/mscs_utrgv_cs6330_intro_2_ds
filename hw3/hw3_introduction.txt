@@ -1,0 +1,12 @@
+Analyzing YouTube Data
+
+Hide Assignment Information
+Instructions
+Watch the videos under Help for Homeworks and follow the steps.
+Please submit a word/pdf document including your discussion and the screenshot of the wordClouds.
+Grading:
+WordCloud of comments of each video has 30 points, and discussion have 20 points. 
+Due on Oct 7, 2026 11:59 PM
+Attachments
+Homework_1_.pdf (83.07 KB)			
+Homework_YoutubeVideo_1__1_.R (3.2 KB)			

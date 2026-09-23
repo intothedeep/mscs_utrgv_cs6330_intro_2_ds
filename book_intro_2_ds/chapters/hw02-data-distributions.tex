@@ -1,0 +1,422 @@
+\chapter{과제 2: 데이터와 분포}
+\label{ch:hw2}
+
+\begin{aside}
+결과 자체는 \texttt{hw2/report/}에 있다. (\texttt{hw2/report\_submit/}은 채점 제출용
+빈 템플릿이라 답이 들어 있지 않으므로, 이 장은 \texttt{hw2/report/}를 유일한 출처로
+쓴다. 두 파일의 차이는 \Cref{sec:hw2-learned}에 적는다.) 이 장에는 \textbf{판단의 과정}을
+남긴다. 무엇을 망설였고, 왜 그렇게 정했는지를 적는다. 모든 수치는
+\texttt{hw2/code/p1.py}, \texttt{hw2/code/p2.py}를 다시 실행해 재확인했다.
+\end{aside}
+
+\section{데이터 세 가지}
+\label{sec:hw2-data}
+
+세 데이터셋의 크기와 성질이 이미 어떤 모델이 맞을지 힌트를 준다.
+
+\begin{itemize}
+  \item \textbf{공항 노선 수(Airport Routes)}: 공항 3409곳, 노선 수는 정수, 최소 1에서
+    최대 915. 평균 19.845, 중앙값 4로 평균이 중앙값의 약 5배다. 평균과 중앙값이 크게
+    벌어지는 것은 오른쪽 꼬리가 길다는 신호다(\Cref{sec:skew-sign}).
+  \item \textbf{영화 평점(Movie Votes)}: 영화 4392편, 평점은 0.1 단위로 반올림된 실수,
+    범위 1.9에서 8.5. 평균 6.227, 중앙값 6.3으로 둘이 거의 같다. 대칭에 가깝다는 신호다.
+  \item \textbf{배우 나이(Actor Age)}: 원본 460{,}718개 생년월일 중 정제 후 458{,}015명
+    (\Cref{sec:hw2-age}에서 정제 과정을 설명한다). 연 단위 정수, 15에서 99.
+\end{itemize}
+
+\section{모수 추정: 네 가지 분포, 하나의 원리}
+\label{sec:hw2-estimators}
+
+\begin{inbrief}
+  \item[Why] 데이터가 어떤 분포를 따르는지 주장하려면 먼저 후보 분포마다 모수(Parameter)를
+    데이터에서 뽑아내야 비교할 대상이 생긴다.
+  \item[When] 후보 분포의 형태(멱함수, 지수, 균등, 정규)를 고정하고 그 안의 숫자만
+    추정할 때.
+  \item[Where] 뒤에 나오는 시각적 비교(\Cref{sec:hw2-compare-how})와 적합도 판정
+    전 단계. 추정이 틀리면 비교 자체가 무의미하다.
+  \item[How] 균등·지수·멱법칙 세 분포는 \term{최대우도추정}(Maximum Likelihood
+    Estimation, MLE)을 그대로 쓴다. 정규분포만 $\sigma$를 $n-1$로 나눈 표본표준편차로
+    바꿔 쓴다(자유도 보정). 이 $\sigma$를 뺀 나머지 모수는 모두 데이터가 관측될
+    확률(우도, Likelihood)을 가장 크게 만드는 값이다.
+\end{inbrief}
+
+문제는 모수 하나(예: 정규분포의 $\mu$)가 아니라 \textbf{모형 자체가 맞는지}를 물었다.
+그런데 모형이 맞는지 보려면 먼저 각 모형이 이 데이터에 가장 잘 맞을 때 모수가 얼마인지
+정해야 공정한 비교가 된다. 임의의 모수로 비교하면 모형이 아니라 모수를 잘못 고른
+탓에 진 것처럼 보일 수 있다. 그래서 네 모형 모두 모수를 먼저 고정한 뒤에만
+\Cref{sec:hw2-compare-how}에서 비교한다.
+
+\paragraph{균등분포(Uniform Distribution)와 정규분포(Normal Distribution).}
+가장 단순한 둘부터 본다. 균등분포 $[a, b]$의 MLE는 관측값의 최솟값과 최댓값이다.
+정규분포(\Cref{sec:normal})의 $\mu$는 MLE(표본평균, Sample Mean) $\hat\mu = \bar x$를
+쓴다. $\sigma$는 MLE(즉 $n$으로 나눈 값) 대신 $n-1$로 나눈 \term{표본표준편차}(Sample
+Standard Deviation)를 썼다. $n$으로 나누면 분산을 과소추정하기 때문에(자유도 보정,
+Bessel's Correction) \textbf{분산}의 불편추정량(Unbiased Estimator) $s^2$를 택한 것이다.
+표준편차 $s$ 자체는 여전히 약간 편향되어 있다. $n=3409, 4392$처럼 $n$이 큰 경우
+두 값의 차이는 소수 셋째 자리 이하다.
+
+\paragraph{지수분포(Exponential Distribution).}
+지수분포(\Cref{sec:exponential})는 평균 대기 시간이 $1/\lambda$인 분포다. 로그우도
+(Log-Likelihood)를 $\lambda$에 대해 미분해 0으로 놓으면 $\hat\lambda$가 나온다.
+\begin{align*}
+  \ell(\lambda) &= n\ln\lambda - \lambda\sum_i x_i   && \text{로그우도}\\
+  \frac{d\ell}{d\lambda} &= \frac{n}{\lambda} - \sum_i x_i  && \text{$\lambda$로 미분}\\
+  0 &= \frac{n}{\hat\lambda} - \sum_i x_i  && \text{기울기가 0인 점}\\
+  \hat\lambda &= \frac{n}{\sum_i x_i} = \frac{1}{\bar x}   && \text{정리}
+\end{align*}
+즉 표본평균의 역수 하나면 끝난다.
+
+\begin{example}[공항 데이터에 지수분포 MLE 적용]
+\label{ex:hw2-exp-mle}
+공항 노선 수의 평균은 $\bar x = 19.845$다.
+\begin{align*}
+  \hat\lambda &= 1/\bar x                 && \text{MLE 공식}\\
+              &= 1/19.845                 && \text{평균 대입}\\
+              &= 0.0504                   && \text{반올림}
+\end{align*}
+$\lambda$가 작을수록 대기 시간(여기서는 노선 수)의 기댓값이 크다.
+\end{example}
+
+\paragraph{멱법칙(Power Law).}
+지수분포는 노선 500개짜리 공항을 사실상 불가능하다고 본다($\lambda=0.05$면 확률이
+약 $e^{-25}$). 그런데 실제로 500개가 넘는 공항이 5곳 있다(\Cref{sec:hw2-airport}).
+꼬리가 지수보다 느리게 줄어드는 모형이 필요하다.
+
+\term{멱법칙}(Power Law) 분포는 $x \geq x_{\min}$에서 $f(x) \propto x^{-\alpha}$
+형태의 확률밀도함수를 갖는다. 지수분포처럼 큰 값일수록 드물지만, 꼬리가 지수적으로
+줄지 않고 \textbf{거듭제곱으로만} 줄어들어 훨씬 천천히 감소한다. 네트워크의 연결 수,
+도시 인구, 부의 분포처럼 소수가 대부분을 차지하는 데이터에서 흔히 등장한다.
+
+\begin{pitfall}[책에 없는 분포]
+멱법칙은 \Cref{ch:distributions}에 아직 절이 없다. 여기서 처음 정의한다.
+\end{pitfall}
+
+연속형 멱법칙의 MLE는 Clauset 등(2009)의 공식을 쓴다.
+\[
+  \hat\alpha = 1 + \frac{n}{\sum_{i} \ln(x_i / x_{\min})}
+\]
+$x_{\min}$은 멱법칙이 시작되는 하한이다. 이 과제에서는 $x_{\min} = \min_i x_i$로
+정했다(데이터의 최솟값 자체를 하한으로 삼는 가장 단순한 선택). 이 선택이 공항
+데이터에서 $x_{\min}=1$, 영화 데이터에서 $x_{\min}=1.9$를 준다.
+
+\begin{example}[공항 데이터에 멱법칙 MLE 적용, 축약]
+\label{ex:hw2-powerlaw-mle}
+$n = 3409$, $x_{\min} = 1$일 때
+\begin{align*}
+  \sum_i \ln(x_i/x_{\min}) &= \sum_i \ln x_i    && x_{\min}=1\text{이므로 로그가 그대로 } \ln x_i \\
+                            &= 5569.4            && \text{코드로 합산한 값}\\
+  \hat\alpha &= 1 + n/\sum_i \ln(x_i/x_{\min})   && \text{공식}\\
+             &= 1 + 3409/5569.4                  && \text{값 대입}\\
+             &= 1 + 0.612                        && \text{나눗셈}\\
+             &= 1.612                            && \text{반올림}
+\end{align*}
+\end{example}
+
+\Cref{tab:hw2-params}는 네 분포 모두를 두 데이터셋에 한 번에 정리한다.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrr}
+\toprule
+모수(Parameter) & 공항 노선(Airport) & 영화 평점(Movie) \\
+\midrule
+$\alpha$ (멱법칙 Power Law, $x_{\min}$ 포함) & $1.612$ ($x_{\min}=1$) & $1.851$ ($x_{\min}=1.9$) \\
+$\lambda$ (지수 Exponential)      & $0.0504$               & $0.1606$ \\
+$[a, b]$ (균등 Uniform)           & $[1, 915]$             & $[1.9, 8.5]$ \\
+$\mu, \sigma$ (정규 Normal, $n{-}1$) & $19.845,\ 53.506$   & $6.227,\ 0.893$ \\
+\bottomrule
+\end{tabular}
+\caption{두 데이터셋에서 추정한 네 분포의 모수. $n = 3409$(공항), $n = 4392$(영화).}
+\label{tab:hw2-params}
+\end{table}
+
+\section{네 모형을 비교하는 방법}
+\label{sec:hw2-compare-how}
+
+\begin{inbrief}
+  \item[Why] 모수를 정했다고 모형이 맞는지 알 수 있는 것은 아니다. 데이터와 모형을
+    같은 그림 위에 겹쳐야 어디가 맞고 어디가 틀리는지 눈으로 확인할 수 있다.
+  \item[When] 후보 분포가 여럿이고 하나를 골라야 할 때.
+  \item[Where] PDF, CDF, QQ 도표(\Cref{sec:cdf}) 중 과제는 하나만 요구했다. 세
+    시각화가 서로 다른 정보를 준다.
+  \item[How] 분포마다 데이터와 같은 개수 $n$의 난수를 뽑아, 데이터의 CCDF/PDF와
+    모형 표본의 CCDF/PDF를 겹쳐 그리고, QQ 도표와 콜모고로프--스미르노프
+    거리(Kolmogorov--Smirnov Distance) $D$로 요약한다.
+\end{inbrief}
+
+\paragraph{공항: CCDF를 로그-로그 축에.}
+공항 노선 수는 정수이고 꼬리가 두 자릿수 넘게 퍼져 있다. 보통 히스토그램처럼 구간을
+나누면(log bin) 큰 값 쪽에 관측치가 하나뿐인 구간이 많아 그래프가 듬성듬성해진다.
+그래서 값별 확률 $P(X=k)$를 점으로 찍고, \term{여누적분포함수}(Complementary CDF,
+CCDF) $P(X \geq x)$를 로그-로그(log-log) 축에 그렸다. 멱법칙은 로그-로그 축에서
+\textbf{직선}이 된다는 성질이 있어(양변에 로그를 취하면 $\ln P(X\geq x) \approx
+-(\alpha-1)\ln x + c$, 직선의 방정식) 이 축이 멱법칙 여부를 눈으로 바로 보여준다.
+
+\paragraph{영화: 0.1 격자에 맞춘 히스토그램.}
+영화 평점은 0.1 단위로 반올림된 값이다. 구간 경계가 0.1 격자와 어긋나면 히스토그램이
+들쭉날쭉해진다(어떤 구간은 값 두 개를 담고, 바로 옆 구간은 하나도 못 담는 식). 그래서
+구간 너비를 0.1 격자에 맞춰 PDF(히스토그램)를 그렸고, 꼬리가 좁아 로그 축 없이도
+전체가 한 그림에 들어온다.
+
+\paragraph{역변환 표본추출(Inverse Transform Sampling).}
+네 분포 각각에서 데이터와 같은 개수 $n$의 난수를 뽑아야 한다. 지수·균등·정규는
+\texttt{numpy}에 표본추출 함수가 있지만, 멱법칙은 없어서 직접 만들었다. 멱법칙의
+CDF는
+\[
+  F(x) = 1 - (x/x_{\min})^{-(\alpha-1)}
+\]
+$u \sim \mathrm{Uniform}(0,1)$에 대해 $u = F(x)$를 $x$에 대해 풀면
+\begin{align*}
+  u &= 1 - (x/x_{\min})^{-(\alpha-1)}          && \text{CDF 정의}\\
+  (x/x_{\min})^{-(\alpha-1)} &= 1-u            && \text{항 이항}\\
+  x/x_{\min} &= (1-u)^{-1/(\alpha-1)}          && \text{양변을 } -(\alpha-1)\text{ 제곱근}\\
+  x &= x_{\min}(1-u)^{-1/(\alpha-1)}           && \text{정리}
+\end{align*}
+$u$를 균등분포에서 뽑아 이 식에 넣으면 멱법칙을 따르는 $x$가 나온다. 난수 시드는
+6330으로 고정해 그림을 재현할 수 있게 했다.
+
+\paragraph{QQ 도표와 $D$.}
+CCDF·PDF를 겹쳐 그리면 어디가 맞고 틀리는지는 보이지만, ``얼마나'' 다른지 숫자로
+비교하기는 어렵다. 분포 전체를 한 번에 대조하면서도 숫자 하나로 요약할 도구가
+필요하다.
+
+\term{분위수 대 분위수 도표}(Quantile-Quantile Plot, QQ Plot)는 $x$축에 데이터
+분위수, $y$축에 모형 표본 분위수를 찍는다. 점이 기준선 $y=x$ 위에 있으면 두 분포가
+같은 모양이라는 뜻이고, 선에서 벗어난 방향이 어디서 어떻게 다른지 말해준다. 로그
+축을 쓸 때는 표본에 음수나 0이 섞일 수 있어(정규 표본만 해당, 지수 표본은 항상
+양수다) 그 값을 먼저 제외했다.
+비교를 숫자 하나로도 요약했다. \term{콜모고로프--스미르노프 거리}(KS Distance)
+$D$는 데이터의 경험적 CDF와 모형 \textbf{표본}의 경험적 CDF 사이 세로 격차의
+최댓값이다(\Cref{sec:cdf}). 모형 자체의 이론적 CDF가 아니라 모형에서 뽑은 표본을
+쓰므로, $D$는 그 표본을 뽑은 난수 시드에 약간 좌우된다. $D=0$이면 두 CDF가 동일하다.
+
+\section{공항 노선 수: 멱법칙, 상한이 있는}
+\label{sec:hw2-airport}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\linewidth]{p1a_0_data.png}
+\caption{공항 노선 수의 경험적 분포(Empirical Distribution). 왼쪽은 값별 확률 $P(X=k)$, 오른쪽은 CCDF
+$P(X\geq x)$, 둘 다 로그-로그 축. 38\%의 공항이 노선 1--2개뿐이고, 가장 큰
+공항은 915개다.}
+\label{fig:hw2-airport-data}
+\end{figure}
+
+\Cref{fig:hw2-airport-data}에서 왼쪽 PDF가 이미 직선에 가깝다. 이는 멱법칙의
+특징이다. 38.0\%의 공항이 노선 1--2개뿐이고, 99번째 백분위수는 285개인데 최댓값은
+915개다. 왜도(Skewness)는 6.0으로(\Cref{sec:skewness}) 강하게 오른쪽으로 치우쳐
+있다.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\linewidth]{p1a_1_powerlaw.png}
+\caption{공항 노선 수 대 멱법칙 모형($\alpha=1.612$, $x_{\min}=1$). CCDF는 1에서
+약 60개 노선까지 데이터를 따라가고, QQ 점도 그 구간에서 $y=x$ 위에 있다. 100개를
+넘으면 모형은 계속 뻗어 $10^4$--$10^5$개짜리 공항을 만들어내지만, 데이터는 915에서
+멈춘다. $D=0.209$.}
+\label{fig:hw2-airport-powerlaw}
+\end{figure}
+
+\Cref{tab:hw2-airport-verdict}가 네 모형을 요약한다.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrl}
+\toprule
+분포(Distribution) & 모수(Parameter) & KS 거리 $D$ & 판정(Verdict) \\
+\midrule
+멱법칙(Power Law)     & $\alpha=1.612,\ x_{\min}=1$ & \textbf{0.209} & 최선, 꼬리는 과대추정 \\
+지수(Exponential)     & $\lambda=0.0504$            & 0.379          & 꼬리가 너무 빨리 줄어듦 \\
+정규(Normal)           & $\mu=19.8,\ \sigma=53.5$   & 0.358          & 음수 36\% 허용, 구조적 실패 \\
+균등(Uniform)          & $[1, 915]$                  & 0.857          & 최악, 형태 자체가 다름 \\
+\bottomrule
+\end{tabular}
+\caption{공항 노선 수: 네 모형의 콜모고로프--스미르노프 거리(KS Distance) $D$와 판정.}
+\label{tab:hw2-airport-verdict}
+\end{table}
+
+\textbf{공항 데이터는 멱법칙을 따르되, 꼬리에 상한이 있다.} 로그-로그 축에서 CCDF가
+직선인 것은 멱법칙뿐이고, 데이터의 CCDF도 1에서 약 100개 노선까지 두 자릿수 넘게
+직선에 가깝다. 나머지 세 모형은 모수를 조금 바꿔도 구조적으로 못 맞는다.
+
+\begin{itemize}
+  \item \textbf{균등}은 노선 1개짜리와 915개짜리를 똑같이 흔하다고 가정하지만,
+    대부분의 공항은 작다.
+  \item \textbf{정규}는 대칭이고 음수를 허용한다. $\sigma$가 $\mu$의 거의 3배라
+    모형 질량의 36\%가 0 미만인데, 노선 수는 음수일 수 없다. 데이터는 하한 1에서
+    시작해 오른쪽으로 치우쳐 있다(왜도 6.0, \Cref{sec:skew-sign}).
+  \item \textbf{지수}는 모양은 맞다(작은 값이 많고 큰 값이 드물다). 그러나 꼬리가
+    너무 빨리 줄어든다. $\lambda=0.05$면 노선 500개짜리 공항의 확률은 약
+    $e^{-25}$인데, 실제로 500개를 넘는 공항이 5곳 있다.
+\end{itemize}
+
+멱법칙도 완벽하지는 않다. $\hat\alpha=1.61 < 2$이므로 이론적으로 평균이 발산하는
+모형이고, 표본에는 $10^5$개짜리 공항이 등장한다(\Cref{fig:hw2-airport-powerlaw}).
+실제로는 공항이 3409곳뿐이고 활주로·게이트·슬롯이 허브의 성장을 막는다. 그래서
+데이터의 CCDF는 100개를 넘는 지점부터 아래로 꺾인다. 가장 적절한 설명은
+\textbf{상한이 있는 멱법칙}이며, 이는 \term{선호적 연결}(Preferential Attachment)로
+성장하는 네트워크의 전형적인 모양이다. 이미 노선이 많은 공항에 새 노선이 더 많이
+붙는다는 뜻이다.
+
+\section{영화 평점: 정규분포에 가깝다}
+\label{sec:hw2-movie}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\linewidth]{p1b_0_data.png}
+\caption{영화 평점의 경험적 분포(Empirical Distribution). 왼쪽은 0.1 격자에 맞춘 히스토그램(PDF), 오른쪽은
+CDF. 중앙값 6.3, 평균 6.23으로 6.3 근처에서 한 개의 봉우리를 이루며 거의 대칭이다.
+왼쪽 꼬리가 약간 더 길다(왜도 $-0.48$).}
+\label{fig:hw2-movie-data}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\linewidth]{p1b_4_normal.png}
+\caption{영화 평점 대 정규분포 모형($\mu=6.227$, $\sigma=0.893$). 모형 표본이
+데이터와 같은 종 모양을 그리고, QQ 점은 약 4.5에서 7.5까지 $y=x$ 위에 있다. 양 끝만
+어긋난다. 데이터의 최저 평점이 모형 예측보다 더 낮고(왼쪽 꼬리가 더 김), 데이터는
+8.5에서 끝나지만 모형은 계속된다. $D=0.055$로 네 모형 중 가장 작다.}
+\label{fig:hw2-movie-normal}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrl}
+\toprule
+분포(Distribution) & 모수(Parameter) & KS 거리 $D$ & 판정(Verdict) \\
+\midrule
+정규(Normal)           & $\mu=6.227,\ \sigma=0.893$   & \textbf{0.055} & 최선, 양 끝만 이탈 \\
+균등(Uniform)           & $[1.9, 8.5]$                  & 0.394          & 봉우리를 무시함 \\
+멱법칙(Power Law)      & $\alpha=1.851,\ x_{\min}=1.9$ & 0.485          & 단조감소, 구조적 실패 \\
+지수(Exponential)      & $\lambda=0.1606$              & 0.490          & 단조감소, 최악 \\
+\bottomrule
+\end{tabular}
+\caption{영화 평점: 네 모형의 KS 거리 $D$와 판정.}
+\label{tab:hw2-movie-verdict}
+\end{table}
+
+\textbf{영화 평점은 근사적으로 정규분포를 따른다.} $D=0.055$는 다음으로 좋은 모형의
+약 7분의 1이다. 정규분포는 $\pm1\sigma$ 안에 68.3\%, $\pm2\sigma$ 안에 95.4\%를
+예측하는데, 실제 데이터는 각각 70.1\%와 95.6\%로 거의 일치한다.
+
+나머지 세 모형은 구조적으로 실패한다. 멱법칙과 지수분포는 둘 다
+\textbf{단조감소}(monotonically decreasing) 형태라 가장 가능성이 높은 값이 가장
+작은 값이다. 즉 대부분의 영화가 최악의 평점을 받고 소수만 매우 높은 평점을 받는다고
+예측하는데, 실제 데이터는 6.3 근처에 봉우리 하나가 있다. 멱법칙 표본은 13.3\%가
+20점을 넘어가는데, 평점은 1에서 10 사이만 가능하다. 균등분포는 봉우리 자체를
+무시한다.
+
+정규 적합도 완벽하지 않다. 첫째, 평점은 $[1, 10]$에 갇혀 있고 약간 왼쪽으로
+치우쳐 있다(\Cref{sec:skew-sign}). 나쁜 영화는 평균보다 훨씬 더 낮게 갈 수 있지만
+좋은 영화가 평균보다 더 높이 갈 여지는 상대적으로 작다. 둘째, 평점이 소수점
+한 자리로 반올림되어 QQ 도표에 작은 계단이 생긴다.
+
+\term{중심극한정리}(Central Limit Theorem, CLT)는 영화 한 편의 평점이 그 영화의
+개별 투표 여러 개의 평균이라는 사실을 설명해 줄 수는 있지만, 그것이 설명하는 대상은
+영화 \textbf{한 편} 안에서 평점이 진짜 평균 주변에 얼마나 좁게 모이는지이지, 서로
+다른 영화 4392편의 평균 평점이 \textbf{영화 간}에 왜 종 모양으로 퍼지는지가 아니다.
+후자는 영화마다 다른 진짜 작품성의 분포에서 온다. 개별 투표의 잡음이 평균에서
+줄어드는 것과, 영화 간 평점 분포가 정규 모양을 띠는 것은 서로 다른 현상이며, 이
+장에서 관찰한 것은 후자, 즉 \Cref{fig:hw2-movie-data}와 \Cref{tab:hw2-movie-verdict}가
+보여주는 데이터 자체의 형태다.
+
+\section{나이, 첫째 자리, 마지막 자리}
+\label{sec:hw2-age}
+
+\begin{pitfall}[생년월일 정제: 두 자리 연도와 결측 표시]
+생년월일은 \texttt{dd-Mon-yy} 형식이 대부분이고 일부만 4자리 연도다. 모든 두 자리
+연도를 \textbf{19\textit{yy}}로 읽었다. 이 데이터(IMDB-WIKI)는 2015년에 수집됐으므로
+``20''--``24''는 2020--2024년일 수 없고, 연도별 개수를 세어 보면 1920년대부터
+``00''까지 매끄럽게 줄어들 뿐 2000년대로 전환됐다고 볼 만한 단절이 없다. 이 확인을
+거친 뒤에야 19\textit{yy} 규칙을 확정했다(짐작으로 정하지 않았다). 연도 ``0000''은
+\term{결측값}(Missing Value) 표시로 보고 제외했다(129건). 나이는
+\textbf{2015-01-01}(수집 연도) 기준
+만 나이이고, 1에서 99 사이만 남겼다. 그 결과 \textbf{458{,}015명}이 남는다(평균
+45.3, 중앙값 43, 범위 15--99). 최솟값이 15인 것은 데이터의 성질이 아니라
+19\textit{yy} 규칙의 결과다. 가장 늦은 출생연도가 1999년이므로 2015년 기준
+최소 나이가 15로 정해진다.
+\end{pitfall}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\linewidth]{p2_1_age.png}
+\caption{2015년 기준 나이 분포($n=458{,}015$). 30대와 40대에 넓은 봉우리가
+하나 있고, 99세까지 긴 오른쪽 꼬리가 이어진다. 대부분의 질량은 25에서 60 사이다.}
+\label{fig:hw2-age}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\linewidth]{p2_2_first_digit.png}
+\caption{나이의 첫째 자리. 점선은 균등 기준선 $1/9$, 주황 곡선은
+벤포드 법칙(Benford's Law) $\log_{10}(1+1/d)$. 자릿수 1부터 9까지 비율은
+1.3\%, 11.3\%, 26.2\%, 28.3\%, 16.7\%, 9.0\%, 4.4\%, 2.2\%, 0.7\%다. 데이터는
+균등과도 벤포드와도 거리가 멀다. 벤포드는 1에서 꾸준히 감소하지만 데이터는 3과
+4에서 정점을 찍는다.}
+\label{fig:hw2-first-digit}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\linewidth]{p2_3_last_digit.png}
+\caption{나이의 마지막 자리. 점선은 균등 기준선 $1/10$. 모든 자릿수가
+8.95\%에서 11.01\% 사이, 즉 10\%에서 최대 1.1퍼센트포인트 안쪽에 있다.}
+\label{fig:hw2-last-digit}
+\end{figure}
+
+\textbf{마지막 자리는 (근사적으로) 균등하고, 첫째 자리는 그렇지 않다.}
+
+\paragraph{마지막 자리.} 이는 예상된 결과다. 나이의 마지막 자리는 나이를 10으로 나눈
+나머지다. 20대, 30대처럼 10년 단위 구간마다 마지막 자리 0에서 9가 정확히 한 번씩
+들어 있다. 나이 분포는 한 살 단위로 보면 완만하게 변하므로, 어느 10년 구간을 보든
+그 안의 열 개 나이는 거의 같은 비율을 차지하고, 이를 모든 구간에 걸쳐 더하면 각
+마지막 자리가 약 10\%씩 나온다. 남은 $\pm1.1$퍼센트포인트의 편차는 특정 자릿수를
+선호해서가 아니라, 특정 출생연도에 배우가 몇 명 태어났는지의 연도별 잡음
+(\Cref{fig:hw2-age}의 들쭉날쭉한 막대)에서 온다.
+
+\paragraph{첫째 자리.} 이것도 사실은 예상된 결과다. 나이 10에서 99까지는 첫째
+자리가 곧 \textbf{인생의 10년 단위 구간(decade)}이다. 그래서 첫째 자리의 히스토그램은
+나이 분포를 10년 단위로 묶은 것과 같은 모양이고, 실제로 \Cref{fig:hw2-age}와 같은
+형태(봉우리 하나 + 오른쪽 꼬리)를 보인다. 자릿수 1이 거의 비어 있는 것은 15--19세만
+가능한 좁은 구간이라 그 나이대 배우가 적기 때문이고, 9가 거의 비어 있는 것은 90대에
+이르는 배우가 드물기 때문이다. 첫째 자리가 균등하려면 10대부터 90대까지 모든
+10년 구간에 배우 수가 같아야 하는데, 활동 중인 배우 집단은 그렇지 않다.
+
+\paragraph{벤포드 법칙도 아니다.} \term{벤포드 법칙}(Benford's Law, 첫째 자리
+$d$의 확률이 $\log_{10}(1+1/d)$이라 1이 30.1\%로 가장 흔함)은 값이 여러 자릿수
+(order of magnitude)에 걸쳐 퍼져 있는 데이터, 예를 들어 인구, 가격, 또는
+\Cref{sec:hw2-airport}의 공항 노선 수처럼 로그값이 고르게 퍼진 데이터에서 성립한다.
+나이는 15에서 99까지 한 자릿수 범위 안에 있고 45 근처에 몰려 있어서, 첫째 자리는
+벤포드의 패턴이 아니라 그 봉우리가 어디 있는지를 보여줄 뿐이다. 요약하면, 마지막
+자리는 값이 10년 구간의 어디에 있는지만 남기고 나머지 정보를 버리기 때문에
+균등하고, 첫째 자리는 바로 그 정보(어느 구간인가)를 그대로 담고 있어서 나이
+분포의 모양을 따라간다.
+
+\section{이 과제에서 배운 것}
+\label{sec:hw2-learned}
+
+\textbf{모형이 맞는지는 모수 하나가 아니라 꼬리의 모양으로 갈린다.} 공항은
+$\sigma$(53.5)가 $\mu$(19.8)의 거의 3배라 평균과 표준편차만 봐도 이미 정규분포가
+아니다(\Cref{sec:hw2-airport}). 영화는 평균과 중앙값이 거의 같고 왜도도 작아 정규분포
+후보로 보였고, 실제로 그렇게 나왔다(\Cref{sec:hw2-movie}). 두 경우 모두 갈림을 만든
+것은 꼬리의 모양이었다. 공항은 꼬리가 지수보다 느리게 줄어 멱법칙이 이겼고, 영화는
+꼬리가 짧고 대칭이라 정규분포가 이겼다.
+
+\textbf{KS 거리 하나로는 ``왜'' 지는지 알 수 없다.} \Cref{tab:hw2-airport-verdict}와
+\Cref{tab:hw2-movie-verdict}의 $D$ 값은 순위를 매겨 줄 뿐, 그 순위의 이유는 말해주지
+않는다. 공항에서는 정규($D=0.358$)가 지수($D=0.379$)보다 근소하게 \textbf{낫지만},
+정규는 모형 질량의 36\%를 음수 영역에 두는 구조적 실패이고 지수는 꼬리가 너무 빨리
+줄어드는 실패다. $D$가 더 작다고 더 타당한 모형은 아니다. 숫자 뒤에 그림을 반드시
+같이 본 이유다.
+
+\textbf{자릿수 분포는 원본 분포의 그림자다.} 마지막 자리가 균등한 것과 첫째 자리가
+균등하지 않은 것은 서로 다른 현상이 아니라, 같은 나이 분포를 \textbf{정보를 버리는
+정도가 다른 두 렌즈}로 본 것이다. 벤포드 법칙이 성립하려면 값이 여러 자릿수에
+걸쳐 퍼져 있어야 한다는 조건이 있고, 나이는 그 조건을 만족하지 않는다.
+
+마지막으로 자료 확인 하나. \texttt{hw2/report\_submit/hw2\_taeklim\_report.tex}는
+채점 제출용 빈 템플릿으로, 문항마다 \texttt{STEP} 주석만 있고 그림과 답은 모두
+주석 처리되어 있다. 실제 답과 논의, 그리고 그림·표는 전부
+\texttt{hw2/report/hw2\_taeklim\_report.tex}에 있다. 이 장의 모든 수치와 그림은
+후자를 출처로 삼았다.

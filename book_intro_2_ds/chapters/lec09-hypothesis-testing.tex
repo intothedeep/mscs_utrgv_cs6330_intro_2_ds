@@ -1,0 +1,702 @@
+\chapter{가설검정: 증거가 귀무가설을 터무니없게 만드는가}
+\label{ch:hypothesis}
+% source: deck 9 slide 1
+
+\begin{inbrief}
+  \item[Why] 표본 하나에서 본 차이가 진짜인지, 우연히 그렇게 나온 것인지를
+             가르는 규칙이 필요하다.
+  \item[When] "차이가 없다"(또는 기존 값 그대로다)를 기본값으로 두고, 데이터가
+              그 기본값을 뒤집을 만큼 강한 증거인지 물을 때.
+  \item[Where] 두 약의 회복 시간 비교, 비율(수컷 강아지 비율, 반항적 인간
+               비율), 성공 확률(복권)처럼 \term{모수}(Parameter)에 대한
+               주장을 검증할 때.
+  \item[How] \term{귀무가설}(Null Hypothesis) $H_0$ 와 \term{대립가설}
+             (Alternative Hypothesis) $H_a$ 를 세운다 $\to$ 기준
+             $\alpha$ 를 미리 정한다 $\to$ $H_0$ 가 참일 때 관측값 이상으로
+             극단적인 결과가 나올 확률(\term{p값}, p-value)을 구한다 $\to$
+             기준보다 작으면 \term{기각}(Reject), 아니면
+             \term{기각 실패}(Fail to Reject).
+\end{inbrief}
+
+\begin{keyidea}
+가설검정은 \analogy{현장 측량으로 지도 검증}이다(\Cref{tab:analogy}). 지도
+(귀무가설)가 맞다면 이만큼 어긋난 측량이 나올 법한가를 묻는다. 너무 어긋나면
+지도를 고치고(기각), 오차 안이면 고칠 근거가 없을 뿐 지도가 옳다는 증명은
+아니다(기각 실패).
+\end{keyidea}
+
+이 장의 출처는 \texttt{notes/9\_Hypothesis Testing.pptx}(14 슬라이드) 하나다.
+슬라이드가 외부 문헌을 밝히지 않으므로 슬라이드 자체를 출처로 적는다.
+
+% =====================================================================
+\section{배경}
+\label{sec:ht-background}
+% source: deck 9 slide 1
+
+이 장을 읽는 데 필요한 개념을 먼저 깐다. 이미 다룬 것은 한 줄 요약과 링크로,
+처음 나오는 것은 그 자리에서 정의한다.
+
+\term{평균}(Mean)과 \term{퍼짐}(Spread, 표준편차)은
+\Cref{sec:center,sec:spread}에서 이미 다뤘다. 이 장의 두 집단 비교
+(\Cref{sec:ht-two-groups})에서 "평균에서 얼마나 떨어져 있는가"를 잴 때 그대로
+쓴다.
+
+\term{표본}(Sample)과 \term{모집단}(Population)은 이 장에서 처음 정의한다.
+우리가 실제로 손에 쥐고 보는 것은 \textbf{표본}이고, 우리가 주장하려는 대상은
+\textbf{모집단}이다. 강아지 15마리를 관찰한 것은 표본이고, "이 부모견이
+낳는 강아지 전체의 성비"가 모집단이다. \term{모수}(Parameter)는 그 모집단을
+숫자 하나로 나타낸 값이다(예: 모집단에서 수컷일 확률 $p$). 표본에서 계산한
+값으로 모수를 추측하고, 그 추측이 미리 세운 주장과 맞는지를 검정한다.
+
+\term{확률의 곱셈 규칙}(Multiplication Rule of Probability)도 이 장에서
+처음 쓴다. \term{독립 시행}(Independent Trial, 사건 하나가 다른 사건에
+영향을 주지 않는 시행)이 연달아 일어날 확률은 각 확률을
+\textbf{곱한다}. 동전을 두 번 던져 둘 다 앞면이 나올 확률은
+$0.5 \times 0.5 = 0.25$ 다. \Cref{sec:ht-exact}의 $0.4^3$ 계산이 이 규칙
+그대로다. \term{이항분포}(Binomial Distribution)는 이 곱셈 규칙을 "$n$ 번
+시행 중 성공이 정확히 $k$ 번" 이라는 경우의 수까지 센 분포다
+(\Cref{sec:binomial}, 현재는 뼈대만 있는 절이며 \Cref{ch:distributions}에서
+채워진다). \Cref{sec:ht-simulation}의 이항계수 계산이 이 분포를 그대로
+쓴다.
+
+\term{신뢰구간}(Confidence Interval)과 "5\% 미만이면 유의하다"는 기준은
+\Cref{sec:ci,subsec:ci-compare}에서 이미 나왔다. \term{부트스트랩}
+(Bootstrap, \Cref{subsec:bootstrap})의 "컴퓨터로 반복해서 분포를 만든다"는
+발상은 \Cref{sec:ht-simulation}의 시뮬레이션과 같은 발상이다. 차이는
+\Cref{sec:ht-apply}에서 다시 짚는다.
+
+\begin{pitfall}[$p$ 라는 기호는 두 가지 뜻이 있다]
+슬라이드 11에서 $p$ 는 "수컷일 확률"이라는 \textbf{모수}다
+($p = 50\%$). 그런데 통계학 일반에서 $p$ 는 \textbf{p값}(p-value)도 가리킨다.
+이 책에서는 슬라이드의 기호를 그대로 두고(모수는 $p$), \textbf{p값은 항상
+"p값"이라는 한글 단어}로만 쓴다. 덱 9 자신은 "p-value"나 "significance
+level"이라는 말을 쓰지 않고 "significance test"만 쓰지만, 이 장이 계산하는
+양(슬라이드 11, 12의 "13 이상일 확률")은 \Cref{sec:ci}가 이미 쓴 p값과
+같은 개념이다.
+\end{pitfall}
+
+\Cref{tab:ht-symbols}이 이 장에서 쓰는 기호를 모은다.
+
+\begin{table}[ht]\centering
+\begin{tabularx}{\linewidth}{@{}l X l@{}}
+\toprule
+기호 & 뜻 & 읽기 \\
+\midrule
+$H_0$ & \term{귀무가설}(Null Hypothesis): 차이 없음, 기존 값 그대로 & 에이치 제로 \\
+$H_a$ & \term{대립가설}(Alternative Hypothesis): 찾으려는 주장 & 에이치 에이 \\
+$p$ & 모수로서 성공 확률(예: $p = 50\%$). p값과는 다르다(위 함정 참고) & 피 \\
+$\alpha$ & \term{유의수준}(Significance Level): 미리 정한 기각 기준(이 장은
+1\%, \Cref{sec:ci}는 5\%) & 알파 \\
+$n$, $X$ & 시행 횟수, 성공 횟수 & \\
+\bottomrule
+\end{tabularx}
+\caption{이 장에서 쓰는 기호.}
+\label{tab:ht-symbols}
+\end{table}
+
+% =====================================================================
+\section{왜 필요한가}
+\label{sec:ht-why}
+% source: deck 9 slide 3-5, 7, 8
+
+\begin{inbrief}
+  \item[Why] 실험 한 번의 결과로 세운 가설은 다음 실험에서 뒤집히기 쉽다.
+  \item[When] 재현되지 않는 결과를 어떻게 판정할지 정해야 할 때.
+  \item[Where] 예비 자료(Preliminary Data)로 가설을 세우는 모든 실험.
+  \item[How] 예비 자료가 필요 없는 유일한 값, 0(차이 없음)을 가설로 삼는다.
+\end{inbrief}
+
+같은 약을 먹어도 사람마다 회복 시간이 다르다. 예비 실험에서 약 A가 약 B보다
+평균 15시간 더 빨리 회복시켰다면(슬라이드 3), "A는 B보다 15시간 빠르다"는
+가설을 세우고 싶어진다. 문제는 \textbf{그 다음}이다.
+
+\begin{enumerate}
+  \item \textbf{재실험이 정반대로 나온다(슬라이드 4).} 다시 실험했더니 이번에는
+        A가 오히려 35시간 \emph{더 느렸다}. 방향 자체가 뒤집혔으므로, "15시간
+        빠르다"는 예비 가설은 \textbf{확신을 갖고 기각}한다. 이 기각은 아직
+        귀무가설이 아니라 예비 자료로 세운 가설을 기각한 것이다(귀무가설은
+        슬라이드 6에서 처음 정의된다).
+  \item \textbf{재실험이 애매하게 나온다(슬라이드 5).} 약 C가 D보다 13시간
+        빠르다는 가설은 첫 실험이 13시간이었다는 이유 하나로 정해졌다.
+        재실험은 12시간, 13.5시간으로 나왔다. 기각할 만큼 다르지도, 맞다고
+        확신시킬 만큼 같지도 않다. 결론은 \textbf{기각 실패}다.
+  \item \textbf{방향이 실험마다 뒤집힌다(슬라이드 7).} 약 E와 F의 차이는
+        한 번은 F가 0.25시간 높고, 다음번은 E가 0.5시간 높다. 차이의
+        \emph{방향}조차 재현되지 않으므로 "차이가 있다"고 말할 근거가 없다.
+        기각 실패다.
+\end{enumerate}
+
+\Cref{fig:ht-drug-experiments}가 첫 번째와 세 번째 경우를 나란히 보여준다.
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=\linewidth]{09_01_drug_experiments.png}
+  \caption{반복 실험이 가설을 지지하는가(슬라이드 3, 4, 7). 왼쪽: 예비
+  실험이 세운 "A가 15시간 빠르다"는 가설을, 방향이 뒤집힌 재실험(35시간)이
+  확신을 갖고 기각시킨다. 오른쪽: 약 E/F는 재실험마다 어느 쪽이 높은지가
+  뒤집혀 기각 실패로 끝난다. 슬라이드 그림에는 축 눈금이 없어(\Cref{sec:ht-why}
+  R13) 시간 값은 라벨의 차이만 재현한 책 자체의 개략(schematic) 값이다.}
+  \label{fig:ht-drug-experiments}
+\end{figure}
+
+이 세 경우가 드러내는 문제는 하나다. \textbf{예비 자료로 세운 가설의 숫자
+(15시간, 13시간)는 그 자체가 우연일 수 있고}, 그러면 무엇을 기준으로
+"충분히 다르다"를 판정할지가 매번 달라진다.
+
+처방은 슬라이드 8이 준다. 예비 자료가 필요 없는 유일한 값을 가설로 삼는다.
+그 값은 \textbf{0}, 즉 "차이가 없다"다. 이것이 \term{귀무가설}(Null
+Hypothesis)이다. 예비 실험에서 어떤 숫자가 나오든 귀무가설은 항상 같은
+문장이므로, 판정 기준을 매번 새로 만들 필요가 없다.
+
+% =====================================================================
+\section{무엇인가}
+\label{sec:ht-hypotheses}
+
+\begin{inbrief}
+  \item[Why] 증거를 잴 기준점(차이 0)이 필요하다.
+  \item[When] 데이터를 보기 \textbf{전에} 세운다.
+  \item[Where] 두 집단 비교, 비율, 확률에 대한 주장.
+  \item[How] $H_0$ 는 등호("차이 없음", "모수 = 특정 값"), $H_a$ 는
+             찾으려는 주장.
+\end{inbrief}
+% source: deck 9 slide 2, 6, 8, 9
+
+\begin{definition}[귀무가설]
+\label{def:ht-null}
+\term{귀무가설}(Null Hypothesis) $H_0$ 는 "차이가 없다" 또는 "모수가 특정
+값과 같다"는 기본 가정이다. 예비 자료 없이 세울 수 있는 유일한 값이 0이기
+때문에 항상 등호($=$)로 쓴다.
+\end{definition}
+
+\begin{definition}[대립가설과 유의성 검정]
+\label{def:ht-alt}
+\term{대립가설}(Alternative Hypothesis) $H_a$ 는 우리가 증거로 뒷받침하려는
+주장이다. \term{유의성 검정}(Significance Test)은 $H_0$ 가 참이라는 가정
+아래에서, 관측한 증거가 $H_0$ 를 얼마나 터무니없게 만드는지를 재는 절차다.
+\end{definition}
+
+금성에 외계 생명체가 있는지 찾는 예(슬라이드 2)가 이 구조를 그대로 보여준다.
+$H_0$: 이 행성에는 외계 생명체가 없다. $H_a$: 외계 생명체가 있다. 만약
+증거를 전혀 찾지 못하면, $H_0$ 를 기각할 근거가 없으므로 \textbf{기각 실패}로
+남는다. 증거를 찾으면 그때 $H_0$ 를 기각한다. "아무것도 찾지 못했다"는
+"생명체가 없다는 증명"이 아니라 "기각할 증거가 없었다"는 뜻이다.
+
+대부분의 경우 $H_a$ 는 $H_0$ 의 반대다(슬라이드 9). 약 C와 D의 예에서
+$H_0$: 회복 시간에 차이가 없다, $H_a$: 차이가 있다. 이 대립가설을 "평균에서의
+거리"로 판정하는 방법은 \Cref{sec:ht-two-groups}에서 다룬다.
+
+\subsection{기각과 기각 실패}
+\label{sec:ht-decision}
+
+\begin{inbrief}
+  \item[Why] 결론은 두 가지뿐이고, "채택"은 없다.
+  \item[When] 증거의 확률을 기준 $\alpha$ 와 비교한 직후.
+  \item[Where] 모든 검정의 마지막 문장.
+  \item[How] 증거가 $H_0$ 를 터무니없게 만들면 기각, 아니면 "기각
+             실패"라고만 쓴다.
+\end{inbrief}
+% source: deck 9 slide 2, 4, 5, 7
+
+가설검정의 결론은 딱 두 가지다. \textbf{기각}(Reject $H_0$) 아니면
+\textbf{기각 실패}(Fail to Reject $H_0$). "$H_0$ 를 채택한다"거나 "$H_0$ 가
+증명됐다"는 결론은 없다.
+
+\begin{pitfall}[기각 실패는 $H_0$ 가 참이라는 증명이 아니다]
+\label{pit:ht-fail-not-proof}
+금성에서 외계 생명체를 못 찾았다고 해서 생명체가 없다는 뜻은 아니다
+(슬라이드 2). 약 C/D 예에서도 슬라이드는 "재실험이 가설이 맞다고 확신시키지도
+않는다"(don't convince us the hypothesis is correct, 슬라이드 5)고 분명히
+적는다. 이것은 \Cref{subsec:ci-compare}의 함정 "겹친다고 같은 것은
+아니다"와 같은 논리다. \textbf{증거 부족은 무죄를 증명하지 않는다}, 단지
+유죄를 선고할 근거가 없을 뿐이다.
+\end{pitfall}
+
+\Cref{tab:ht-wording}은 올바른 결론 문장과 틀린 결론 문장을 나란히 둔다.
+
+\begin{table}[ht]\centering
+\begin{tabularx}{\linewidth}{@{}X X@{}}
+\toprule
+올바른 표현 & 틀린 표현 \\
+\midrule
+"$H_0$ 를 기각한다" & "$H_0$ 가 틀렸다고 증명했다" \\
+"$H_0$ 를 기각하지 못한다" & "$H_0$ 를 채택한다" \\
+"기각할 증거가 부족하다" & "$H_0$ 가 옳다고 증명했다" \\
+\bottomrule
+\end{tabularx}
+\caption{가설검정 결론의 올바른 표현과 틀린 표현.}
+\label{tab:ht-wording}
+\end{table}
+
+\subsection{대립가설의 세 형태}
+\label{sec:ht-forms}
+
+\begin{inbrief}
+  \item[Why] 무엇을 "극단적"이라 부를지는 $H_a$ 의 방향이 정한다.
+  \item[When] $H_0$ 를 세울 때 함께, 데이터를 보기 전에.
+  \item[Where] "더 크다"(슬라이드 11--13), "다르다"(슬라이드 9).
+  \item[How] $>$, $<$ 는 한쪽 꼬리(\term{단측검정}, One-sided Test), $\neq$
+             는 양쪽 꼬리(\term{양측검정}, Two-sided Test).
+\end{inbrief}
+% source: deck 9 slide 9, 10
+
+$H_0$ 는 항상 모수가 특정 값과 같다는 형태다: $H_0: \text{모수} = \text{값}$.
+$H_a$ 는 다음 셋 중 하나다.
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+$H_a$ & 이름 & 극단값의 방향 \\
+\midrule
+모수 $>$ 값 & 단측검정(오른쪽 꼬리) & 관측값보다 큰 쪽 \\
+모수 $<$ 값 & 단측검정(왼쪽 꼬리) & 관측값보다 작은 쪽 \\
+모수 $\neq$ 값 & 양측검정 & 양쪽 다 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\Cref{fig:ht-tails}가 세 형태의 꼬리를 보여준다.
+
+\begin{figure}[ht]\centering
+\begin{tikzpicture}[scale=1.0]
+  \begin{scope}
+    \draw[domain=-3:3,samples=60,smooth,draw=bookink] plot (\x,{exp(-\x*\x/2)});
+    \fill[bookwarnbg] plot[domain=1.5:3,samples=30] (\x,{exp(-\x*\x/2)}) -- (3,0) -- (1.5,0) -- cycle;
+    \draw[bookmuted] (-3,0) -- (3,0);
+    \node[below] at (0,-0.15) {$>$: 오른쪽 꼬리};
+  \end{scope}
+  \begin{scope}[xshift=4.3cm]
+    \draw[domain=-3:3,samples=60,smooth,draw=bookink] plot (\x,{exp(-\x*\x/2)});
+    \fill[bookwarnbg] plot[domain=-3:-1.5,samples=30] (\x,{exp(-\x*\x/2)}) -- (-1.5,0) -- (-3,0) -- cycle;
+    \draw[bookmuted] (-3,0) -- (3,0);
+    \node[below] at (0,-0.15) {$<$: 왼쪽 꼬리};
+  \end{scope}
+  \begin{scope}[xshift=8.6cm]
+    \draw[domain=-3:3,samples=60,smooth,draw=bookink] plot (\x,{exp(-\x*\x/2)});
+    \fill[bookwarnbg] plot[domain=1.5:3,samples=30] (\x,{exp(-\x*\x/2)}) -- (3,0) -- (1.5,0) -- cycle;
+    \fill[bookwarnbg] plot[domain=-3:-1.5,samples=30] (\x,{exp(-\x*\x/2)}) -- (-1.5,0) -- (-3,0) -- cycle;
+    \draw[bookmuted] (-3,0) -- (3,0);
+    \node[below] at (0,-0.15) {$\neq$: 양쪽 꼬리};
+  \end{scope}
+\end{tikzpicture}
+\caption{대립가설의 방향이 정하는 꼬리(개략도, 축 값 없음). 색칠된 영역이
+"극단적"으로 취급되는 쪽이다.}
+\label{fig:ht-tails}
+\end{figure}
+
+\begin{pitfall}[방향은 데이터를 보고 고르지 않는다]
+\label{pit:ht-direction}
+방향($>$, $<$, $\neq$)은 데이터를 보기 \textbf{전에} 정한다. 관측값을 본
+뒤에 "마침 이쪽으로 컸으니 $>$ 로 하자"고 고르면, 우연히 큰 쪽으로 나온
+결과를 스스로 유리하게 골라 기각을 더 쉽게 만든 것이다. \Cref{sec:ht-simulation}
+연습 문제(반항적 인간 14\%)의 R8이 이 함정의 구체적인 예다.
+\end{pitfall}
+
+\subsection{p값과 유의수준}
+\label{sec:ht-pvalue}
+
+\begin{inbrief}
+  \item[Why] "터무니없다"를 숫자 하나로 바꿔야 판정이 재현된다.
+  \item[When] 가설과 방향을 정한 뒤.
+  \item[Where] 슬라이드 11--13이 모두 이 양을 계산한다.
+  \item[How] $H_0$ 가 참이라 가정하고 "관측값 이상으로 극단적인 결과"의
+             확률을 구해 $\alpha$ 와 비교한다.
+\end{inbrief}
+% source: deck 9 slide 11, 12, 13
+
+\begin{definition}[p값]
+\label{def:pvalue}
+\term{p값}(p-value)은 $H_0$ 가 참이라고 가정했을 때, 관측한 값 또는 그보다
+$H_a$ 방향으로 더 극단적인 값이 나올 확률이다.
+\end{definition}
+
+p값이 미리 정한 유의수준 $\alpha$ 보다 \textbf{작으면} $H_0$ 를 기각한다.
+그렇지 않으면 기각 실패다.
+
+\begin{pitfall}[기준 $\alpha$ 는 법칙이 아니라 약속이다]
+\label{pit:ht-alpha}
+이 장은 $\alpha = 1\%$ 를 쓰고(슬라이드 11--13), \Cref{sec:ci}는
+$\alpha = 5\%$($z = 1.96$)를 쓴다. 둘 다 맞다. $\alpha$ 는 자연법칙이 아니라
+\textbf{데이터를 보기 전에 정하는 약속}이다. \Cref{subsec:fence}의
+"$1.5 \times \IQR$ 은 관례다"와 같은 구조의 함정이다. 기준이 낮을수록
+기각하기 어려워진다.
+\end{pitfall}
+
+\subsection{시뮬레이션으로 p값 구하기}
+\label{sec:ht-simulation}
+
+\begin{inbrief}
+  \item[Why] 공식을 몰라도 "$H_0$ 세상"을 컴퓨터로 여러 번 만들어 보면 된다.
+  \item[When] 분포 공식이 없거나 복잡할 때.
+  \item[Where] 강아지 성비, 반항적 인간 비율.
+  \item[How] $H_0$ 로 1000회 모의 $\to$ 관측값 이상인 횟수를 센다 $\to$
+             1000으로 나눈다.
+\end{inbrief}
+% source: deck 9 slide 11, 12
+
+\begin{example}[강아지 15마리 중 수컷 13마리]
+\label{ex:ht-puppy}
+엘레나의 개 한 쌍이 강아지 15마리를 낳았고, 그중 13마리가 수컷이었다
+(슬라이드 11).
+
+\begin{align*}
+  &H_0: p = 0.5 && \text{암수 확률이 같다}\\
+  &H_a: p > 0.5 && \text{수컷일 확률이 더 크다}\\
+  &\alpha = 1\%
+\end{align*}
+
+\textbf{1단계. 표에서 직접 센다.} 슬라이드는 $H_0$($p=0.5$) 아래에서 강아지
+15마리를 1000번 시뮬레이션한 표를 준다(\Cref{tab:ht-puppy}, 빈도 열).
+$k \ge 13$(관측값 이상)인 행을 더한다.
+
+\begin{align*}
+  &3 + 0 + 0 = 3 && \text{$k=13,14,15$ 의 빈도 합}\\
+  &3 / 1000 = 0.003 && \text{시뮬레이션으로 구한 p값}
+\end{align*}
+
+\textbf{2단계. 이항계수로 정확히 구한다.} 이항분포(\Cref{sec:binomial})를
+쓰면 시뮬레이션 없이 정확한 값을 계산할 수 있다.
+
+\begin{align*}
+  &\binom{15}{13}+\binom{15}{14}+\binom{15}{15} = 105+15+1 = 121
+    && \text{$k \ge 13$ 인 경우의 수}\\
+  &121/32768 = 0.0037 && \text{$2^{15}=32768$ 로 나눈 정확한 p값}
+\end{align*}
+
+\textbf{3단계. 두 값이 다른 이유.} 시뮬레이션 값(0.003)과 정확한 값
+(0.0037)이 완전히 같지 않다. \Cref{tab:ht-puppy}의 정확값 열을 보면 이유가
+드러난다. 표의 모든 행이 $1000\binom{15}{k}/2^{15}$ 를 \textbf{반올림한}
+값과 정확히 일치한다(예: $k{=}7$: $196.4 \to 196$, $k{=}14$:
+$0.46 \to 0$). 즉 이 표는 \textbf{실제 무작위 시뮬레이션 결과가 아니라
+기댓값을 반올림해 적은 표}다.
+
+\begin{pitfall}[슬라이드 표는 기댓값 표다]
+\label{pit:ht-r4}
+슬라이드 값은 "1000회 시뮬레이션 결과"라고 적혀 있지만, 다시 계산하면
+정확히 $1000\binom{15}{k}/2^{15}$ 의 반올림값과 일치하는
+\textbf{기댓값 표}다. 실제 무작위 시뮬레이션을 돌리면 이 값 근처에서
+흔들리며 $k{=}14,15$ 행이 항상 0으로 반올림되지는 않는다. \Cref{fig:ht-puppy-sim}의
+점이 정확값, 막대가 슬라이드 표다.
+\end{pitfall}
+
+$0.0037 < 1\%$ 이므로 \textbf{기각한다}. 결론: "이 강아지들에서 수컷이 더
+잘 나온다는 증거가 있다."
+\end{example}
+
+\begin{table}[ht]\centering
+\begin{tabularx}{\linewidth}{@{}c r r@{}}
+\toprule
+$k$ (수컷 수) & 슬라이드 빈도(1000회 중) & 정확값 $1000\binom{15}{k}/2^{15}$ \\
+\midrule
+6  & 153 & 152.7 \\
+7  & 196 & 196.4 \\
+8  & 196 & 196.4 \\
+9  & 153 & 152.7 \\
+10 & 92  & 91.6 \\
+11 & 42  & 41.7 \\
+12 & 14  & 13.9 \\
+13 & 3   & 3.2 \\
+14 & 0   & 0.46 \\
+15 & 0   & 0.03 \\
+\bottomrule
+\end{tabularx}
+\caption{강아지 예제(슬라이드 11)의 빈도표(일부, $k\ge 6$)와 정확값 비교.
+슬라이드 값과 정확값이 반올림 오차 안에서 그대로 일치한다(\Cref{pit:ht-r4}).}
+\label{tab:ht-puppy}
+\end{table}
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=\linewidth]{09_03_puppy_null.png}
+  \caption{$H_0$: $p=0.5$ 아래 수컷 강아지 수의 분포(슬라이드 11). 막대는
+  슬라이드의 빈도표, 점은 정확한 $1000\binom{15}{k}/2^{15}$ 다. 관측값
+  13(세로 점선) 이상이 경고색이다.}
+  \label{fig:ht-puppy-sim}
+\end{figure}
+
+\begin{pitfall}[연습: 반항적 인간 14\%는 경계가 애매하다]
+\label{pit:ht-alien}
+외계 제국은 반항적 인간 비율이 10\% 미만이어야 지구를 침공하지 않는다.
+400명 표본에서 14\%가 반항적이었다(슬라이드 12). $H_0: p = 0.10$,
+$\alpha = 1\%$.
+
+슬라이드는 표(\Cref{tab:ht-alien})의 "14\% 이상" 행만 읽어
+$7/1000 = 0.007 < 1\%$ 로 기각한다. 그런데 이 장은 세 가지를 다시 짚는다.
+
+\begin{enumerate}
+  \item \textbf{경계가 애매하다.} 표본 400명에서 비율은 $1/400 = 0.25\%$
+        단위로만 나온다. "14\% 행"이 $[13.5\%,\,14.5\%)$ 를 묶은 것이라면,
+        "14\% 이상"은 실제로는 $X \ge 54$명(13.5\%)을 뜻할 수도 있다. 연속성
+        보정을 쓰면 $z = (53.5-40)/6 = 2.25$ 로, 정규근사 p값은 약
+        1.2\,--\,1.5\%다.
+        \textbf{슬라이드 값은 $7/1000 = 0.007$(인원수 $X \ge 56$ 기준)이나,
+        경계를 $X \ge 54$ 로 다시 잡으면 정확한 이항 꼬리 확률은
+        $P(X \ge 54) = 0.0149$ 로 다시 계산된다}(\texttt{scipy.stats.binom.sf(53,\allowbreak
+        400,\allowbreak 0.1)}). 이 값은 1\% 기준을 \textbf{넘는다}, 즉
+        판정이 뒤집힐 수 있다. 그래서 꼬리는 퍼센트가 아니라
+        \textbf{인원수}($X \ge 56$)로 정의해야 모호함이 없다.
+  \item \textbf{정확값도 확인해 둔다.} $X \sim \mathrm{Bin}(400, 0.1)$,
+        평균 $40$, 표준편차 $\sqrt{400 \cdot 0.1 \cdot 0.9} = 6$. 연속성
+        보정을 쓰면 $z = (55.5-40)/6 = 2.58$. 정확한 이항 꼬리 확률은
+        \textbf{슬라이드 값은 $0.007$이나, 다시 계산하면
+        \texttt{scipy.stats.binom.sf(55, 400, 0.1)} $= 0.00664$}다. 결론
+        자체(기각, $X\ge56$ 기준)는 바뀌지 않는다.
+  \item \textbf{방향을 데이터 뒤에 고른 흔적이 있다.} 외계인의 결정 규칙은
+        "10\% \textbf{미만}이면 침공하지 않는다"이므로, 그 규칙에 맞는
+        질문은 $H_a: p < 0.10$ 이다. \textbf{슬라이드 값은 $H_a: p > 10\%$
+        이나, 결정 규칙에 맞게 다시 세우면 $H_a: p < 10\%$ 가 되어야
+        한다.} 슬라이드는 관측값 14\%(10\%보다 큰 쪽)를 본 뒤 $>$ 방향을
+        택한 것으로 읽힌다. 이것이 \Cref{pit:ht-direction}이 경고한
+        상황이다.
+\end{enumerate}
+
+세 가지 모두 계산이 틀린 것은 아니지만, 경계와 방향을 정하는 방식에 따라
+결론이 흔들릴 수 있다는 연습 사례로만 쓴다.
+\end{pitfall}
+
+\begin{table}[ht]\centering
+\begin{tabularx}{\linewidth}{@{}c r r@{}}
+\toprule
+반항적 비율(\%, 묶음) & 슬라이드 빈도(1000회 중) & 위에서부터 누적(꼬리 합) \\
+\midrule
+6  & 7   & 1000 \\
+7  & 40  & 993 \\
+8  & 93  & 953 \\
+9  & 173 & 860 \\
+10 & 327 & 687 \\
+11 & 253 & 360 \\
+12 & 73  & 107 \\
+13 & 27  & 34 \\
+14\footnote{"14" 행은 $[13.5\%,14.5\%)$ 를 묶은 값일 수 있어 경계가
+애매하다(\Cref{pit:ht-alien}).} & 7   & 7 \\
+\bottomrule
+\end{tabularx}
+\caption{반항적 인간 비율(슬라이드 12)의 빈도표와 누적 꼬리 합.}
+\label{tab:ht-alien}
+\end{table}
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=\linewidth]{09_04_alien_null.png}
+  \caption{$H_0$: $p=0.10$ 아래 반항적 인원수의 분포(슬라이드 12). 슬라이드
+  표(막대, 인원수 축으로 환산)와 $\mathrm{Bin}(400,0.1)$ 이론 곡선을 겹쳤다.
+  13.5\%(54명)와 14\%(56명) 경계선이 \Cref{pit:ht-alien}의 판정 차이를
+  보여준다.}
+  \label{fig:ht-alien-null}
+\end{figure}
+
+\subsection{정확한 계산}
+\label{sec:ht-exact}
+
+\begin{inbrief}
+  \item[Why] 경우가 단순하면 시뮬레이션 없이 곱셈만으로 정확한 값이 나온다.
+  \item[When] 독립 시행이고 확률이 알려져 있을 때.
+  \item[Where] 복권 3연승, \Cref{ex:ht-puppy}의 이항 계산.
+  \item[How] 독립이면 곱한다. 여러 경우면 이항계수로 센다.
+\end{inbrief}
+% source: deck 9 slide 13
+
+\begin{example}[빨간 셔츠를 입으면 복권에 당첨될까]
+\label{ex:ht-juan}
+후안은 40\% 확률로 당첨되는 복권을 매일 산다. 빨간 셔츠를 입을 때 자주
+당첨된다고 느껴, 빨간 셔츠를 입은 날만 기록했더니 3번 중 3번 당첨됐다
+(슬라이드 13).
+
+\begin{align*}
+  &H_0: p = 0.4 && \text{셔츠는 효과가 없다}\\
+  &H_a: p > 0.4 && \text{셔츠를 입으면 확률이 더 높다}\\
+  &\alpha = 1\%
+\end{align*}
+
+세 번 모두 당첨은 독립 시행이므로 \Cref{sec:ht-background}의 곱셈 규칙을
+그대로 쓴다.
+
+\begin{align*}
+  &0.4 \times 0.4 \times 0.4 = 0.064 && \text{$P(X=3)$, 즉 3번 모두 당첨될 확률}\\
+  &0.064 = 6.4\%
+\end{align*}
+
+$H_a$ 가 "더 크다"이므로 p값은 $P(X \ge 3) = P(X=3) = 0.064$ 다(가능한 최댓값이
+3이라 다른 경우가 없다). $6.4\%$ 는 $1\%$ 보다 크므로 \textbf{기각하지
+못한다}.
+
+\begin{keyidea}
+$n=3$ 에서 나올 수 있는 가장 작은 p값이 $0.4^3 = 0.064$ 다. 즉 \textbf{이
+표본 크기로는 어떤 결과가 나와도 1\% 기준으로 기각할 수 없다.} 연승이 몇
+번이어야 기각되는지 같은 방식으로 확인한다.
+\begin{align*}
+  &0.4^5 = 0.01024 && \text{5연승, 아직 $1\%$ 를 넘음}\\
+  &0.4^6 = 0.004096 && \text{6연승, 비로소 $1\%$ 미만}
+\end{align*}
+\textbf{6연승}이어야 이 기준으로 기각할 수 있다.
+\end{keyidea}
+
+결론: 기각 실패는 "셔츠 효과가 없다"는 증명이 아니라, \textbf{"이 표본
+크기(3번)로는 말할 수 없다"}는 뜻이다. \Cref{subsec:notch}의 "노치가
+뒤집히면 표본이 부족한 것"과 같은 신호다.
+\end{example}
+
+\subsection{두 집단 비교: 평균에서의 거리}
+\label{sec:ht-two-groups}
+
+\begin{inbrief}
+  \item[Why] "차이가 있다"는 두 집단 평균을 따로 두면 점들이 평균에 훨씬
+             가까워진다는 뜻이다.
+  \item[When] 두 집단의 연속값(회복 시간)을 비교할 때.
+  \item[Where] 약 C 대 D.
+  \item[How] 합친 평균 하나(귀무)와 집단별 평균 둘(대립)에서 거리를 재어
+             비교한다. 줄어든 양이 작으면 기각 실패.
+\end{inbrief}
+% source: deck 9 slide 9
+
+$H_0$: C와 D 사이에 회복 시간 차이가 없다는 말은, "C와 D를 하나로 합친 평균
+하나로도 두 집단을 똑같이 잘 설명한다"는 말과 같다. $H_a$: 차이가 있다는
+말은 "C와 D를 각각 따로 둔 평균 둘이 점들에 더 가깝다"는 말이다. 그래서
+"차이가 있는가"는 "평균을 둘로 나누면 점들이 평균에서 얼마나 더 가까워지는가"로
+바꿔 물을 수 있다.
+
+\begin{example}[합친 평균 대 집단 평균]
+\label{ex:ht-distance}
+아래 값은 슬라이드 9(\texttt{image22}, \texttt{image23})의 그림 모양을
+흉내 낸 \textbf{이 책 자체의 예시 값}이다. 슬라이드는 숫자를 밝히지 않는다.
+$C = \{20, 28, 34\}$, $D = \{22, 26, 37\}$.
+
+\begin{align*}
+  &\bar{x}_{\text{pooled}} = \frac{20+28+34+22+26+37}{6} = \frac{167}{6} = 27.83
+    && \text{합친 평균}\\
+  &\bar{x}_C = \frac{20+28+34}{3} = \frac{82}{3} = 27.33 && \text{C의 평균}\\
+  &\bar{x}_D = \frac{22+26+37}{3} = \frac{85}{3} = 28.33 && \text{D의 평균}
+\end{align*}
+
+\Cref{sec:spread}의 분산처럼 거리는 \textbf{제곱거리 합}으로 잰다.
+
+\begin{align*}
+  &(20-27.83)^2+(28-27.83)^2+(34-27.83)^2 \\
+  &\quad +(22-27.83)^2+(26-27.83)^2+(37-27.83)^2 = 220.83
+    && \text{합친 평균에서의 제곱거리 합}\\
+  &(20-27.33)^2+(28-27.33)^2+(34-27.33)^2 = 98.67 && \text{C, 집단 평균에서}\\
+  &(22-28.33)^2+(26-28.33)^2+(37-28.33)^2 = 120.67 && \text{D, 집단 평균에서}\\
+  &98.67 + 120.67 = 219.33 && \text{집단 평균에서의 제곱거리 합}\\
+  &220.83 - 219.33 = 1.50 && \text{줄어든 양}
+\end{align*}
+
+검산: $3(27.33-27.83)^2 + 3(28.33-27.83)^2 = 0.75+0.75 = 1.50$, 일치한다.
+
+전체 220.83 중 겨우 1.50, 즉 \textbf{0.7\%}만 줄어든다. 평균을 둘로
+나누어도 점들이 평균에 거의 더 가까워지지 않으므로 "극적인 차이가 없다"
+(슬라이드 9). 결론은 기각 실패다. 이 거리를 정식 검정 통계량(Test
+Statistic)으로 만드는 방법은 이 덱에 없다. \Cref{sec:ht-future}에서 열린
+질문으로 남긴다.
+\end{example}
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=\linewidth]{09_02_pooled_vs_group.png}
+  \caption{\Cref{ex:ht-distance}의 값(책 자체의 예시, 슬라이드 데이터
+  아님). 왼쪽: 합친 평균 하나에서 잰 제곱거리 합 220.83. 오른쪽: C, D
+  각각의 평균에서 잰 제곱거리 합 219.33. 줄어든 양 1.50이 크지 않아
+  기각 실패로 이어진다.}
+  \label{fig:ht-pooled-vs-group}
+\end{figure}
+
+\Cref{tab:ht-cases}가 이 장에서 다룬 네 사례를 한눈에 정리한다.
+
+\begin{table}[ht]\centering
+\begin{tabularx}{\linewidth}{@{}l X X l l l@{}}
+\toprule
+사례 & $H_0$ & $H_a$ & p값 & $\alpha$ & 판정 \\
+\midrule
+금성 생명체 & 생명체 없음 & 생명체 있음 & (증거 없음) & -- & 기각 실패
+  (증거가 나오면 기각) \\
+강아지(\Cref{ex:ht-puppy}) & $p=0.5$ & $p>0.5$ & 0.0037 & 1\% & 기각 \\
+외계인 침공(\Cref{pit:ht-alien}) & $p=0.10$ & $p<0.10$(재설정) & 0.00664 &
+  1\% & 기각 \\
+후안의 복권(\Cref{ex:ht-juan}) & $p=0.4$ & $p>0.4$ & 0.064 & 1\% & 기각 실패 \\
+\bottomrule
+\end{tabularx}
+\caption{이 장에서 다룬 네 가설검정 사례의 요약. 금성 사례는 슬라이드 2가
+증거 유무 두 갈래를 모두 보여주므로 하나의 확정된 결과로 단정하지 않는다.}
+\label{tab:ht-cases}
+\end{table}
+
+% =====================================================================
+\section{어떻게 적용하는가}
+\label{sec:ht-apply}
+% source: deck 9 slide 14
+
+\begin{inbrief}
+  \item[Why] 지금까지의 절차를 하나의 흐름으로 정리하고, 이 책 안의 다른
+             자리와 연결한다.
+  \item[When] 새 데이터에서 "차이가 있다"는 문장을 쓰기 전에.
+  \item[Where] 과제와 프로젝트의 결론 문장 전부.
+  \item[How] 아래 다섯 단계를 순서대로 밟는다.
+\end{inbrief}
+
+\begin{figure}[ht]\centering
+\begin{tikzpicture}[
+  node distance = 7mm,
+  flowbox/.style = {draw = bookrule, fill = booksurface, rounded corners = 2pt,
+                   minimum width = 62mm, minimum height = 9mm, align = center,
+                   font = \small},
+  arrow/.style  = {-{Stealth[length=2.2mm]}, draw = bookmuted}]
+  \node[flowbox] (h)      {$H_0$ 와 $H_a$ 를 세운다};
+  \node[flowbox, below = of h]   (alpha)  {유의수준 $\alpha$ 를 미리 정한다};
+  \node[flowbox, below = of alpha] (dir)  {극단의 방향($>$, $<$, $\neq$)을 정한다};
+  \node[flowbox, below = of dir]  (pval)  {p값을 구한다\\[-1pt]
+        \footnotesize 시뮬레이션(\Cref{sec:ht-simulation}) 또는 정확 계산
+        (\Cref{sec:ht-exact})};
+  \node[flowbox, below = of pval, fill = bookaccentbg, draw = bookaccent] (dec)
+        {p값 $<\alpha$ ?\\[-1pt] \footnotesize 예: 기각 / 아니오: 기각 실패};
+  \draw[arrow] (h) -- (alpha);
+  \draw[arrow] (alpha) -- (dir);
+  \draw[arrow] (dir) -- (pval);
+  \draw[arrow] (pval) -- (dec);
+\end{tikzpicture}
+\caption{가설검정 다섯 단계. 방향(3단계)은 데이터를 보기 전에 정한다
+(\Cref{pit:ht-direction}).}
+\label{fig:ht-flow}
+\end{figure}
+
+이 책 안에서 같은 흐름이 이미 쓰인 자리, 그리고 앞으로 쓸 자리를 짚는다.
+
+\begin{itemize}
+  \item \Cref{subsec:ci-compare}: 버거(평균 620, 신뢰구간 $[557, 686]$)와
+        치킨너겟(평균 275, 신뢰구간 $[211, 345]$)을 비교했다. 같은 질문을
+        $H_0$: "두 평균 칼로리 차이 = 0"으로 다시 쓰면, 신뢰구간이 겹치지
+        않는다는 그림이 곧 가설검정 하나를 그림으로 그린 것임을 알 수 있다.
+        새 수치는 계산하지 않는다.
+  \item \Cref{subsec:bootstrap}: 재표집으로 분포를 만든다는 발상이
+        \Cref{sec:ht-simulation}과 같다. 차이는 하나다. 부트스트랩은
+        \textbf{표본}에서 다시 뽑고, 가설검정 시뮬레이션은 \textbf{$H_0$
+        가 정한 세상}(예: $p=0.5$ 인 동전)에서 뽑는다.
+  \item \Cref{ch:hw1}: 과제 데이터에서 세울 수 있는 $H_0$ 의 예, "버거와
+        치킨너겟의 평균 칼로리 차이는 0이다" 같은 가설 문장을 계산 없이
+        세워 본다.
+  \item \Cref{ch:project}: 프로젝트에서 "차이가 있다"고 쓰기 전에
+        \Cref{fig:ht-flow}의 다섯 단계를 거쳤는지 점검한다.
+\end{itemize}
+
+확인 문제(슬라이드 14의 Kahoot을 대신한다).
+
+\begin{enumerate}
+  \item p값이 $\alpha$ 보다 작을 때 올바른 결론 문장을 \Cref{tab:ht-wording}
+        에서 고른다.
+  \item 외계인이 "10\% 미만이면 침공하지 않는다"는 규칙을 쓴다면 $H_a$ 의
+        방향은 $>$ 인가 $<$ 인가.
+  \item 성공 확률 0.4인 독립 시행에서 연속 성공 확률이 처음으로 1\% 밑으로
+        내려가는 최소 연승 횟수는 몇 번인가.
+\end{enumerate}
+
+% =====================================================================
+\section{앞으로}
+\label{sec:ht-future}
+% source: deck 9 slide 14
+
+\begin{itemize}
+  \item \term{순열검정}(Permutation Test), \term{통계적 유의성}
+        (Statistical Significance), \term{차등 분석}(Differential
+        Analysis)은 강의계획서가 예고한 주제다. 이 덱에는 내용이 없으므로
+        다음 강의로 이어지는 갈래로만 적는다.
+  \item \Cref{ex:ht-distance}의 "평균에서의 거리 비교"를 정식 검정
+        통계량으로 만드는 방법은 이 덱에 없다. 열린 질문으로 남긴다.
+  \item \Cref{ex:ht-juan}이 드러낸 질문: $H_0$ 가 실제로 틀렸을 때, 표본
+        크기가 작으면 기각할 수 없다. "얼마나 큰 표본이어야 진짜 차이를
+        잡아낼 수 있는가"(검정력, Power)는 이 덱에 없는 질문이다.
+  \item 정규성 가정이 필요한 검정과의 연결은 아직 없다. 분포 확인 방법이
+        다뤄질 때 다시 연결한다.
+\end{itemize}

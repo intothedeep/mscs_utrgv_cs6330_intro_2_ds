@@ -12,3 +12,6 @@
 *.synctex.gz
 *.xdv
 main.pdf
+
+# 슬라이드 추출본: notes/*.pptx 에서 tools/extract_slides.py 로 다시 만든다
+notes_text/

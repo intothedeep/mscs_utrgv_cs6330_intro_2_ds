@@ -1,5 +1,16 @@
 \chapter{속성 유형 --- 값의 종류를 먼저 가른다}
 \label{ch:attributes}
+% source: deck 3 slide 1 (제목만, 내용 없음)
+
+\begin{inbrief}
+  \item[Why] 값에 허용된 연산(척도)과 데이터가 놓이는 모양(행렬, 공간)을
+             알아야 이후 모든 요약과 그림이 합법이 된다.
+  \item[When] 데이터를 받자마자, 어떤 통계도 계산하기 전에.
+  \item[Where] 표로 된 모든 데이터. 이미지, 텍스트, 네트워크도 행렬로
+               바꾼 뒤 같은 틀에 들어온다.
+  \item[How] 열마다 척도와 이산/연속을 가르고, 식별자를 뺀 나머지를
+             $n \times d$ 행렬로 본다.
+\end{inbrief}
 
 같은 숫자라도 무엇을 뜻하느냐에 따라 허용되는 계산이 다르다. 우편번호
 78539와 칼로리 540은 둘 다 숫자로 저장되지만, 우편번호의 평균은 아무 의미가
@@ -13,8 +24,33 @@ $\cdot$ 그래프가 전부 조용히 틀린다 --- 계산은 성공하고 숫�
 \end{keyidea}
 
 % =====================================================================
+\section{배경}
+\label{sec:attr-background}
+
+이 장은 강의 자료 ``Data and Matrix''(덱 3,
+\texttt{notes/3\_DataAndMatrix.pptx})를 옮긴 것이다. 책의 첫 본문 장이므로
+앞서 다룬 개념은 없지만, 이 장이 바로 쓰는 기초 용어 세 가지는 여기서
+한 줄씩 깔아 둔다.
+
+\begin{itemize}
+  \item \term{표}(Table): 값을 행과 열의 격자에 늘어놓은 것.
+  \item \term{행}(Row)과 \term{열}(Column): 표에서 가로줄이 행, 세로줄이
+        열이다.
+  \item \term{좌표평면}(Coordinate Plane): 점 하나가 값 두 개(가로 좌표,
+        세로 좌표)로 정해지는 평면.
+\end{itemize}
+
+이 장은 두 부분으로 나뉜다. 앞부분(\Cref{sec:attr-flow}부터
+\Cref{sec:attr-stats}까지)은 열 하나의 성질, 곧 값 하나에 어떤 연산이
+허용되는가를 다룬다. 뒷부분(\Cref{sec:attr-discrete}부터)은 그렇게 정리한
+열들을 모아 표 전체, 곧 행렬로 보는 법을 다룬다. 이 장에서 정한 유형은
+이후 요약값(\Cref{ch:descriptive})과 그래프(\Cref{ch:visualization})를
+고르는 전제가 된다.
+
+% =====================================================================
 \section{두 번의 질문으로 가른다}
 \label{sec:attr-flow}
+% source: deck 3 slide 3
 
 \begin{inbrief}
   \item[Why] 값에 허용된 연산을 알아야 요약값과 그래프를 고를 수 있기 때문이다.
@@ -72,6 +108,7 @@ $\cdot$ 그래프가 전부 조용히 틀린다 --- 계산은 성공하고 숫�
 % =====================================================================
 \section{수치형 --- 구간과 비율}
 \label{sec:attr-numeric}
+% source: deck 3 slide 3
 
 \begin{inbrief}
   \item[Why] 같은 수치형이라도 ``몇 배''라는 말이 성립하는 것과 아닌 것이 있기
@@ -109,6 +146,7 @@ $10^\circ\mathrm{C}$ 보다 ``$10^\circ$ 더 덥다''라고는 말할 수 있어
 % =====================================================================
 \section{범주형 --- 명목과 순서}
 \label{sec:attr-categorical}
+% source: deck 3 slide 3
 
 \begin{inbrief}
   \item[Why] 범주에 순서가 있으면 중앙값과 정렬이 허용되고, 없으면 금지되기
@@ -218,3 +256,582 @@ HW1 의 패스트푸드 영양정보 데이터
 주로 나온다. 물리적 양을 측정한 값은 대개 0 이 곧 ``없음''이므로 비율 척도가
 된다. 영양정보처럼 측정값만 모인 데이터에 구간 척도가 없는 것은 우연이 아니다.
 \end{aside}
+
+% =====================================================================
+\section{이산형과 연속형}
+\label{sec:attr-discrete}
+% source: deck 3 slide 2, 4
+
+\begin{inbrief}
+  \item[Why] 척도(명목$\cdot$순서$\cdot$구간$\cdot$비율)만으로는 값 사이에
+             다른 값이 들어갈 수 있는지 알 수 없다. 이 축이 막대그래프
+             (Bar Chart) 대 히스토그램(Histogram), 확률질량함수(PMF)
+             대 확률밀도함수(PDF)의 선택을 가른다.
+  \item[When] 척도를 정한 뒤, 그래프 종류나 확률 모형을 고르기 전에
+              확인한다.
+  \item[Where] 수치형과 범주형 모두에 적용되는 두 번째 축이다.
+  \item[How] 두 값 사이에 중간값을 가진 다른 값이 실제로 존재할 수
+             있는지 묻는다. 있으면 연속형, 셀 수 있게 끊겨 있으면
+             이산형이다.
+\end{inbrief}
+
+값이 놓인 척도(\Cref{sec:attr-numeric}, \Cref{sec:attr-categorical})와
+값이 끊겨 있는지는 \textbf{다른 질문}이다. 태어난 연도(구간 척도)와
+키(비율 척도)는 둘 다 수치형이지만, 태어난 연도는 정수로만 끊겨 있고
+키는 두 값 사이에 항상 더 세밀한 값이 있다. 이 차이를 놓치면 이산형
+값을 연속형 그래프(히스토그램)로, 연속형 값을 이산형 그래프(막대그래프)로
+그리는 실수가 나온다.
+
+\begin{definition}[이산형과 연속형]
+\label{def:discrete-continuous}
+\term{이산형}(Discrete)은 값이 서로 떨어져 있어 셀 수 있는 변수다(예:
+태어난 연도, 참/거짓). \term{연속형}(Continuous)은 실수 구간의 값을
+갖는 변수다(예: 길이). 두 값 사이에 항상 더 세밀한 값을 넣을 수 있으면
+연속형이다.
+\end{definition}
+
+척도(\Cref{tab:attr-ops})와 이산/연속은 서로 다른 축이므로, 실제 변수는
+둘을 \textbf{함께} 답해야 완전히 분류된다. \Cref{tab:attr-discrete-2x2}가
+이 두 축을 겹쳐 보여준다.
+
+\begin{table}[ht]\centering
+\caption{척도(행)와 이산/연속(열)을 겹친 분류. ``없음''은 그 조합이
+존재하지 않는다는 뜻이다.}
+\label{tab:attr-discrete-2x2}
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
+\toprule
+ & 이산형(Discrete) & 연속형(Continuous) \\
+\midrule
+수치형(Numeric) & 태어난 연도(구간), 고객 수(비율)
+  & 길이 $\cdot$ 무게(비율), 섭씨온도 $\cdot$ 경도(구간) \\
+범주형(Categorical) & 참/거짓(명목), 전공(명목), 만족도 1$\sim$5(순서)
+  & 없음 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+범주형 열이 연속형 칸에서 비는 이유는 한 문장으로 정리된다. 범주형
+값은 정해진 기호의 집합에서 하나를 고르므로, 두 기호 사이에 들어갈
+``중간 기호''가 없다. 그래서 범주형은 언제나 이산형이다.
+
+\begin{example}[다섯 항목의 척도와 이산/연속을 함께 답하기]
+\label{ex:attr-slide4}
+다섯 개 항목에 척도와 이산/연속을 함께 매긴다(만족도 문항의 실제 모양은
+1$\sim$5점 라디오 버튼이다). 척도 답은 슬라이드와 같고, 이산/연속은
+이 책이 추가했다.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}l l l X@{}}
+\toprule
+항목 & 척도 & 이산/연속 & 근거 \\
+\midrule
+색(Color) & 명목(Nominal) & 이산형 & 색 이름 사이에 서열이 없다 \\
+경도(Longitude) & 구간(Interval) & 연속형 & $0^\circ$는 Greenwich를
+  고른 약속일 뿐이다 \\
+강사 만족도 1$\sim$5 & 순서(Ordinal) & 이산형 & 등급 사이 간격이
+  같다는 보장이 없다(\Cref{def:nominal-ordinal}) \\
+무게(Weight) & 비율(Ratio) & 연속형 & 0\,kg은 무게가 없다는 뜻이다 \\
+전공(College Major) & 명목(Nominal) & 이산형 & 전공 이름 사이에
+  서열이 없다 \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+경도는 $180^\circ$와 $-180^\circ$가 같은 지점을 가리키는 원형 값이라,
+두 경도의 ``차이''를 구할 때도 이 점을 조심해야 한다.
+\end{example}
+
+% =====================================================================
+\section{표 데이터와 데이터 행렬}
+\label{sec:data-matrix}
+% source: deck 3 slide 5-8
+
+\begin{inbrief}
+  \item[Why] 열 하나씩 따로 보는 것만으로는 ``객체 하나가 여러 속성을
+             동시에 가진다''는 사실을 다룰 수 없다. 행과 열을 한 번에
+             다루는 틀이 필요하다.
+  \item[When] 척도와 이산/연속을 다 가른 뒤, 표 전체를 계산에 넣기
+              직전에.
+  \item[Where] 행마다 하나의 대상(사람, 제품, 관측)을 담고, 열마다
+               하나의 속성을 담는 모든 표.
+  \item[How] 표를 $n \times d$ 행렬로 본다. $n$은 행(객체) 수, $d$는
+             열(속성) 수다.
+\end{inbrief}
+
+열 하나씩 값을 따로 읽으면, 예를 들어 급여 열과 나이 열을 각각 볼 수는
+있어도 ``이 사람의 급여와 나이''처럼 한 대상이 가진 여러 속성을 한꺼번에
+계산에 넣을 방법이 없다. \term{표 데이터}(Tabular Data)는 행 하나가
+대상 하나, 열 하나가 속성 하나를 담도록 정리해 이 문제를 없앤다. 이렇게
+정리된 표는 $n \times d$ \term{데이터 행렬}(Data Matrix) $\mathbf{D} \in
+\mathbb{R}^{n \times d}$로 쓸 수 있다. $n$은 행의 수(대상 수), $d$는
+열의 수(속성 수)다.
+
+행렬의 행 하나는
+\[
+  \mathbf{x}_i = (x_{i1}, x_{i2}, \dots, x_{id})^T \in \mathbb{R}^d
+\]
+로 쓴다. 대상 $i$번째의 속성 값 $d$개를 순서대로 늘어놓은 것이다.
+행렬의 열 하나는
+\[
+  X_j = (x_{1j}, x_{2j}, \dots, x_{nj})^T \in \mathbb{R}^n
+\]
+로 쓴다. 속성 $j$번째의 값을 모든 대상에서 모은 것이다. \textbf{$\mathbf{x}_i$
+(굵은 소문자, 행)와 $X_j$(대문자, 열)는 다른 것이다.} 첨자가 대상을
+가리키면 행, 속성을 가리키면 열이다. 분야마다 행과 열을 부르는 이름이
+다른데, \Cref{tab:attr-synonyms}가 그 대응을 정리한다.
+
+\begin{table}[ht]\centering
+\caption{데이터 행렬의 행과 열을 부르는 여러 이름. 같은 것을 분야마다
+다르게 부른다.}
+\label{tab:attr-synonyms}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\toprule
+대상 & 동의어 \\
+\midrule
+행($\mathbf{x}_i$) & 표본(Sample), 인스턴스(Instance), 레코드(Record),
+  객체(Object), 점(Point), 특징 벡터(Feature Vector) \\
+열($X_j$) & 속성(Attribute), 특징(Feature), 차원(Dimension),
+  변수(Variable), 필드(Field) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{example}[이름, 급여, 나이 표를 행렬로 보기]
+\label{ex:attr-name-salary-age}
+\Cref{tab:attr-name-salary-age}는 이름, 급여, 나이 세 열로 된 표다.
+
+\begin{table}[ht]\centering
+\caption{이름, 급여, 나이 표.}
+\label{tab:attr-name-salary-age}
+\begin{tabularx}{0.7\linewidth}{@{}l X X@{}}
+\toprule
+이름(Name) & 급여(Salary, \$) & 나이(Age, Years) \\
+\midrule
+Jane    & 90000 & 52 \\
+John    & 85000 & 48 \\
+Delilah & 75000 & 32 \\
+Dave    & 90000 & 53 \\
+Ellen   & 82000 & 44 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+세는 순서는 한 줄씩이다.
+\begin{align*}
+  &\text{머리글 1행 제외} \to 5\text{행}
+    && \text{Jane부터 Ellen까지 5명} \\
+  &\text{열 3개}
+    && \text{이름, 급여, 나이} \\
+  &\text{이름(식별자) 열 제외} \to \text{속성 2개}
+    && \text{급여, 나이만 속성이다} \\
+  &\mathbf{D} \in \mathbb{R}^{5 \times 2}
+    && \text{데이터 행렬 크기}
+\end{align*}
+\end{example}
+
+\begin{pitfall}[식별자 열은 속성이 아니다]
+\Cref{tab:attr-name-salary-age}의 이름(Name) 열처럼 대상을 가리키기만
+하는 열은 속성으로 세지 않는다. 이 규칙을 놓치면 이 표와, 뒤에 나올
+급여$\cdot$나이$\cdot$근속연수 표인 \Cref{tab:attr-3d-data}가 헷갈린다.
+두 표 모두 ``5행 3열''이라 부를 수 있지만, 두 슬라이드가 세는 대상이
+다르다.
+이 표의 3열은 이름(식별자) 포함 3열이라 속성은 2개이고,
+\Cref{tab:attr-3d-data}의 3열은 이름 열이 빠지고 근속연수가 더해진
+3열이라 속성이 3개다. 규칙 하나로 정리하면 이렇다. \textbf{식별자는
+속성이 아니다. 차원은 식별자를 뺀 열의 수다.} \Cref{ex:hw1-types}의
+\texttt{item}도 고유값이 126행 중 107개뿐이라 완전한 식별자는 아니지만,
+원칙은 같다. 대상 하나하나를 실제로 가리키는 것은 행 번호이지 그 열의
+값이 아니다.
+\end{pitfall}
+
+% =====================================================================
+\section{차원의 두 가지 뜻}
+\label{sec:dimension}
+% source: deck 3 slide 9-12
+
+\begin{inbrief}
+  \item[Why] 같은 낱말 ``차원''이 프로그래밍과 데이터 과학에서 다른
+             것을 센다. 섞어 쓰면 ``속성이 100개인 데이터는 100차원
+             배열이 필요하다''는 오해가 생긴다.
+  \item[When] 데이터 행렬(\Cref{sec:data-matrix})의 크기를 말할 때마다.
+  \item[Where] 저장 방식(배열)을 말할 때와 데이터가 놓인 공간을 말할
+               때 모두에 쓰이는 말이라 헷갈린다.
+  \item[How] ``지금 세는 것이 배열의 축인가, 속성의 개수인가''를 먼저
+             구분한다.
+\end{inbrief}
+
+``차원''이라는 말 하나로 표의 축 개수와 속성 개수를 동시에 가리키면,
+속성이 100개인 표를 ``100차원 배열''로 저장해야 한다는 오해가 생긴다.
+표는 속성이 몇 개든 행과 열, 축 2개짜리 배열일 뿐이다. 이 오해를
+없애려면 두 뜻을 다른 이름으로 나눠야 한다. \Cref{tab:attr-dimension-two-meanings}가
+이 두 뜻을 나눈다. \term{배열 차원}(Array Dimension)은 값에 접근할
+때 쓰는 인덱스(축)의 개수다. \term{공간 차원}(Space Dimension)은
+데이터 행렬의 속성 수 $d$, 즉 각 점이 놓인 공간의 차원이다.
+
+\begin{table}[ht]\centering
+\caption{프로그래밍의 차원과 데이터 과학의 차원.}
+\label{tab:attr-dimension-two-meanings}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\toprule
+뜻 & 세는 대상 \\
+\midrule
+배열 차원(Array Dimension) & 값에 접근하는 인덱스(축)의 수. 표(행,
+  열)는 축이 2개이므로 항상 배열 차원 2다 \\
+공간 차원(Space Dimension) & 속성의 수 $d$. 속성이 3개면 그 점들은
+  3차원 공간에 놓인다 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{pitfall}[슬라이드 9: 차원 = 셀의 수?]
+슬라이드 값은 ``프로그래밍의 차원(Dimension) = 셀의 수''이고, 다시
+계산하면 ``차원 = 인덱스(축)의 수''다. 표 하나는 셀이 아무리 많아도
+축은 행과 열 둘뿐이라 배열 차원은 항상 2다. 슬라이드 11 자신도 아래에서
+같은 표를 ``2차원 배열(2-dimensional array)''이라 부른다.
+\end{pitfall}
+
+\paragraph{2차원 예.} 이름/급여/나이 표인 \Cref{tab:attr-name-salary-age}에서
+이름 열을 빼면 급여$\cdot$나이 두 속성만 남고, 각 사람은 2차원 평면의
+점 하나가 된다(\Cref{fig:attr-2d-scatter}). Jane(52세, 90000)과
+Dave(53세, 90000)는 나이만 한 살 다를 뿐이라 그림에서 거의 겹쳐
+보인다.
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=0.75\linewidth]{03_01_salary_age_2d.png}
+  \caption{급여$\cdot$나이 2차원 산점도(Scatter Plot). 5명이 각각 점
+  하나에 대응한다.}
+  \label{fig:attr-2d-scatter}
+\end{figure}
+
+\paragraph{3차원 예.} 같은 다섯 사람에게 근속연수(Years in Service)를
+더하면 \Cref{tab:attr-3d-data}가 된다. 이 표는 이름 없이 급여, 나이,
+근속연수 세 열뿐이다.
+
+\begin{table}[ht]\centering
+\caption{급여, 나이, 근속연수 표.}
+\label{tab:attr-3d-data}
+\begin{tabularx}{0.6\linewidth}{@{}X X X@{}}
+\toprule
+급여(Salary, \$) & 나이(Age, Years) & 근속연수(Years in Service) \\
+\midrule
+90000 & 52 & 10 \\
+85000 & 48 & 20 \\
+75000 & 32 & 30 \\
+90000 & 53 & 40 \\
+82000 & 44 & 20 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{align*}
+  &5 \times 3 = 15 && \text{배열의 셀 수} \\
+  &\text{인덱스(축) 2개(행, 열)} && \text{배열 차원 2} \\
+  &\text{속성 3개(급여, 나이, 근속연수)} && \text{공간 차원 3}
+\end{align*}
+
+이름은 행렬에는 들어가지 않지만, 그림에서 점의 라벨로는 남는다
+(\Cref{fig:attr-3d-scatter}).
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=0.8\linewidth]{03_02_salary_age_service_3d.png}
+  \caption{급여$\cdot$나이$\cdot$근속연수 3차원 산점도. 이름은 점의
+  라벨로만 남는다.}
+  \label{fig:attr-3d-scatter}
+\end{figure}
+
+\paragraph{속성이 100개라도 배열은 2차원이다.} 표 하나는 속성이 몇
+개든 $n \times d$ 꼴이므로, $d = 100$이어도 여전히 축은 행과 열
+둘뿐이라 배열 차원은 2다. 반면 그 점들이 놓인 공간 차원은 100이다.
+
+\begin{pitfall}[슬라이드 12: 고차원 데이터 = 행이 많음?]
+슬라이드 값은 ``고차원 데이터(High Dimension Data)는 행이 많은 것도
+포함한다''이고, 다시 계산하면 ``고차원은 열(속성) 수 $d$가 클 때만
+해당한다''다. 슬라이드 9 자신의 정의(차원 수 = 특징 수)를 그대로
+적용하면, 행이 많은 것은 대상 수 $n$이 큰 대용량(Large-Scale) 데이터
+이지 고차원 데이터가 아니다.
+\end{pitfall}
+
+\begin{pitfall}[슬라이드 9, 12: 마지막 열 머리글]
+슬라이드 값은 표의 마지막 열 머리글 ``Feature $n$''이고, 다시
+계산하면 ``Feature $d$''다. \Cref{sec:data-matrix}의 기호에서 $n$은
+행(대상) 수이고 열(속성) 수를 가리키는 기호는 $d$이므로, 이 머리글은
+기호가 뒤바뀐 것이다.
+\end{pitfall}
+
+% =====================================================================
+\section{점, 행, 벡터}
+\label{sec:vector}
+% source: deck 3 slide 13-15
+
+\begin{inbrief}
+  \item[Why] 행을 그냥 ``숫자 목록''으로만 보면 두 대상 사이의 거리나
+             평균 점 같은 기하 연산을 떠올릴 수 없다.
+  \item[When] 거리, 평균, 방향처럼 기하학적으로 데이터를 다룰 때.
+  \item[Where] 데이터 행렬의 모든 행. 물리의 벡터와 같은 방식으로
+               계산한다.
+  \item[How] 행 $\mathbf{x}_i$를 원점에서 그 점까지 뻗은 화살표로
+             본다.
+\end{inbrief}
+
+행 $\mathbf{x}_i$를 숫자가 나열된 목록으로만 보면, 두 대상 사이의
+거리나 다섯 대상의 평균 점 같은 기하 연산을 떠올릴 방법이 없다.
+데이터 과학의 \term{벡터}(Vector)는 그 목록을 물리의 벡터와 똑같이,
+표의 행 하나이자 공간의 점 하나로, 원점에서 그 점까지 뻗은 화살표로
+본다.
+\Cref{tab:attr-vectors-source}의 다섯 점(나이, 급여)을 화살표로 그리면
+\Cref{fig:attr-vectors}가 된다.
+
+\begin{table}[ht]\centering
+\caption{나이, 급여 표(벡터 예).}
+\label{tab:attr-vectors-source}
+\begin{tabularx}{0.5\linewidth}{@{}X X@{}}
+\toprule
+나이(Age) & 급여(Salary) \\
+\midrule
+20 & 90000 \\
+30 & 85000 \\
+28 & 40000 \\
+40 & 95000 \\
+35 & 42000 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=0.75\linewidth]{03_03_vectors_origin.png}
+  \caption{원점에서 각 점까지 뻗은 화살표. 점 하나가 벡터 하나다.}
+  \label{fig:attr-vectors}
+\end{figure}
+
+\paragraph{붓꽃 예.} 이 데이터는 Fisher의 붓꽃 데이터(Iris Data)다.
+자세한 출처는 \Cref{sec:qq-iris-source}에서 다룬다. 이 책은
+\texttt{sklearn.datasets.load\_iris()}로 값만 읽는다.
+\Cref{tab:attr-iris-rows}가 그중 10행을 옮긴다.
+
+\begin{table}[ht]\centering
+\caption{붓꽃 데이터 10행. $\mathbf{x}_1 \sim \mathbf{x}_8$은 setosa,
+$\mathbf{x}_{149}, \mathbf{x}_{150}$은 virginica다.}
+\label{tab:attr-iris-rows}
+\begin{tabularx}{\linewidth}{@{}l X X X X l@{}}
+\toprule
+행 & 꽃받침 길이 & 꽃받침 너비 & 꽃잎 길이 & 꽃잎 너비 & 종(Class) \\
+ & (Sepal Length) & (Sepal Width) & (Petal Length) & (Petal Width) & \\
+\midrule
+$\mathbf{x}_1$   & 5.1 & 3.5 & 1.4 & 0.2 & setosa \\
+$\mathbf{x}_2$   & 4.9 & 3.0 & 1.4 & 0.2 & setosa \\
+$\mathbf{x}_3$   & 4.7 & 3.2 & 1.3 & 0.2 & setosa \\
+$\mathbf{x}_4$   & 4.6 & 3.1 & 1.5 & 0.2 & setosa \\
+$\mathbf{x}_5$   & 5.0 & 3.6 & 1.4 & 0.2 & setosa \\
+$\mathbf{x}_6$   & 5.4 & 3.9 & 1.7 & 0.4 & setosa \\
+$\mathbf{x}_7$   & 4.6 & 3.4 & 1.4 & 0.3 & setosa \\
+$\mathbf{x}_8$   & 5.0 & 3.4 & 1.5 & 0.2 & setosa \\
+$\mathbf{x}_{149}$ & 6.2 & 3.4 & 5.4 & 2.3 & virginica \\
+$\mathbf{x}_{150}$ & 5.9 & 3.0 & 5.1 & 1.8 & virginica \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+이 표 전체는 150행 5열이다. 수치 열은 꽃받침 길이$\cdot$너비, 꽃잎
+길이$\cdot$너비 4개뿐이다. 종(Class) 열 $X_5$는 이름(setosa,
+versicolor, virginica)을 담은 명목 범주형(\Cref{sec:attr-categorical})
+이라, 수치 데이터 행렬 $\mathbf{D} \in \mathbb{R}^{150 \times 4}$에서는
+뺀다.
+
+\paragraph{평균 점(Mean Point).} 꽃받침 길이와 너비 두 열만 놓고 150개 점을 찍은
+뒤 평균 점을 표시하면 \Cref{fig:attr-iris-mean}이 된다. 평균 점은
+열마다 따로 평균을 낸 벡터 $(\bar X_1, \bar X_2)$다.
+
+\begin{align*}
+  &\bar X_1 = 5.8433 && \text{꽃받침 길이 150개의 평균} \\
+  &\bar X_2 = 3.0573 && \text{꽃받침 너비 150개의 평균}
+\end{align*}
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=0.75\linewidth]{03_04_iris_points_mean.png}
+  \caption{붓꽃 꽃받침 길이$\times$너비 150개 점과 평균 점
+  $(5.8433,\ 3.0573)$.}
+  \label{fig:attr-iris-mean}
+\end{figure}
+
+% =====================================================================
+\section{무엇이든 행렬로}
+\label{sec:everything-matrix}
+% source: deck 3 slide 16-19
+
+지금까지는 이미 표로 정리된 데이터를 다뤘다. 그런데 이미지, 텍스트,
+네트워크처럼 표 모양이 아닌 데이터도 있다. 이런 데이터도 행과 열을
+정해 같은 $n \times d$ 데이터 행렬 틀에 넣을 수 있다.
+
+\paragraph{이미지.} 이미지 하나를 여러 영역 $r_1, r_2, \dots$로 나누고,
+영역마다 RGB 색이나 질감(Texture) 같은 특징을 뽑으면, 영역이 행이
+되고 특징이 열이 되는 행렬이 만들어진다(\Cref{fig:attr-image-matrix}).
+슬라이드에 실린 원본 사진 두 장은 출처가 밝혀지지 않아 이 책에는
+싣지 않는다.
+
+\begin{figure}[ht]\centering
+\begin{tikzpicture}[
+  imgbox/.style = {draw=bookaccent, fill=bookaccentbg, rounded corners=2pt,
+                    minimum width=20mm, minimum height=20mm, align=center,
+                    font=\small},
+  rbox/.style   = {draw=bookrule, fill=booksurface, rounded corners=2pt,
+                    minimum width=16mm, minimum height=8mm, align=center,
+                    font=\scriptsize},
+  arrow/.style  = {-{Stealth[length=2.2mm]}, draw=bookmuted}]
+
+  \node[imgbox] (img) at (0,0) {이미지\\(Image)};
+  \node[rbox] (r1) at (3.0, 1.0) {영역 $r_1$};
+  \node[rbox] (r2) at (3.0, -1.0) {영역 $r_2$};
+  \draw[arrow] (img.east) -- (r1.west);
+  \draw[arrow] (img.east) -- (r2.west);
+
+  \node[align=left, font=\scriptsize] (tbl) at (7.6, 0) {%
+    \begin{tabular}{@{}l l l@{}}
+    \toprule
+    영역 & RGB 색 & 질감 \\
+    \midrule
+    $r_1$ & \dots & \dots \\
+    $r_2$ & \dots & \dots \\
+    \bottomrule
+    \end{tabular}};
+  \draw[arrow] (r1.east) -- ++(0.5,0) |- ($(tbl.west)+(0,0.55)$);
+  \draw[arrow] (r2.east) -- ++(0.5,0) |- ($(tbl.west)+(0,-0.55)$);
+\end{tikzpicture}
+\caption{이미지를 영역으로 나누고 영역마다 특징(RGB 색, 질감)을 뽑으면
+영역이 행, 특징이 열인 데이터 행렬이 된다.}
+\label{fig:attr-image-matrix}
+\end{figure}
+
+\paragraph{텍스트.} 단어 하나마다 그 단어와 함께 나타나는(동시출현,
+Co-occurrence) 다른 단어들의 통계를 모아 벡터로 만든다. 슬라이드의
+``King'' 벡터는 값이 50개다(앞 5개만 보이면 $0.50451$, $0.68607$,
+$-0.59517$, $-0.022801$, $0.60046$, 뒤에 45개 더, 모두 50개). 슬라이드는 이
+벡터 연산으로 king $-$ man $+$ woman $\approx$ queen이 성립한다고
+보이지만, 슬라이드에는 king 벡터 하나만 실려 있어 이 책에서 다시
+계산할 수는 없다. 이 기법에 붙는 모형 이름은 슬라이드에 나오지
+않으므로 책이 임의로 붙이지 않는다.
+
+\paragraph{네트워크.} 노드(Node) 여러 개와 그 사이를 잇는 간선(Edge)
+으로 이뤄진 네트워크는 노드를 행과 열로 삼은 \term{인접 행렬}
+(Adjacency Matrix)로 바꾼다. 두 노드 사이에 간선이 있으면 그 칸이 1,
+없으면 0이다. \Cref{fig:attr-network}가 노드 5개짜리 네트워크를
+인접 행렬로 바꾼 예다.
+
+\begin{figure}[ht]\centering
+\begin{tikzpicture}[
+  netdot/.style = {draw=bookaccent, fill=bookaccentbg, circle,
+                    minimum size=7mm, font=\small},
+  eline/.style  = {draw=bookmuted, thick},
+  arrow/.style  = {-{Stealth[length=2.5mm]}, draw=bookaccent, thick}]
+
+  \node[netdot] (A) at (0, 1.3) {A};
+  \node[netdot] (B) at (1.6, 1.3) {B};
+  \node[netdot] (C) at (0, 0) {C};
+  \node[netdot] (D) at (1.6, 0) {D};
+  \node[netdot] (E) at (3.0, 0.65) {E};
+
+  \draw[eline] (A) -- (B);
+  \draw[eline] (A) -- (C);
+  \draw[eline] (A) -- (D);
+  \draw[eline] (B) -- (D);
+  \draw[eline] (B) -- (E);
+  \draw[eline] (C) -- (D);
+  \draw[eline] (D) -- (E);
+  \draw[eline] (D) to[out=300, in=330, looseness=8] (D);
+
+  \draw[arrow] (4.0, 0.65) -- (5.0, 0.65);
+
+  \node[font=\scriptsize] at (8.6, 0.65) {%
+    $\begin{matrix}
+       & A & B & C & D & E \\
+      A & 0 & 1 & 1 & 1 & 0 \\
+      B & 1 & 0 & 0 & 1 & 1 \\
+      C & 1 & 0 & 0 & 1 & 0 \\
+      D & 1 & 1 & 1 & 1 & 1 \\
+      E & 0 & 1 & 0 & 1 & 0
+     \end{matrix}$};
+\end{tikzpicture}
+\caption{노드 5개짜리 네트워크(왼쪽)를 인접 행렬(오른쪽)로 바꾼다.
+D의 자기 고리(Self-loop)가 대각 성분 $A_{DD}=1$이 된다.}
+\label{fig:attr-network}
+\end{figure}
+
+\begin{align*}
+  &3+3+2+5+2 = 15 && \text{행 합(A, B, C, D, E 순)} \\
+  &2 \times 7 + 1 = 15 && \text{간선 7개는 두 번, 자기 고리는 한 번
+    센 값과 일치}
+\end{align*}
+
+인접 행렬은 대칭이다($\mathbf{A} = \mathbf{A}^T$). 간선에 방향이
+없으므로 $i$행 $j$열 값과 $j$행 $i$열 값이 같기 때문이다.
+
+% =====================================================================
+\section{어떻게 적용하는가}
+\label{sec:attr-apply}
+
+HW1 의 패스트푸드 영양정보 데이터(\Cref{ch:hw1}, \Cref{ex:hw1-types})를
+이 장의 틀로 세 번 센다.
+
+\begin{align*}
+  &126 \times 8 && \text{저장된 표 크기(행 126, 열 8)} \\
+  &8 - 1 = 7 && \text{\texttt{item} 열을 빼면 속성 7개} \\
+  &\mathbf{D} \in \mathbb{R}^{126 \times 5} && \text{수치 데이터
+    행렬(비율 척도 5개 열)}
+\end{align*}
+
+\begin{pitfall}[\texttt{item} 열은 식별자가 아니다]
+\texttt{item} 열은 식별자처럼 보이지만 126행에 고유값이 107개뿐이다.
+같은 메뉴 이름이 여러 식당에 있기 때문이다(예: ``Cheeseburger''는
+McDonald's와 Burger King 모두에 있다). 행을 하나로 가리키는 것은
+행 번호이지 \texttt{item} 값이 아니다. 그래도 수치 데이터 행렬은
+그대로 $\mathbf{D} \in \mathbb{R}^{126 \times 5}$다. \texttt{item}은
+애초에 수치 열이 아니었기 때문이다.
+\end{pitfall}
+
+\paragraph{거리 하나로 보는 단위의 문제.} 2차원 예
+(\Cref{fig:attr-2d-scatter})의 나이$\cdot$급여로 \term{유클리드
+거리}(Euclidean Distance)를 재보면, 단위가 큰 급여가 거리를
+압도한다.
+
+\begin{align*}
+  &\sqrt{1^2 + 0^2} = 1.0000 && \text{Jane–Dave 원래 척도 거리(나이
+    1살, 급여 \$0 차이)} \\
+  &\sqrt{4^2 + 5000^2} = 5000.0016 && \text{Jane–John 원래 척도 거리
+    (나이 4살, 급여 \$5000 차이)}
+\end{align*}
+
+나이 차이 4는 급여 차이 \$5000 앞에서 거리에 거의 반영되지 않는다.
+두 축을 각 축의 범위(나이 범위 21, 급여 범위 15000)로 나누는
+\term{정규화}(Normalization)를 한 뒤 다시 재면, 어느 쪽이 더
+가까운지(Jane–Dave가 Jane–John보다 가깝다)는 그대로다. 바뀌는 것은
+나이가 거리에 차지하는 몫이다.
+
+\begin{align*}
+  &4 / 21 = 0.1905 && \text{Jane–John 정규화 나이 몫} \\
+  &5000 / 15000 = 0.3333 && \text{Jane–John 정규화 급여 몫} \\
+  &\sqrt{0.1905^2 + 0.3333^2} = 0.3839 && \text{Jane–John 정규화 거리} \\
+  &1 / 21 = 0.0476 && \text{Jane–Dave 정규화 거리}
+\end{align*}
+
+정규화 전에는 급여 몫이 거리를 거의 전부 차지해(원래 척도 거리
+5000.0016 중 급여가 5000) 나이는 있으나 마나였다. 정규화 뒤에는
+나이 몫 0.1905와 급여 몫 0.3333이 같은 척도(0에서 1)에서 거리에 들어간다.
+Jane–Dave가 Jane–John보다 가깝다는 순서는 정규화 전후로 바뀌지
+않는다(0.0476 < 0.3839, 1.0000 < 5000.0016). 정규화를 언제,
+어떻게 하는지는 \Cref{sec:normalization}에서 다룬다.
+
+% =====================================================================
+\section{앞으로}
+\label{sec:attr-future}
+
+\begin{itemize}
+  \item \textbf{고차원(High Dimension)과 차원의 저주(Curse of
+        Dimensionality).} 속성 수 $d$가 커지면 점들 사이의 거리가
+        비슷해지고 계산량도 늘어난다. 이 문제와 그 처방인 차원 축소
+        (Dimensionality Reduction)는 이 덱에 없다. 강의계획서(덱 1)
+        슬라이드 4의 주제 목록에만 이름이 올라 있다.
+  \item \textbf{이산화(Discretization).} 연속형 속성을 이산형 속성으로 바꾸는 다리는
+        \Cref{sec:discretization}에서 다룬다. \Cref{tab:attr-discrete-2x2}
+        의 열을 오른쪽에서 왼쪽으로 옮기는 것과 같다.
+  \item \Cref{ch:hypothesis}의 가설검정은 변수가 어떤 척도인지 이
+        장에서 정한 판단을 그대로 전제로 삼는다.
+\end{itemize}

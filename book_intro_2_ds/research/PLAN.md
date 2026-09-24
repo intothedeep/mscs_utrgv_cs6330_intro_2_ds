@@ -132,86 +132,53 @@ A-tasks: In = architecture.md + `notes_text/<deck>/`; Out = architecture.md (app
 > (`reviews/lec07.md` PASS cycle 2; minor items fixed by main session). <!-- ARCHIVE: history-only -->
 > Detail: [_archive/lec07.md](./_archive/lec07.md)
 
-### 3.2a Q14 forward links → lec07 (lec09, lec11, hw02)
+### 3.2a Q14 forward links → lec07 (lec09, lec11, hw02): DONE (2026-09-24)
 
-Spec: architecture.md §8.8 "새 장으로 들어오는 링크" + §8.z Q14 (owner YES).
+> [x] T27 (main session: one new `\Cref{sec:qq}` line each in lec09, lec11, hw02). <!-- ARCHIVE: history-only -->
+> Detail: [_archive/fills-04-01-02-03.md](./_archive/fills-04-01-02-03.md)
 
-- [x] **T27** main session (same method as T25). Add ONE new source line per file,
-  existing sentences untouched: (a) `chapters/lec09-hypothesis-testing.tex` in
-  `sec:ht-future` → `\Cref{sec:qq}`; (b) `chapters/lec11-comparing-distributions.tex`
-  in `sec:cd-future` → `\Cref{sec:qq}`, `\Cref{fig:qq-calories}`; (c)
-  `chapters/hw02-data-distributions.tex` after the QQ definition in
-  `sec:hw2-compare-how` → `\Cref{sec:qq}` (one clause: axis orientation differs).
-  Dep: T07 PASS.
-  AC: `git diff --numstat` = `1 0` for each of the three files; added lines pass
-  AC-W3/W4; AC-W1/W2 clean build (0 undefined/multiply defined).
+### Architect addenda: separate files (2026-09-24)
 
-### 3.3 Deck 6 → fill `chapters/04-distributions.tex`
+A06, A03 and A04 were written as separate files instead of appending to
+architecture.md (the §3 header's "Out = architecture.md (append only)"), because
+three architects ran in parallel. Each carries its own decision record:
+[arch-deck6.md](./arch-deck6.md) (deck 6), [arch-deck3.md](./arch-deck3.md) (deck 3),
+[arch-deck4.md](./arch-deck4.md) (deck 4).
 
-Spec: architecture.md §4.3.
+### 3.3 Deck 6 → fill `chapters/04-distributions.tex`: DONE (2026-09-24)
 
-- [ ] **A06** system-architect (small; §4.3 already has the recompute values).
-  §4.3 addendum: slide map (1–30); whether any new figure beyond existing
-  `06_0N_*.png` is needed (list or "none"). Dep: T07 PASS, T27.
-- [ ] **T08** developer. Extend `deck6_distributions.py` only for A06-listed figures
-  (if "none": print the TODO values 96.0% and Shapiro 0.00038 and report). Dep: A06.
-  AC: as T02.
-- [ ] **T08r** reviewer. Verify T08. Dep: T08.
-- [ ] **T09** sonnet-writer. Fill 04 per §4.3 items 1–9; keep existing labels and
-  section order; new `sec:powerlaw` after `sec:exponential`; new `subsec:geometric`
-  inside `sec:exponential`; `sec:cdf` does not redefine CDF (points to 02, see A02).
-  Out: `chapters/04-distributions.tex`. Dep: T08r.
-  AC: AC-W1..W12 (W12 allows deleting `\todo`/TODO lines only). Numbers: 0.4512,
-  6분, 0.5654, 0.0801, 0.0800, 0.05, 0.0475, 0.045125, 0.04877, 0.04639, 0.04413,
-  1/15, 95.45%, 1.96, 0.24, 0.3125. Pitfalls: 0.0801 → 0.5654; "$0<\lambda\le 1$" →
-  "$\lambda > 0$"; ±2 SD = 95.45% not 95%. Geometric vs exact shown as a two-column
-  table (approximation, not an error). `fig:normal-fit` referenced, not re-labelled.
-- [ ] **T10** reviewer. Out: `reviews/04-fill.md`. Dep: T09.
+> [x] A06 (`arch-deck6.md`), [x] T08, [x] T08r (`reviews/T08.md`), [x] T09, [x] T10
+> (`reviews/04-fill.md` PASS cycle 2; commit ea5da8d). <!-- ARCHIVE: history-only -->
+> Detail: [_archive/fills-04-01-02-03.md](./_archive/fills-04-01-02-03.md)
 
-### 3.4 Deck 3 → fill `chapters/01-data-attributes.tex`
+### 3.4 Deck 3 → fill `chapters/01-data-attributes.tex`: DONE (2026-09-24)
 
-Spec: architecture.md §4.1.
+> [x] A03 (`arch-deck3.md`), [x] T11, [x] T11r (`reviews/T11.md`), [x] T12, [x] T13
+> (`reviews/01-fill.md`; cycle-2 leftovers fixed by main session; commit ac3102d). <!-- ARCHIVE: history-only -->
+> Detail: [_archive/fills-04-01-02-03.md](./_archive/fills-04-01-02-03.md)
 
-- [ ] **A03** system-architect (small). §4.1 addendum: slide map (1–20); confirm the 3D
-  scatter is schematic (TikZ) or list a data figure. Dep: T10 PASS.
-- [ ] **T11** developer (only if A03 lists a data figure; else mark `[x]` "n/a").
-  In: A03 figure list. Out: `hw1/00_lecture_charts/deck3_data_matrix.py` + PNGs.
-  Dep: A03. AC: as T02.
-- [ ] **T12** sonnet-writer. Fill 01 per §4.1 items 1–8. Out: `chapters/01-data-attributes.tex`.
-  Dep: A03 (and T11 reviewed, if it ran).
-  AC: AC-W1..W12. Labels `sec:attr-background`, `sec:attr-discrete`, `sec:data-matrix`,
-  `sec:dimension`, `sec:vector`, `sec:everything-matrix`, `sec:attr-apply`,
-  `sec:attr-future`; 2×2 table (scale × discrete/continuous); slide-4 answers
-  명목, 구간, 순서, 비율, 명목; pitfall on slide 8 vs 11 identifier-column count.
-- [ ] **T13** reviewer. Out: `reviews/01-fill.md`. Dep: T12.
+### 3.5 Deck 4 → fill `chapters/02-descriptive-statistics.tex`: DONE (2026-09-24)
 
-### 3.5 Deck 4 → fill `chapters/02-descriptive-statistics.tex`
+> [x] A04 (`arch-deck4.md`), [x] T14, [x] T14r (`reviews/T14.md`), [x] T15, [x] T16
+> (`reviews/02-fill.md`; cycle-2 leftover fixed by main session; commit a20b2b0). <!-- ARCHIVE: history-only -->
+> Detail: [_archive/fills-04-01-02-03.md](./_archive/fills-04-01-02-03.md)
 
-Spec: architecture.md U5 (one line only). Blocked on A04.
+### 3.6 Deck 5 → skeleton retrofit `chapters/03-visualization.tex`: DONE (2026-09-24)
 
-- [ ] **A04** system-architect. Full outline for deck 4 slides 4–11, 19, 20
-  (random variable, PMF, PDF, CDF definition, dice example, $P(X>3)=0.6$, mode
-  resistance, range): section labels (CDF definition label, not `sec:cdf`), slide
-  map 1–23, recompute table, figure list, placement relative to existing sections
-  and outside 2.3.2. Dep: T13 PASS.
-- [ ] **T14** developer. Figures from A04 (e.g. dice PMF/CDF) in
-  `deck4_basic_stats.py`. Dep: A04. AC: as T02.
-- [ ] **T14r** reviewer. Verify T14. Dep: T14.
-- [ ] **T15** sonnet-writer. Fill 02 per A04. Out: `chapters/02-descriptive-statistics.tex`.
-  Dep: T14r. AC: AC-W1..W12; AC-W11 (no hunk inside 2.3.2); every A04 number present;
-  04 `sec:cdf` now resolves to this chapter's CDF definition via `\Cref`.
-- [ ] **T16** reviewer. Out: `reviews/02-fill.md`. Dep: T15.
+> [x] A05 skipped (architecture.md §1 coverage judged sufficient), [x] T17, [x] T18
+> (`reviews/03-skeleton.md`; cycle-2 fix, then main session corrected a burger/milkshake
+> description; commit 74d241c). <!-- ARCHIVE: history-only -->
+> Detail: [_archive/fills-04-01-02-03.md](./_archive/fills-04-01-02-03.md)
 
-### 3.6 Deck 5 → skeleton retrofit `chapters/03-visualization.tex`
+### Out of plan, closed (2026-09-24)
 
-- [ ] **A05** system-architect (optional; skip if the main session judges the
-  §1 coverage row enough). Slide map 2–27 → existing labels. Dep: T16 PASS.
-- [ ] **T17** sonnet-writer. Add the four skeleton parts only: chapter In brief,
-  배경 (deck 5 source, prerequisites + `\Cref`), 어떻게 적용, 앞으로 (links
-  `ch:hypothesis` for the 5% rule). In: `notes_text/5_*/`, architecture.md §1.
-  Out: `chapters/03-visualization.tex`. Dep: T16 (and A05 if run). AC: AC-W1..W5, W8, W10, W12 (zero deleted lines); no existing section
-  body line changed.
-- [ ] **T18** reviewer. Out: `reviews/03-skeleton.md`. Dep: T17.
+- [x] Slide media filenames leaking into reader text removed from lec07, lec09,
+  lec10, lec11 (commit ccdb0da).
+
+### Schedule state (2026-09-24)
+
+No scheduled task remains: every §3 block is DONE. Only §7 backlog items are
+open (X01–X04), and each needs an owner decision before it is scheduled.
 
 ## 4. Common acceptance criteria (AC-W)
 

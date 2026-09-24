@@ -16,3 +16,10 @@
 2026-09-23 hw2: H03 closed out of plan, P2 age = 2026 − birth year (19yy), 1 ≤ age ≤ 100, 453,905 kept (was 458,015); code, figures, hw2/report, book HW2 chapter updated; hw2/report_submit/ untouched (4551718)
 2026-09-24 lec07: DONE, A07 (architecture.md §8 + §8.z Q12–Q16), T05/T05r (reviews/T05.md, cycle-2 fixes; scikit-learn in uv env for load_iris only, Q13), T06/T07 (reviews/lec07.md PASS cycle 2, minor items fixed by main session) (_archive/lec07.md)
 2026-09-24 plan: §3.2 archived → _archive/lec07.md; Q14 YES → new open T27 (§3.2a, main session, one line each in lec09/lec11/hw02); A06 dep += T27; next open T27 then A06
+2026-09-24 04: DONE, A06 (arch-deck6.md + decision record), T08/T08r (reviews/T08.md), T09/T10 (reviews/04-fill.md PASS cycle 2) (ea5da8d)
+2026-09-24 01: DONE, A03 (arch-deck3.md + decision record), T11/T11r (reviews/T11.md), T12/T13 (reviews/01-fill.md, cycle-2 leftovers fixed by main session) (ac3102d)
+2026-09-24 02: DONE, A04 (arch-deck4.md + decision record), T14/T14r (reviews/T14.md), T15/T16 (reviews/02-fill.md, cycle-2 leftover fixed by main session) (a20b2b0)
+2026-09-24 03: DONE, A05 skipped (architecture.md §1 coverage sufficient), T17/T18 (reviews/03-skeleton.md, cycle-2 fix + main-session burger/milkshake correction) (74d241c)
+2026-09-24 lec07/09/10/11: out of plan, slide media filenames removed from reader text (ccdb0da)
+2026-09-24 plan: A03/A04/A06 written as separate arch-deck{3,4,6}.md, not appended to architecture.md, because three architects ran in parallel (PLAN §3 note)
+2026-09-24 plan: §3.2a–§3.6 archived → _archive/fills-04-01-02-03.md; no scheduled task remains; open = backlog X01–X04 only, all need owner go-ahead

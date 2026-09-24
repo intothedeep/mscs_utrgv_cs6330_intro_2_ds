@@ -136,7 +136,7 @@ A-tasks: In = architecture.md + `notes_text/<deck>/`; Out = architecture.md (app
 
 Spec: architecture.md §8.8 "새 장으로 들어오는 링크" + §8.z Q14 (owner YES).
 
-- [ ] **T27** main session (same method as T25). Add ONE new source line per file,
+- [x] **T27** main session (same method as T25). Add ONE new source line per file,
   existing sentences untouched: (a) `chapters/lec09-hypothesis-testing.tex` in
   `sec:ht-future` → `\Cref{sec:qq}`; (b) `chapters/lec11-comparing-distributions.tex`
   in `sec:cd-future` → `\Cref{sec:qq}`, `\Cref{fig:qq-calories}`; (c)

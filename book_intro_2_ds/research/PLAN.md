@@ -34,6 +34,16 @@ Owner decisions, 2026-09-23 (recorded verbatim):
 - **Future decks:** the same pipeline repeats via `tools/extract_slides.py` →
   architect outline → this plan (§6).
 
+Owner decisions on decks 10 and 11, 2026-09-23 (recorded verbatim; design input
+architecture.md §7):
+
+- **Q7:** KS definition stays where it is in each place (HW2 chapter and appendix keep their own explanations; lec11 also defines KS). Duplication accepted by owner. So architecture.md §7's "KS defined only in lec11 / appendix KS part loses effect" is overridden: no task edits the appendix or HW2 KS text.
+- **Q8:** YES, add one forward \Cref line each in the reviewed chapters lec09, 03, hw02 pointing to the new chapters; bodies untouched (additions only, one line each).
+- **Q9:** NO, do not convert HW2's D to p-values.
+- **Q10:** already decided by Q4: show slide value and recomputed value (pitfall "슬라이드 값은 X, 다시 계산하면 Y").
+- **Q11:** two-sample t-test: text follows the slide's formula; a pitfall box shows the Welch degrees-of-freedom result (scipy equal_var=False) side by side (0.020 vs 0.024 per architecture; confirm in the figure script).
+- **Order:** decks 10 and 11 run BEFORE the remaining deck 7 and 04/01/02/03 fill tasks (follow the lecture schedule). Do not delete or renumber existing tasks; insert the new blocks so the execution order is clear.
+
 Planning consequences (pm, 2026-09-23):
 
 - Owner order overrides architecture.md U3←U2 (lec07 after 04). Cost: when lec07
@@ -47,72 +57,167 @@ Planning consequences (pm, 2026-09-23):
 - Architect addenda (A-tasks) precede writers wherever architecture.md lacks a
   §3.3-style slide map, a figure list, or verified numbers.
 - The `sec:<prefix>` per chapter: lec09 `ht`, lec07 `qq`, 04 `dist`, 01 `attr`,
-  02 `desc`, 03 `vis`.
+  02 `desc`, 03 `vis`, lec10 `pv`, lec11 `cd`.
+- T00 closed differently: the naming rule of Q1 lives in the repo-root `CLAUDE.md`
+  (owner directive, commit 916ed59), not in book.md. Q1 itself stands.
+- Q7 voids architecture.md §7.2 decision 5 and the §7.6 "U2 (범위 변경)" row: T09's AC is
+  unchanged; no task edits 04 `sec:cdf`/`sec:normal` KS text or hw02 KS text. lec11 still
+  owns `def:ks-statistic` (one definition inside lec11; other chapters keep theirs).
+- The Order decision supersedes the Scope line's "then deck 7" (Scope kept verbatim above).
+  Execution order: §3.1a → §3.1b → §3.1c → §3.2 → … → §3.6.
+- Q8 links are NEW source lines, not parentheticals appended to existing sentences
+  (architecture §7.5 Q8 "괄호 안 링크만 덧붙인다" would show a deletion in numstat).
 
 ## 2. Done
 
 - [x] **2.3.2 "부호와 방향"** figures/table/example written and reviewed
   (`reviews/02-skew-sign.md`). A fix pass is in progress outside this plan.
   **No task in this plan edits that subsection** (guarded by AC-W11).
+- [x] **H02** HW2 chapter `chapters/hw02-data-distributions.tex` (+ one `\input` in
+  `parts/part2-practice.tex`) written; `reviews/hw02.md` PASS in cycle 2; committed.
+  Not in the original plan; added closed. Non-blocking leftovers → backlog X04.
 
 ## 3. Chapter requirements and task list
 
-Run strictly in ID order, one task at a time. Every writer/developer task is
+Run strictly in block order 3.0 → 3.1 → 3.1a → 3.1b → 3.1c → 3.2 → 3.3 → 3.4 →
+3.5 → 3.6, IDs in order inside a block, one task at a time (T19–T26 run before A07:
+owner Order, 2026-09-23). Every writer/developer task is
 followed by its reviewer task before the next chapter opens. "AC-W" = §4, applied
 to the task's output file. Paths relative to `book_intro_2_ds/` unless they start
 with `hw1/`. Every agent prompt restates: no model training, no notebook
 execution, no `rm`, no `git commit`. Reviewer tasks (`T..r`, T04, T07, T10, T13,
-T16, T18): In = the reviewed task's Out + its AC list; Out = `reviews/<id>.md`.
+T16, T18, T21, T24, T26): In = the reviewed task's Out + its AC list; Out = `reviews/<id>.md`.
 A-tasks: In = architecture.md + `notes_text/<deck>/`; Out = architecture.md (append only).
 
-### 3.0 Setup
+### 3.0 Setup: DONE (2026-09-23)
 
-- [ ] **T00** main session/owner. Add a one-line exception to book.md §3:
-  "lecture chapters use `lecNN-slug.tex`; reading order is `parts/*.tex`, not
-  file sort". In: `.claude/rules/writing/book.md`. Out: same file (`.claude` is a
-  submodule, commit separately). Dep: none. Gate: must land before T03 is
-  COMMITTED (not before T03 is dispatched; the T03 prompt cites Q1).
-  AC: one added line in §3, zero deleted lines; principle 12 unchanged.
-- [ ] **T01** sonnet-writer. Add the hypothesis-testing row to `tab:analogy`
-  (architecture.md §5, exact wording). In: `chapters/00-preface.tex`. Out: same.
-  Dep: none. AC: AC-W1, W3, W4, W12; table gains exactly one row; no other line changes.
-- [ ] **T01r** reviewer. Verify T01. Dep: T01.
+> [x] T00 (done differently: rule in repo-root `CLAUDE.md`, not book.md), [x] T01
+> (`tab:analogy` row), [x] T01r. <!-- ARCHIVE: history-only -->
+> Detail: [_archive/lec09-pilot.md](./_archive/lec09-pilot.md)
 
-### 3.1 Deck 9 pilot → `chapters/lec09-hypothesis-testing.tex` (`ch:hypothesis`)
+### 3.1 Deck 9 pilot → `lec09-hypothesis-testing.tex`: DONE (2026-09-23)
 
-Spec: architecture.md §3 (fully specified; no addendum needed).
+> [x] T02 (R6 = `binom.sf(55,400,0.1)` = 0.006637), [x] T02r, [x] T03, [x] T04
+> (`reviews/lec09.md` PASS cycle 2; committed). <!-- ARCHIVE: history-only -->
+> Detail: [_archive/lec09-pilot.md](./_archive/lec09-pilot.md)
 
-- [ ] **T02** developer. `hw1/00_lecture_charts/deck9_hypothesis.py` → `figures/09_01_drug_experiments.png`,
-  `09_02_pooled_vs_group.png`, `09_03_puppy_null.png` (+ optional `09_04_alien_null.png`);
-  register in `main.py`. In: architecture.md §3.4–3.6, `notes_text/9_*/slides.md`.
-  Dep: none, but the `main.py` edit is append-only (one import + one build call);
-  the uncommitted 2.3.2 fix pass also touches `main.py`, so do not reformat it.
-  AC: script runs in seconds, exits 0, writes the PNGs; values live once in the
-  script with slide-source comments; 09_02 panels show 220.83 / 219.33; 09_03
-  overlays exact `1000*C(15,k)/2^15`; prints `scipy.stats.binom.sf(55, 400, 0.1)`
-  and the value is reported back (feeds R6). No training, no notebook run.
-- [ ] **T02r** reviewer. Run T02 script once; confirm files + printed R6 value. Dep: T02.
-- [ ] **T03** sonnet-writer. Write the chapter + one `\input` line in
-  `parts/part1-foundations.tex` after `04-distributions`. In: architecture.md §3,
-  R6 value from T02, `notes_text/9_*/`. Out: `chapters/lec09-hypothesis-testing.tex`,
-  `parts/part1-foundations.tex`. Dep: T01r, T02r (T00 gates commit only).
-  AC: AC-W1..W10. Plus:
-  - sections/labels exactly as §3.2: `sec:ht-background`, `sec:ht-why`,
-    `sec:ht-hypotheses`, `sec:ht-decision`, `sec:ht-forms`, `sec:ht-pvalue`,
-    `sec:ht-simulation`, `sec:ht-exact`, `sec:ht-two-groups`, `sec:ht-apply`,
-    `sec:ht-future`; examples `ex:ht-puppy`, `ex:ht-juan`, `ex:ht-distance`;
-    tables `tab:ht-symbols`, `tab:ht-puppy`, `tab:ht-alien`, `tab:ht-wording`,
-    `tab:ht-cases`; figures `fig:ht-flow`, `fig:ht-tails` (TikZ), `fig:ht-drug-experiments`,
-    `fig:ht-pooled-vs-group`, `fig:ht-puppy-sim` (PNG).
-  - numbers (AC-W6): 1000, 0.003, 121/32768, 0.0037, 0.064, 0.01024, 0.004096,
-    6연승, 27.83, 220.83, 219.33, 1.50, 7/1000, $X \ge 56$, 2.58, 2.25; "%50" absent.
-  - pitfalls (AC-W7): R4 (table is expected values, not a simulation), R7 (14%
-    bin boundary can flip the verdict), R8 (direction chosen after data); plus the
-    `p` two-meanings pitfall, 1% vs 5% pitfall, "기각 실패 ≠ 증명" pitfall.
-  - background self-summarizes binomial (04 `sec:binomial` is a stub).
+### 3.1a Deck 10 → `chapters/lec10-p-value.tex` (`ch:pvalue`)
+
+Spec: architecture.md §7.3 (fully specified; no A-task). Opens now (T04 PASS).
+
+- [ ] **T19** developer. `hw1/00_lecture_charts/deck10_pvalue.py` → `figures/10_01_coin_pvalue.png`,
+  `10_02_height_pvalue.png`, `10_03_vitd_null.png`, `10_04_ci_vs_test.png`,
+  `10_05_false_positive.png` (all five required; 10_05 promoted from "선택": cheap RNG,
+  makes slide 6 visible). Register in `main.py` append-only (one import + one build
+  call, no reformat). In: architecture.md §7.3.4, §7.3.6, `notes_text/10_*/slides.md`. Dep: none.
+  AC: as T02 (seconds, exit 0, five PNGs exist, values once in the script with slide
+  comments, fixed numpy seed, no training, no notebook). Figure content per §7.3.6
+  (10_01 three colours + "12/32 = 0.375"; 10_03 line at 63; 10_04 intervals
+  [55.4, 68.6], [53.5, 70.5], [−2.44, 10.44]). Prints and reports back: R3a
+  `fisher_exact([[73,125],[59,131]])` p (slide 0.24); R4 Yates p of [[71,127],[72,126]]
+  (1.0) and [[73,125],[71,127]] (≈0.917); R5 [[60,138],[84,114]] (≈0.012 / 0.016);
+  R6 [[5005,9868],[4800,9000]] (≈0.044); R12 0.483 and band 0.035; R16 z = −11.21 and
+  its two-sided p; R18 SE_diff 2.462 and 6.44/2.462; 10_05 share of p < 0.05.
+- [ ] **T19r** reviewer. Run T19 once; confirm the five PNGs and every printed value vs
+  §7.3.4 (a mismatch is reported, not smoothed). Out: `reviews/T19.md`. Dep: T19.
+- [ ] **T20** sonnet-writer. Write the chapter + one `\input` line after
+  `lec09-hypothesis-testing` in part1. In: architecture.md §7.3, T19r values,
+  `notes_text/10_*/`. Out: `chapters/lec10-p-value.tex`, `parts/part1-foundations.tex`.
+  Dep: T19r PASS. AC: AC-W1..W10 (W8's In brief = `inbrief` env, as lec09). Plus:
+  - labels, each exactly once: `ch:pvalue`; `sec:pv-background`, `sec:pv-why`,
+    `sec:pv-threshold`, `sec:pv-effect-size`, `sec:pv-discrete`, `sec:pv-continuous`,
+    `sec:pv-sim-vs-param`, `sec:pv-ci-duality`, `sec:pv-apply`, `sec:pv-future`;
+    `ex:pv-drug`, `ex:pv-coin5`, `ex:pv-height`, `ex:pv-vitd`, `ex:pv-pears`;
+    `tab:pv-symbols`, `tab:pv-drug-trials`, `tab:pv-error-types`, `tab:pv-ci-vs-p`;
+    `fig:pv-coin`, `fig:pv-height`, `fig:pv-vitd`, `fig:pv-ci-test`,
+    `fig:pv-false-positive` (PNG), `fig:pv-three-parts` (TikZ).
+  - p값 not redefined: `grep -c 'begin{definition}\[p값\]'` in lec10 = 0; `\Cref{def:pvalue}` ≥ 1.
+  - numbers (AC-W6): 36.9%, 31%, 31.1%, 99.7%, 0.14%, 약 0.24 (T19r Fisher value),
+    0.917 (pair named), 30.3%, 42.4%, 0.044, 1.1%포인트, 0.5, 12/32, 0.375, 0.1875,
+    6.89, 0.05, 0.035, 0.483, 55.4, 68.6, 1.96, −11.21, 1/10,000, 53.5, 70.5,
+    1.860, 1.612, 2.462, 6.44, −2.44, 10.44, 0.25 (확인 문제 $2/8$).
+  - pitfalls (AC-W7, Q4/Q10 form; non-numeric rows as "슬라이드는 X, 바르게는 Y"):
+    R2 (29% → 31.1%), R3 (0.001% → 0.14%), R10 (reversed $H_0$), R11 (p = 0.05 called
+    유의 → boundary, 기각 실패), R14 (question $<$ vs $H_a \neq$, `\Cref{pit:ht-direction}`),
+    R15 (62 vs 63; text uses 63), R16 (11.2 → −11.21), R19 (interval reading, "Apples",
+    "the same"). Plus: "0.24 ≠ 24% 확률로 차이 없음"; effect size (34% vs 35%, p ≈ 0.044);
+    세 부분 = 양측 (0.375 vs 0.1875); threshold arbitrary = one line + `\Cref{pit:ht-alpha}`, no new box.
+  - σ = 6.89 stated as the book's derived value (text and `fig:pv-height` caption).
+  - `grep -c 'ch:compare-dist'` in lec10 = 0 (label absent until T23); slides 22–25
+    only as `% source:` + prose in `sec:pv-future`; slide 2 = one line + `\Cref{def:ht-null,def:ht-alt}`.
   - part1 diff = one added line.
-- [ ] **T04** reviewer. Authoritative build + AC check of T03. Out:
-  `reviews/lec09.md`. Dep: T03.
+- [ ] **T21** reviewer. Out: `reviews/lec10.md`. Dep: T20.
+
+### 3.1b Deck 11 → `chapters/lec11-comparing-distributions.tex` (`ch:compare-dist`)
+
+Spec: architecture.md §7.4, with Q7/Q9/Q11 (§1) overriding it. Opens after T21 PASS
+(lec11 `\Cref`s `sec:pv-*`).
+
+- [ ] **T22** developer. `hw1/00_lecture_charts/deck11_compare.py` → `figures/11_01_t_vs_normal.png`,
+  `11_02_anova_cartoon.png`, `11_03_ks_one_sample.png`, `11_04_ks_two_sample.png`;
+  register in `main.py` append-only. In: architecture.md §7.4.4, §7.4.6,
+  `notes_text/11_*/` (slides.md, `media/image39.png`, `image40.png`, slide 21 table).
+  Dep: T21 PASS. AC: as T02. Plus:
+  - the 100 slide-17 values transcribed once from `image40` with a source comment;
+    the sorted list is checked against `image39`, mismatch count reported (must be 0;
+    if `image39` shows fewer than 100 rows, report which rows were checkable). $X$ (10)
+    and $Y$ (8) of slide 21 transcribed once.
+  - prints and reports back: R3 `t.cdf(-2.5, 24)` (≈0.0098); R4 `2*t.sf(2.75, 5)`
+    (≈0.040); R5 t = −2.440; R6 `2*t.sf(2.44, 21)` (≈0.024) and
+    `ttest_ind_from_stats(1.3,0.5,22,1.6,0.3,24,equal_var=False)` p (≈0.020) with Welch
+    df (≈33.8); R11 `f.sf(12, 2, 6)` (0.008), `f.ppf(0.90, 2, 6)` (3.46); R15
+    `kstest(data, 'norm')` D (≈0.096) and p, the one-sided-only max (0.092) and the rows
+    (27th, 88th); R16 `ks_2samp(X, Y, method='exact')` D (0.6) and p (hand count 0.0499)
+    plus `method='asymp'` p (≈0.08); R17 F = 0.0274, t = 0.165, p (≈0.88).
+  - 11_03 marks both gaps 0.092 and 0.096; 11_04 draws $Y$ in 1/8 steps and $D$ at 4.8.
+- [ ] **T22r** reviewer. Run T22 once; confirm files, the transcription check and every
+  printed value; state the exact two-sample p and whether it is < 0.05 (this fixes E7's
+  verdict). Out: `reviews/T22.md`. Dep: T22.
+- [ ] **T23** sonnet-writer. Write the chapter + one `\input` line after `lec10-p-value`
+  in part1 + ONE added line in lec10 `sec:pv-future` carrying `\Cref{ch:compare-dist}`.
+  In: architecture.md §7.4, T22r values, `notes_text/11_*/`. Out:
+  `chapters/lec11-comparing-distributions.tex`, `parts/part1-foundations.tex`,
+  `chapters/lec10-p-value.tex`. Dep: T22r PASS. AC: AC-W1..W10 on lec11 (`inbrief` env). Plus:
+  - labels, each exactly once: `ch:compare-dist`; `sec:cd-background`, `sec:cd-why`,
+    `sec:cd-choose`, `sec:cd-t-one`, `sec:cd-t-table`, `sec:cd-t-two`, `sec:cd-anova`,
+    `sec:cd-ks`, `sec:cd-ks-two`, `sec:cd-ks-pvalue`, `sec:cd-apply`, `sec:cd-future`;
+    `def:t-statistic`, `def:f-statistic`, `def:ecdf`, `def:ks-statistic`; `ex:cd-rory`,
+    `ex:cd-t-table`, `ex:cd-tomato`, `ex:cd-cartoon`, `ex:cd-revisit`, `ex:cd-ks-normal`,
+    `ex:cd-ks-two`; `tab:cd-symbols`, `tab:cd-tomato`, `tab:cd-anova`, `tab:cd-ks-two`,
+    `tab:cd-tests`; `fig:cd-choose` (TikZ), `fig:cd-t-dist`, `fig:cd-anova`,
+    `fig:cd-ks-one`, `fig:cd-ks-two` (PNG).
+  - Q7: no diff in `04-distributions.tex` or `hw02-data-distributions.tex`.
+  - numbers (AC-W6): 0.4, −2.5, 24, 0.0098, 2.75, 2.757, 0.04, 0.011364, 0.00375,
+    0.12294, −2.44, 0.024 (df 21), 0.020 (Welch), 33.8, 36, 6, 24, 30, 8, 12, 3.46,
+    0.008, 0.125, 0.375, 0.875, 0.6, 0.475, 0.075, 0.092, 0.096, 0.356, 0.7881, 0.136,
+    0.645, 1.50, 219.33, 54.83, 0.0274, 6.046, 0.165, 0.88; KS p values = T22r's.
+  - E7 verdict written only from T22r's exact p (< 0.05 → 기각, else 기각 실패); a pitfall
+    in `sec:cd-ks-pvalue` shows asymptotic and exact p side by side.
+  - pitfalls (AC-W7, Q4/Q10 form): R1 ($\bar x/\bar\sigma$ → $(\bar x-\mu_0)/(s/\sqrt n)$),
+    R6 = Q11 (slide formula in text; pitfall: 0.024 (df 21) vs Welch 0.020, `equal_var=False`),
+    R7 (Comparing Variances vs means), R9 ("m·n−1" = 8 is total df; SSW df = 6),
+    R10 ($\alpha < 0.10$ → $\alpha = 0.10$), R12 (below → at or below), R13 ($F_y$ 0.1
+    steps → 1/8), R15 (0.092 → 0.096), R16 ($n \le 6$ one-sample table; asymptotic vs
+    exact). Plus: $F$ two meanings; KS after estimating parameters = one line +
+    `\Cref{sec:normal}` (E6 unaffected, HW2 affected); `keyidea` $F = t^2$ via E5.
+  - Q9: HW2 links `\Cref{sec:hw2-compare-how}`, `tab:hw2-airport-verdict`,
+    `tab:hw2-movie-verdict`, `sec:hw2-learned` each ≥ 1; no p-value computed for HW2's $D$.
+  - `grep -c 'ch:qq-normalization'` in lec11 = 0.
+  - lec10: `git diff --numstat` = 1 added, 0 deleted; the line holds `\Cref{ch:compare-dist}`.
+  - part1 diff = one added line.
+- [ ] **T24** reviewer. Out: `reviews/lec11.md`; AC-W2 re-run covers lec10's new line. Dep: T23.
+
+### 3.1c Q8 forward links → lec09, 03, hw02
+
+- [ ] **T25** sonnet-writer. One NEW source line (inside the paragraph, no blank line)
+  in each file: (a) `lec09-hypothesis-testing.tex` `sec:ht-future`, after the
+  "정식 검정 통계량" sentence (≈l.603) → `\Cref{sec:cd-anova}`; (b) `03-visualization.tex`
+  `subsec:ci-compare` pitfall, after "별도의 검정이 필요하다" (≈l.458) → `\Cref{sec:cd-t-two}`;
+  (c) `hw02-data-distributions.tex` `sec:hw2-compare-how`, after the KS distance
+  paragraph (≈l.188) → `\Cref{sec:cd-ks-two}`. Out: those three files. Dep: T24 PASS.
+  AC: per file `git diff --numstat` = 1 added, 0 deleted; the added line holds exactly
+  its listed `\Cref`; AC-W1..W4; no new number; the hw02 line names no p-value (Q9).
+- [ ] **T26** reviewer. Out: `reviews/q8-links.md`. Dep: T25.
 
 ### 3.2 Deck 7 → `chapters/lec07-qq-normalization.tex` (`ch:qq-normalization`)
 
@@ -123,7 +228,7 @@ Spec: architecture.md §4.2 (outline only).
   `media/image46.png` and 6000 / 5700 / 0.035 recomputed; iris discretization
   boundaries; quantile-normalization hand example), figure list (label, file
   `07_0N_*.png`, generator), iris data source, In brief drafts. Out:
-  `research/architecture.md` (append only). Dep: T04 PASS.
+  `research/architecture.md` (append only). Dep: T26 PASS (was T04; owner Order 2026-09-23).
   AC: every slide 1–26 in the map; every number the slides show has a recompute row
   with verdict; every data figure has a filename.
 - [ ] **T05** developer. `hw1/00_lecture_charts/deck7_qq_normalization.py` → the
@@ -274,3 +379,7 @@ A chapter is DONE only when all hold (a merged diff is not enough):
 - [ ] **X01** (Q6 default) em-dash cleanup of existing chapter titles/bodies,
   separate diff, never mixed with fill tasks. Needs owner go-ahead.
 - [ ] **X02** decks 1 and 2: no chapter (Q3 default). Revisit only if owner overrides.
+- [ ] **X03** lec09 non-blocking nits (`reviews/lec09.md` cycle 2 "Non-blocking": N2
+  "1.2--1.5%", doubled subject l.455-457, $np=40$ order, 기댓값 wording). Owner decides.
+- [ ] **X04** hw02 non-blocking leftovers (`reviews/hw02.md` cycle 2: I partial, N1–N3).
+  Owner decides.

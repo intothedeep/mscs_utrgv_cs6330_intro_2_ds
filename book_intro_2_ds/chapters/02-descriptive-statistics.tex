@@ -1,6 +1,21 @@
 \chapter{기술통계 --- 숫자로 데이터를 요약하기}
 \label{ch:descriptive}
 
+\begin{inbrief}
+  \item[Why] 데이터를 몇 개의 숫자로 줄이려면, 먼저 ``값이 나올 가능성''을
+             적는 언어인 확률변수(Random Variable), 확률질량함수(PMF),
+             확률밀도함수(PDF), 누적분포함수(CDF)가 필요하다.
+  \item[When] 새 데이터를 받아 첫 요약표를 만들 때, 그리고 분포 모형이나
+              가설검정(Hypothesis Testing)으로 넘어가기 전에 쓴다.
+  \item[Where] 주사위, 붓꽃(Iris) 꽃받침 길이(Sepal Length), 과제 데이터의
+               \texttt{sugars}(당류) 변수에 적용한다.
+  \item[How] 확률변수로 값을 정의하고, PMF/PDF와 CDF로 분포를 적은 뒤,
+             중심(Center, 평균, 중앙값, 최빈값(Mode))과
+             퍼짐(Spread, 범위(Range), 표준편차, IQR)을
+             저항성(Resistance) 기준으로 고른다.
+\end{inbrief}
+% source: deck 4 slide 1
+
 \term{기술통계}(Descriptive Statistics)는 데이터를 몇 개의 숫자로 줄이는
 도구다. \analogy{지도}를 그리는 일이다(\Cref{tab:analogy}). 줄인다는 것은
 반드시 무언가를 버린다는 뜻이고, 무엇을 버렸는지 모르면 남은 숫자를 잘못 읽는다.
@@ -15,8 +30,409 @@
 \end{keyidea}
 
 % =====================================================================
+\section{배경}
+\label{sec:desc-background}
+% source: deck 4 slide 1-3
+
+이 장의 출처는 \texttt{notes/4\_BasicStats.pptx}(23 슬라이드) 하나다.
+슬라이드가 외부 문헌을 밝히지 않는 자리는 슬라이드 자체를 출처로 적는다.
+
+기술통계를 계산하려면 그 전에 데이터를 어떻게 표로 담고, 각 값이 얼마나
+자주 나오는지 어떻게 적을지부터 정해야 한다. 이 장은 다음 두 가지를
+그대로 가져와 쓴다.
+
+\begin{itemize}
+  \item 속성(Attribute)과 척도: 값이 숫자인지 범주인지, 순서가 있는지를
+        가른다(\Cref{ch:attributes}, \Cref{sec:attr-numeric}).
+  \item 데이터 행렬(Data Matrix) $n \times d$: 행이 객체, 열이 속성인 표
+        (\Cref{sec:data-matrix}).
+\end{itemize}
+
+이 장에서 계속 쓰는 데이터는 붓꽃(Iris) 데이터셋이다. 150송이의 붓꽃마다
+꽃받침 길이(Sepal Length)를 포함한 네 가지 속성을 측정했고, 꽃받침
+길이는 4.3\,cm에서 7.9\,cm 사이에 분포한다.
+
+여러 속성 중 하나씩만 골라 한 번에 한 속성만 들여다보는 일을
+\term{일변량 분석}(Univariate Analysis)이라고 부른다.
+% source: deck 4 slide 14
+이때 표의 한 열, 즉 속성 하나가 이 장에서 다룰 확률변수 하나에
+대응한다.
+
+이 장의 비유는 \Cref{ch:descriptive}의 \analogy{지도}를 그대로 잇는다.
+확률분포(Probability Distribution)는 지형 전체이고, 이 장에서 배우는
+평균, 중앙값, 표준편차 같은 요약값은 그 지형 위에 찍은 몇 개의 표지판이다.
+표지판만 보고 지형 전체를 상상할 수 없듯, 요약값 몇 개만으로 분포
+전체를 복원할 수는 없다.
+
+% =====================================================================
+\section{확률변수}
+\label{sec:random-variable}
+% source: deck 4 slide 4-5
+
+\begin{inbrief}
+  \item[Why] 관측값을 계산에 넣을 수 있는 숫자로 바꾸는 규칙이 필요하다.
+  \item[When] 속성을 확률 계산이나 수식에 넣기 전에 정의한다.
+  \item[Where] 수치형 속성은 있는 그대로 쓰고, ``조건을 만족하는가''
+               같은 판정은 0과 1로 바꾼다.
+  \item[How] 표본공간의 각 결과에 실수 하나를 대응시킨다.
+\end{inbrief}
+
+\paragraph{고치는 문제.} ``이 붓꽃은 꽃받침이 길다''라는 말은 그 자체로는
+계산할 수 없다. 평균을 내거나 확률을 구하려면 먼저 이 말을 숫자로 바꿔야
+한다.
+
+\begin{definition}[확률변수]
+\label{def:random-variable}
+\term{표본공간}(Sample Space) $\mathcal{O}$는 실험에서 나올 수 있는 모든
+결과의 집합이다. \term{확률변수}(Random Variable) $X$는 표본공간의 각
+결과를 실수 하나로 대응시키는 함수다.
+\[
+  X : \mathcal{O} \to \mathbb{R}
+\]
+$X$가 유한 개 또는 셀 수 있는(Countably Infinite) 값만 가지면
+\term{이산 확률변수}(Discrete Random Variable), $\mathbb{R}$의 어떤
+구간에서도 값을 가질 수 있으면 \term{연속 확률변수}(Continuous Random
+Variable)라고 부른다.
+\end{definition}
+
+수치형 속성 $X_j$는 별다른 변환 없이도 이미 확률변수다. 결과 $v$를
+그 값 자신으로 보내는 \term{항등 확률변수}(Identity Random Variable)
+\[
+  X(v) = v, \qquad v \in \mathcal{O} = \mathbb{R}
+\]
+이기 때문이다.
+
+\begin{example}[꽃받침 길이를 0/1로 바꾸기]
+\label{ex:iris-long-sepal}
+``꽃받침이 길다''를 ``꽃받침 길이가 7\,cm 이상이다''로 정하면, 확률변수
+$A$를
+\[
+  A(v) = \begin{cases} 1 & v \ge 7 \\ 0 & v < 7 \end{cases}
+\]
+로 정의할 수 있다. $A$가 가지는 값은 $\{0,1\}$뿐이므로 $A$는 이산
+확률변수다.
+\end{example}
+
+연속 확률변수의 예(삼각형 모양 밀도)는 \Cref{sec:pmf-pdf}의
+\Cref{ex:triangle-pdf}에서 이어 다룬다. 한 절에서는 한 개념만 새로
+들여온다.
+
+표본공간을 적을 때 주의할 점이 있다. \Cref{def:random-variable}은
+수치형 속성의 표본공간을 $\mathcal{O} = \mathbb{R}$이라고 적지만, 실제로
+관측되는 꽃받침 길이는 $[4.3, 7.9]$ 구간에만 있다. $[4.3, 7.9]$는
+\textbf{이번에 관측된 범위}이고, 표본공간은 정의상 \textbf{나올 수 있는
+모든 결과}다. 관측 범위가 좁다고 표본공간 자체가 좁아지는 것은 아니다.
+
+% =====================================================================
+\section{확률질량함수와 확률밀도함수}
+\label{sec:pmf-pdf}
+% source: deck 4 slide 6-8, 15
+
+\begin{inbrief}
+  \item[Why] 확률변수의 각 값이 얼마나 자주 나오는지를 적는 함수가
+             필요하다.
+  \item[When] 이산 확률변수는 PMF, 연속 확률변수는 PDF를 쓴다.
+  \item[Where] 주사위 눈, 붓꽃의 0/1 판정에는 PMF를, 꽃받침 길이 같은
+               연속 측정값에는 PDF를 쓴다.
+  \item[How] PMF는 값마다의 확률을 더하고, PDF는 구간에서 적분한다.
+\end{inbrief}
+
+\paragraph{고치는 문제.} 연속 확률변수에서는 한 점 $X=v$가 나올 확률이
+정확히 0이다(\Cref{def:pdf} 뒤에서 다시 본다). 그러므로 ``이 값이 나올
+확률이 얼마인가''라는 질문이 이산형에서는 성립해도 연속형에서는 성립하지
+않는다. 그래서 이산형과 연속형은 서로 다른 함수로 분포를 적는다.
+
+\begin{definition}[확률질량함수]
+\label{def:pmf}
+이산 확률변수 $X$의 \term{확률질량함수}(Probability Mass Function, PMF)
+$f$는
+\[
+  f(x) = P(X = x)
+\]
+로 정의되고, 다음 두 성질을 만족한다. $f(x) \ge 0$이고
+$\sum_x f(x) = 1$이다.
+\end{definition}
+
+\Cref{ex:iris-long-sepal}의 $A$로 PMF를 계산해 보자. 150송이 중
+꽃받침 길이가 7\,cm 이상인 것은 13송이다.
+
+\begin{align*}
+  f(1) &= P(A=1) = 13/150 = 0.0867  && \text{길다고 판정된 비율}\\
+  f(0) &= P(A=0) = 137/150 = 0.9133 && \text{나머지 비율}
+\end{align*}
+
+$f(0) + f(1) = 1$로 \Cref{def:pmf}의 성질을 만족한다. $A$처럼 값이
+$\{0,1\}$뿐인 확률변수의 분포를 \term{베르누이 분포}(Bernoulli
+Distribution)라고 부른다. 이름 있는 분포로서의 자세한 성질은
+\Cref{sec:binomial}에서 다시 다룬다.
+
+\begin{definition}[확률밀도함수]
+\label{def:pdf}
+연속 확률변수 $X$의 \term{확률밀도함수}(Probability Density Function,
+PDF) $f$는 구간 확률을 다음과 같이 넓이로 정의한다.
+\[
+  P(X \in [a,b]) = \int_a^b f(x)\,dx, \qquad \int_{-\infty}^{\infty} f(x)\,dx = 1
+\]
+한 점의 확률은 폭이 0인 구간의 넓이이므로 항상 $P(X=v) = 0$이다.
+\end{definition}
+
+\begin{example}[삼각형 모양의 밀도]
+\label{ex:triangle-pdf}
+\[
+  f(x) = \begin{cases}
+    x     & 0 \le x \le 1 \\
+    2 - x & 1 < x \le 2 \\
+    0     & \text{그 밖}
+  \end{cases}
+\]
+그래프로 그리면 $(0,0)$-$(1,1)$-$(2,0)$을 잇는 삼각형이다
+(\Cref{fig:triangle-pdf-cdf}). 넓이가 1인지 먼저 확인한다.
+
+\begin{align*}
+  &\tfrac{1}{2}\times 1 \times 1 = 0.5 && \text{왼쪽 삼각형(밑변 1, 높이 1) 넓이}\\
+  &\tfrac{1}{2}\times 1 \times 1 = 0.5 && \text{오른쪽 삼각형 넓이}\\
+  &0.5 + 0.5 = 1                       && \text{전체 넓이, \Cref{def:pdf}의 조건과 일치}
+\end{align*}
+
+구간 확률도 넓이로 구한다. $P(0.5 \le X \le 1.5)$는 전체 넓이 1에서
+양끝의 작은 삼각형 두 개를 뺀 값이다. 양끝 삼각형은 각각 밑변 0.5,
+높이 0.5다.
+
+\begin{align*}
+  &2 \times \left(\tfrac{1}{2}\times 0.5 \times 0.5\right) = 0.25 && \text{양끝 두 삼각형의 넓이 합}\\
+  &1 - 0.25 = 0.75                                                 && \text{$P(0.5 \le X \le 1.5)$}
+\end{align*}
+\end{example}
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=\linewidth]{04_02_triangle_pdf_cdf.png}
+  \caption{삼각형 밀도(PDF, 왼쪽)와 그 누적분포함수(CDF, 오른쪽). 색칠한
+  구간 $[0.5,1.5]$의 넓이가 0.75이고, CDF에서는 $F(1)=0.5$인 지점이
+  표시되어 있다.}
+  \label{fig:triangle-pdf-cdf}
+\end{figure}
+
+\begin{pitfall}[PDF 값 자체는 확률이 아니다]
+\label{pit:pdf-not-prob}
+$f(x)$가 1을 넘어도 PDF의 정의를 어기지 않는다. 예를 들어 폭 0.5인
+구간에 고르게 퍼진 밀도는 $f(x) = 2$다($0.5 \times 2 = 1$로 넓이가
+1이어야 하기 때문이다). 확률은 언제나 \Cref{def:pdf}처럼 \textbf{넓이}로
+읽는다. 높이 하나만 보고 확률이라고 읽으면 틀린다.
+\end{pitfall}
+
+\subsection{기댓값}
+\label{subsec:expectation}
+
+\term{기댓값}(Expected Value) $\E[X]$는 확률변수가 평균적으로 어떤 값을
+갖는지를 나타낸다. 이산형은 PMF로 가중 평균을 내고, 연속형은 PDF로
+적분한다.
+\[
+  \E[X] = \sum_x x f(x) \qquad \text{(이산)}, \qquad
+  \E[X] = \int_{-\infty}^{\infty} x f(x)\,dx \qquad \text{(연속)}
+\]
+
+주사위에서는 여섯 눈이 각각 $1/6$의 확률을 가지므로
+
+\begin{align*}
+  \E[X] &= \sum_{k=1}^{6} k \cdot \tfrac{1}{6} = \tfrac{1+2+3+4+5+6}{6}
+    && \text{PMF로 가중 평균}\\
+  \E[X] &= \tfrac{21}{6} = 3.5 && \text{약분}
+\end{align*}
+
+\Cref{ex:triangle-pdf}의 삼각형 밀도에서는
+
+\begin{align*}
+  \E[X] &= \int_0^1 x \cdot x\,dx + \int_1^2 x(2-x)\,dx
+    && \text{구간별로 나눠 적분}\\
+  \E[X] &= \tfrac{1}{3} + \tfrac{2}{3} && \text{각 적분값}\\
+  \E[X] &= 1 && \text{합}
+\end{align*}
+
+두 계산 모두 도형의 무게중심과 일치한다. 표본에서 이 기댓값을
+추정한 값이 \Cref{def:center}의 평균 $\hat\mu$다.
+
+% =====================================================================
+\section{누적분포함수}
+\label{sec:cdf-def}
+% source: deck 4 slide 9-11, 18
+
+\begin{inbrief}
+  \item[Why] 이산과 연속을 한 함수로 다루고, ``이 값 이하가 나올
+             확률''을 바로 읽기 위해서다.
+  \item[When] 분포를 비교하거나, 분위수(Quantile)나 중앙값을 구할 때
+              쓴다.
+  \item[Where] 주사위, 붓꽃 데이터의 이항·정규 근사, 뒤에서 다룰
+               분포 비교와 가설검정에 쓰인다.
+  \item[How] PMF는 누적합으로, PDF는 누적적분으로 CDF를 만든다.
+\end{inbrief}
+
+\paragraph{고치는 문제.} PMF와 PDF는 이산형과 연속형에서 서로 다른
+종류의 함수라서 같은 축 위에 겹쳐 놓고 비교할 수 없다. 이산형과
+연속형을 같은 잣대로 비교하려면, 둘 다 $[0,1]$ 사이의 값을 내놓는
+함수가 필요하다.
+
+\begin{definition}[누적분포함수]
+\label{def:cdf}
+확률변수 $X$의 \term{누적분포함수}(Cumulative Distribution Function,
+CDF) $F$는
+\[
+  F(x) = P(X \le x), \qquad F : \mathbb{R} \to [0,1]
+\]
+로 정의된다. 이산형에서는 $F(x) = \sum_{u \le x} f(u)$이고, 연속형에서는
+$F(x) = \int_{-\infty}^{x} f(u)\,du$다. $F$는 네 가지 성질을 항상
+만족한다. 감소하지 않는다, 오른쪽에서 연속이다(Right-continuous, 즉
+$\lim_{h \to 0^+} F(x+h) = F(x)$), $F(x) \to 0$ ($x \to -\infty$),
+$F(x) \to 1$ ($x \to \infty$).
+\end{definition}
+
+\begin{example}[주사위 눈의 CDF]
+\label{ex:dice-cdf}
+\Cref{tab:dice-cdf}은 주사위 눈 $k$마다 $P(X=k)$와 $F(k)=P(X\le k)$를
+정리한다(\Cref{fig:dice-pmf-cdf}).
+
+정수가 아닌 값에서도 $F$는 정의된다. 계단이 정수 사이에서는 평평하게
+이어지므로 $F(3.5) = F(3) = 3/6 = 0.5$다.
+\end{example}
+
+\begin{table}[ht]\centering
+\begin{tabular}{lrr}
+\toprule
+$k$ & $P(X=k)$ (확률) & $F(k)=P(X\le k)$ (누적확률) \\
+\midrule
+1 & 1/6 & 1/6 = 0.167 \\
+2 & 1/6 & 2/6 = 0.333 \\
+3 & 1/6 & 3/6 = 0.5 \\
+4 & 1/6 & 4/6 = 0.667 \\
+5 & 1/6 & 5/6 = 0.833 \\
+6 & 1/6 & 6/6 = 1 \\
+\midrule
+$a < 1$ & 없음 & $F(a) = 0$ \\
+$a > 6$ & 없음 & $F(a) = 1$ \\
+\bottomrule
+\end{tabular}
+\caption{주사위 눈의 확률(Probability)과 누적확률(Cumulative Probability).}
+\label{tab:dice-cdf}
+\end{table}
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=\linewidth]{04_01_dice_pmf_cdf.png}
+  \caption{주사위 눈의 확률질량함수(PMF, 왼쪽)와 누적분포함수(CDF,
+  오른쪽). CDF는 각 정수에서 계단으로 뛰어오르고, 뛰어오르기 직전의
+  값은 열린 점, 뛰어오른 뒤의 값은 닫힌 점으로 표시된다.}
+  \label{fig:dice-pmf-cdf}
+\end{figure}
+
+\begin{example}[F(3)과 P(X>3)]
+\label{ex:cdf-fifteenths}
+확률변수 $X$가 $P(X=x) = x/15$, $x \in \{1,2,3,4,5\}$를 만족한다고
+하자. 먼저 이것이 PMF의 조건을 만족하는지 확인한다.
+
+\begin{align*}
+  &1+2+3+4+5 = 15               && \text{분자의 합}\\
+  &15/15 = 1                    && \text{확률의 합, \Cref{def:pmf}의 조건과 일치}
+\end{align*}
+
+$F(3)$은 $x=1,2,3$의 확률을 누적한다.
+
+\begin{align*}
+  F(3) &= 1/15 + 2/15 + 3/15 = 6/15 = 0.4
+\end{align*}
+
+$P(X>3)$은 여집합으로 구한다.
+
+\begin{align*}
+  P(X>3) &= 1 - F(3) = 1 - 0.4 = 0.6
+\end{align*}
+
+교차 확인은 $x=4,5$의 확률을 직접 더해서 한다.
+
+\begin{align*}
+  P(4) + P(5) &= 4/15 + 5/15 = 9/15 = 0.6
+\end{align*}
+
+두 계산이 일치한다.
+\end{example}
+
+\begin{pitfall}[이산형에서는 $>$와 $\ge$가 다르다]
+\label{pit:cdf-strict}
+\Cref{ex:cdf-fifteenths}에서 $P(X>3) = 0.6$이지만 $P(X \ge 3)$은
+다르다. $X=3$을 포함하기 때문이다.
+\begin{align*}
+  P(X \ge 3) &= 1 - F(2) && \text{여집합}\\
+  &= 1 - \tfrac{1+2}{15} && \text{$F(2)$를 PMF로 전개}\\
+  &= 1 - \tfrac{3}{15} = \tfrac{12}{15} = 0.8 && \text{계산}
+\end{align*}
+$0.8 \ne 0.6$이다. 이산형에서 경계값을 포함하는지는 결과를 바꾼다.
+연속형에서는 $P(X=v)=0$이므로(\Cref{def:pdf}) $>$와 $\ge$의 차이가
+사라진다.
+\end{pitfall}
+
+\begin{pitfall}[식의 좌우가 다른 변수를 쓰면 안 된다]
+\label{pit:cdf-slide-kx}
+슬라이드 값은 $P(X>k)=1-P(X\le x)$, 다시 계산하면
+$P(X>x)=1-F(x)$, 즉 $P(X>3)=0.6$. 왼쪽 변에 쓴 $k$와 오른쪽 변에
+쓴 $x$가 같은 변수를 가리켜야 식이 성립하는데, 슬라이드는 이 둘을
+다른 기호로 적었다. 변수 하나를 통일해 $P(X>x) = 1 - F(x)$로 써야
+\Cref{def:cdf}와 맞는 식이 된다. 숫자 결과 0.6 자체는 맞다.
+\end{pitfall}
+
+\paragraph{중앙값을 CDF로 읽기.} 중앙값의 정의 자리는
+\Cref{def:center}에 하나만 둔다. 여기서는 CDF로 중앙값을 찾는 성질만
+본다. 중앙값 $m$은
+\[
+  P(X \le m) \ge \tfrac{1}{2}, \qquad P(X \ge m) \ge \tfrac{1}{2}
+\]
+을 만족하는 값이다. 주사위에서는 $F(3) = 0.5$이고 $F(4) = 0.667$이므로
+$3 \le m \le 4$인 모든 값이 이 조건을 만족하고, 관례로 가운데 값인
+3.5를 쓴다. 정규분포(Normal Distribution)처럼 CDF가 매끈하게 증가하는
+경우에는 $F(\mu) = 0.5$이므로 중앙값과 평균이 같다.
+\Cref{fig:iris-cdfs}의 붓꽃 정규 근사 CDF에서 $(\mu, 0.5) = (5.843,
+0.5)$인 점이 바로 이 성질을 보여 준다. 중앙값을 실제로 어떻게
+계산하는지는 \Cref{sec:center}에서 이어진다.
+
+붓꽃 데이터에서 서로 다른 두 확률변수의 이론 CDF를 비교할 수 있다
+(\Cref{fig:iris-cdfs}). 하나는 꽃받침 길이 자체의 정규
+CDF($\mu=5.843$, $\sigma^2=0.681$)이고, 다른 하나는 꽃받침 길이가
+아니라 \Cref{ex:iris-long-sepal}의 0/1 판정을 $m=10$번 반복했을 때
+``길다''로 판정되는 \textbf{횟수}의 이항(Binomial) CDF($p=0.087$,
+$m=10$)다.
+
+\begin{align*}
+  F(0) &= 0.913^{10} = 0.4024 && \text{이항, $P(\text{10번 중 0번 ``길다''})$}\\
+  F(1) &= 0.7859              && \text{이항, 누적}\\
+  F(2) &= 0.9504               && \text{이항, 누적}\\
+  F(3) &= 0.9922               && \text{이항, 누적}
+\end{align*}
+
+이항분포와 정규분포 각각의 자세한 정의와 모수는
+\Cref{sec:binomial}과 \Cref{sec:normal}에서 다룬다.
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=\linewidth]{04_03_iris_cdfs.png}
+  \caption{붓꽃 데이터에서 나온 이론 CDF 두 개. 정규 CDF($\mu=5.843$,
+  $\sigma^2=0.681$, 점 $(\mu, 0.5)$ 표시)는 꽃받침 길이 자체의 분포이고,
+  이항 CDF($p=0.087$, $m=10$)는 꽃받침 길이가 아니라 ``길다''로
+  판정되는 횟수의 분포다.}
+  \label{fig:iris-cdfs}
+\end{figure}
+
+\begin{pitfall}[분산은 $n$과 $n-1$ 중 무엇으로 나눴는지가 다르다]
+\label{pit:variance-n}
+슬라이드 값은 0.681($n$으로 나눔), $n-1$로 다시 계산하면 0.686.
+이것은 오류가 아니라 \textbf{관례 차이}다. $n$으로 나누면 모집단
+분산의 정의를 그대로 쓴 것이고, $n-1$로 나누면 표본에서 모분산을
+추정할 때 생기는 편향(Bias)을 보정한 것이다(\Cref{def:spread},
+\Cref{pit:bias}). 이 책의 \Cref{def:spread}는 $n-1$ 쪽 정의를 쓴다.
+\end{pitfall}
+
+두 CDF를 겹쳐 놓고 최대 격차를 재는 방법은 \Cref{sec:cdf}에서, 데이터
+자체로 계단 모양 CDF를 만드는 경험적 CDF(Empirical CDF)는
+\Cref{def:ecdf}에서 다룬다.
+
+% =====================================================================
 \section{중심 --- 평균과 중앙값}
 \label{sec:center}
+% source: deck 4 slide 13, 15-18
 
 \begin{inbrief}
   \item[Why] 데이터 전체를 대표하는 값 하나가 필요하기 때문이다.
@@ -67,6 +483,7 @@ $\{1,2,3,4,100\}$ & 22.0 & 3 \\
 % =====================================================================
 \section{퍼짐 --- 표준편차와 IQR}
 \label{sec:spread}
+% source: deck 4 slide 21-22
 
 \begin{inbrief}
   \item[Why] 중심만으로는 부족하다. 값들이 중심 주변에 모여 있는지 흩어져 있는지를
@@ -152,6 +569,109 @@ $\IQR$ 로부터 기계적으로 계산된다.
 이상치로 분류된다"가 정확한 표현이다. 실제로 \Cref{fig:iqr-anatomy}의 12개는
 오류가 아니라 정상적인 밀크셰이크다. \textbf{이상치는 버릴 대상이 아니라 설명할
 대상이다.}
+\end{pitfall}
+
+% =====================================================================
+\section{최빈값과 범위}
+\label{sec:mode-range}
+% source: deck 4 slide 13, 19-20
+
+\begin{inbrief}
+  \item[Why] 평균과 중앙값 말고도, 범주형 데이터에 쓸 수 있는 중심값과
+             가장 단순한 퍼짐값이 필요하다.
+  \item[When] 값이 범주형이면 최빈값(Mode)을 쓰고, 계산이 빠른 1차
+              점검이 필요하면 범위(Range)를 쓴다.
+  \item[Where] 최빈값은 명목 척도(Nominal Scale)에도 정의된다
+               (\Cref{tab:attr-ops}).
+  \item[How] 최빈값은 가장 많이 나온 값을 세고, 범위는 최댓값에서
+             최솟값을 뺀다.
+\end{inbrief}
+
+\begin{definition}[최빈값과 범위]
+\label{def:mode}
+확률변수의 \term{최빈값}(Mode)은 PMF 또는 PDF가 가장 큰 값이다. 표본에서는
+관측 빈도 $\hat f(x)$가 가장 큰 값을 쓴다.
+\[
+  \operatorname{mode}(X) = \arg\max_x \hat f(x)
+\]
+\end{definition}
+
+\begin{definition}[범위]
+\label{def:range}
+확률변수 $X$의 \term{범위}(Range) $r$은 최댓값과 최솟값의 차이다.
+\[
+  r = \max\{X\} - \min\{X\}
+\]
+\end{definition}
+
+\begin{example}[붓꽃 꽃받침 길이의 최빈값과 범위]
+\label{ex:mode-range}
+꽃받침 길이는 소수 한 자리로 반올림되어 기록되어 있어, 같은 값이
+여러 번 나온다. 가장 많이 나온 값은 5.0\,cm로 10송이가 이 값을
+가진다(\Cref{fig:iris-mode-range}). 이 값은 \Cref{def:center}의 평균
+5.843보다 작다. 범위는
+
+\begin{align*}
+  r &= 7.9 - 4.3 = 3.6 \qquad \text{(cm)}
+\end{align*}
+\end{example}
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=\linewidth]{04_04_iris_mode_range.png}
+  \caption{붓꽃 꽃받침 길이의 빈도. 최빈값(Mode) 5.0\,cm(10송이)을
+  강조하고, 평균 5.843\,cm에 선을 그었으며, 최소 4.3\,cm과 최대
+  7.9\,cm 사이의 범위(Range) 3.6\,cm을 화살표로 표시했다.}
+  \label{fig:iris-mode-range}
+\end{figure}
+
+\Cref{ex:resistance}의 데이터를 다시 쓰면, 최빈값과 범위가 저항성에서
+어떻게 갈리는지 보인다. $\{1,2,3,4,5\}$는 모든 값이 한 번씩만 나와
+최빈값이 정의되지 않으므로, 값 하나를 중복시킨 $\{1,2,2,3,5\}$로
+바꿔서 비교한다.
+
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+데이터 & 최빈값(Mode) & 범위(Range) \\
+\midrule
+$\{1,2,2,3,5\}$   & 2 & 4 \\
+$\{1,2,2,3,100\}$ & 2 & 99 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+마지막 값을 $5 \to 100$으로 바꿔도 최빈값은 2로 그대로지만, 범위는
+$4 \to 99$로 25배 가까이 뛴다.
+
+\Cref{tab:robustness}은 이 장에서 다룬 여섯 가지 통계량을 저항성
+기준으로 정리한다.
+
+\begin{table}[ht]\centering
+\begin{tabularx}{\linewidth}{@{}l l X@{}}
+\toprule
+통계량(Statistic) & 극단값 하나에 흔들리는가 & 근거 \\
+\midrule
+평균(Mean) & 흔들림 & \Cref{ex:resistance} \\
+중앙값(Median) & 안 흔들림 & \Cref{ex:resistance} \\
+최빈값(Mode) & 안 흔들림(단, 아래 함정 참고) & \Cref{ex:mode-range} \\
+범위(Range) & 흔들림 & \Cref{ex:mode-range} \\
+표준편차(Standard Deviation) & 흔들림 & \Cref{sec:spread} \\
+사분위범위(IQR) & 안 흔들림 & \Cref{sec:spread} \\
+\bottomrule
+\end{tabularx}
+\caption{여섯 가지 통계량의 저항성(Resistance) 성적표.}
+\label{tab:robustness}
+\end{table}
+
+\begin{pitfall}[최빈값은 극단값이 아닌 값 하나에도 뒤집힌다]
+\label{pit:mode-unstable}
+최빈값이 저항성이 있다는 말은 \textbf{극단값}에 대해서만 참이다. 극단값이
+\emph{아닌} 값 하나가 바뀌면 최빈값 자체가 뒤집힐 수 있다. $\{1,2,2,3,3,3\}$의
+최빈값은 3인데, 극단값이 아닌 값 하나를 $3 \to 2$로 바꾼
+$\{1,2,2,2,3,3\}$에서는 최빈값이 2로 바뀐다. 게다가 연속 측정값에서는
+모든 값이 한 번씩만 나오면 최빈값이 아예 정의되지 않는다. 붓꽃
+꽃받침 길이처럼 소수 한 자리로 반올림되어야 비로소 값이 겹치고
+최빈값이 의미를 가진다.
 \end{pitfall}
 
 % =====================================================================
@@ -551,6 +1071,49 @@ $\gamma = 2.71$ 만 보면 ``완만하게 늘어진 긴 꼬리''를 상상하게
 
 후자의 경우에만 \verb|df.replace(0, np.nan)| 이 정당하다.
 \end{keyidea}
+
+% =====================================================================
+\section{어떻게 적용하는가}
+\label{sec:desc-apply}
+
+이 장의 도구는 과제와 다른 장에서 바로 쓰인다.
+
+\begin{itemize}
+  \item HW1의 버거 대 밀크셰이크 비교(\Cref{tab:hw1-burger-vs-shake})는
+        이 장의 평균과 퍼짐(표준편차, 최솟값, 최댓값)으로 두 음식 유형을 비교한 결과다.
+        중앙값과 $\IQR$은 HW1 표에 나오지 않는다.
+  \item HW2의 추정량(\Cref{sec:hw2-estimators})은
+        \Cref{subsec:expectation}의 기댓값을 표본에서 추정하는
+        방법을 다룬다. HW2의 분포 비교(\Cref{sec:hw2-compare-how})는
+        이 장의 CDF를 겹쳐 보는 방식을 쓴다.
+  \item 경험적 CDF로 후보 분포를 눈으로 확인하는 절차는
+        \Cref{sec:dist-check-cdf}에서 이어진다.
+  \item \Cref{ex:iris-long-sepal}의 0/1 확률변수 $A$와 같은 발상은
+        이산화(Discretization, \Cref{sec:discretization})로 일반화된다.
+  \item 결측값을 최빈값으로 채우는 방법은 \Cref{sec:impute}에서 다룬다.
+  \item 히스토그램(\Cref{sec:histogram})은 표본의 경험적 PDF고,
+        분위수(\Cref{sec:quantile})는 CDF의 역함수다.
+\end{itemize}
+
+파이썬 \texttt{pandas}로는 이 절의 값들을 각각 \texttt{.mode()},
+\texttt{.max() - .min()}, \texttt{(x >= 7).mean()}으로 구한다. 마지막
+식의 결과는 $13/150 = 0.0867$로 \Cref{sec:pmf-pdf}의 $f(1)$과 같다.
+
+% =====================================================================
+\section{앞으로}
+\label{sec:desc-future}
+
+이 장에서 다룬 확률변수, PMF/PDF, CDF는 이름 있는 분포를 다루는 다음
+장으로 이어진다(\Cref{ch:distributions}). 특히 이항분포와 정규분포는
+\Cref{sec:binomial}과 \Cref{sec:normal}에서 모수를 추정하고 적합도를
+검정하는 법까지 다룬다.
+
+두 CDF를 겹쳐 최대 격차를 재는 방법(\Cref{sec:cdf})은 콜모고로프--스미르노프
+검정(Kolmogorov--Smirnov Test, \Cref{sec:cd-ks})으로 정식화된다.
+
+표본 평균이 모평균을 얼마나 잘 맞히는지, 즉 \term{불편추정량}(Unbiased
+Estimator)이라는 성질이 실제로 무엇을 보장하는지는 가설검정
+(\Cref{ch:hypothesis})에서 이어진다.
 
 % =====================================================================
 \section{요약}

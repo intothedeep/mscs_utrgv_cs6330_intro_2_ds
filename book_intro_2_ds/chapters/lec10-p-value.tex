@@ -1,0 +1,770 @@
+\chapter{p값: 우연이라면 이 정도 결과가 얼마나 드문가}
+\label{ch:pvalue}
+% source: deck 10 slide 1
+
+\begin{inbrief}
+  \item[Why] \term{p값}(p-value)은 "우연만으로 이 정도 결과가 나올 확률"을
+             숫자 하나로 준다. 그 숫자를 제대로 읽지 못하면 검정 결론을
+             거꾸로 쓴다.
+  \item[When] 귀무가설(Null Hypothesis)을 세운 뒤, 관측한 데이터가 그
+              가설 아래에서 얼마나 드문지 판정할 때.
+  \item[Where] 두 약의 완치율 비교, 동전의 공정성, 한 사람의 키가
+               모집단에서 튀는지, 평균 비타민 D가 기준값과 다른지.
+  \item[How] 관측값과 똑같이 드문 결과, 더 드문 결과의 확률을 모두 더한다
+             $\to$ 미리 정한 기준(보통 0.05)과 비교한다 $\to$ p값은 차이의
+             \textbf{크기}가 아니라 차이의 \textbf{확실성}만 말한다는 점을
+             결론 문장에 반영한다.
+\end{inbrief}
+
+\begin{keyidea}
+p값도 \analogy{현장 측량으로 지도 검증}이다(\Cref{tab:analogy}). 다른 점은
+"어긋났는가 아닌가"만 보는 \Cref{ch:hypothesis}의 기각/기각 실패에서 한 걸음
+더 나아가, \textbf{얼마나 어긋났는지를 확률 하나로 재는 자}를 준다는
+것이다. 개가 무죄인 세상을 상상하고, 그 세상에서 지금 증거만큼(또는 더)
+나쁜 일이 일어날 확률을 재판 예시로 쓴다(슬라이드 3). 이것은 비유가 아니라
+p값의 정의를 그대로 보여주는 \textbf{예시}다. \Cref{pit:ht-fail-not-proof}의
+"증거 부족은 무죄를 증명하지 않는다"가 이 재판 예시와 같은 문장이다.
+\end{keyidea}
+
+이 장의 출처는 \texttt{notes/10\_P-value.pptx}(25 슬라이드) 하나다. 슬라이드
+속 예제(약 A/B, 동전, 브라질 여성 키, 비타민 D, 배 칼로리)는 슬라이드 자체를
+출처로 적는다.
+
+% =====================================================================
+\section{배경}
+\label{sec:pv-background}
+% source: deck 10 slide 2
+
+이 장은 p값을 \textbf{처음 정의하지 않는다.} 정의는 \Cref{def:pvalue}
+하나이고, 이 장은 그 정의를 이산 데이터의 세 부분 분해, 연속 데이터, 기준의
+의미, 효과 크기와의 구분, 시뮬레이션과 모수적 계산, 신뢰구간과의 관계로
+\textbf{넓힌다.}
+
+\term{귀무가설}(Null Hypothesis) $H_0$ 와 \term{대립가설}(Alternative
+Hypothesis) $H_a$ 는 \Cref{def:ht-null,def:ht-alt}에서 이미 정의했다. 약 C와
+D의 회복 시간을 비교하는 슬라이드 2의 예(\textbf{덱 9 슬라이드 5, 6의
+반복})는 $H_0$: 두 약 사이에 차이가 없다, $H_a$: 차이가 있다는 문장 그대로
+\Cref{def:ht-null,def:ht-alt}의 구조다. 새로 덧붙일 내용이 없으므로 여기서
+끝낸다.
+
+기각과 기각 실패의 뜻은 \Cref{sec:ht-decision}, 단측/양측 대립가설의 구분은
+\Cref{sec:ht-forms,fig:ht-tails}에서 다뤘다. 세 부분 p값(\Cref{sec:pv-discrete})은
+이 구분이 왜 필요한지를 다시 보여준다. 곱셈 규칙과 이항계수는
+\Cref{sec:ht-background,ex:ht-puppy}에서 다뤘고, 동전 5번의
+$\binom{5}{k}/32$(\Cref{sec:pv-discrete})가 그대로 쓴다.
+
+\term{정규분포}(Normal Distribution)는 \Cref{sec:normal,def:normal}이
+아직 뼈대만 갖춘 절이라, 여기서 필요한 두 문장만 직접 설명한다. 정규분포는
+가운데가 높고 양옆으로 갈수록 낮아지는 종 모양 곡선이고, \textbf{곡선 아래
+넓이가 곧 확률}이다. 예를 들어 곡선의 왼쪽 절반 넓이는 $0.5$, 즉
+"평균보다 작을 확률 50\%"를 뜻한다. \Cref{sec:pv-continuous}의 키 예제가 이
+넓이를 직접 계산한다.
+
+\term{표준오차}(Standard Error)는 \Cref{pit:sd-se-ci}에서 표준편차와
+구분됐다. \Cref{sec:pv-sim-vs-param}의 비타민 D 예제에서 3.3이라는 값이
+표준편차가 아니라 표준오차라는 점이 판정을 좌우한다. \term{신뢰구간}
+(Confidence Interval)은 \Cref{sec:ci,subsec:ci-compare}에서 다뤘고,
+\Cref{sec:pv-ci-duality}에서 p값과의 관계를 짚는다.
+
+\Cref{tab:ht-symbols}가 이미 $H_0$, $H_a$, $\alpha$, $n$, $X$ 를 정리했다.
+\Cref{tab:pv-symbols}는 이 장에서 새로 쓰는 기호만 더한다.
+
+\begin{table}[ht]\centering
+\begin{tabularx}{\linewidth}{@{}l X l@{}}
+\toprule
+기호 & 뜻 & 읽기 \\
+\midrule
+$z$ & \term{표준화 점수}(z-score): 관측값이 평균에서 표준오차 몇 개만큼
+      떨어져 있는가, $z=(\bar x-\mu_0)/\mathrm{SE}$ & 지 \\
+$\mathrm{SE}$ & \term{표준오차}(Standard Error): 표본 평균의 흩어짐. 표준편차와
+                다르다(\Cref{pit:sd-se-ci}) & 에스이 \\
+$\mu_0$ & 귀무가설이 정한 값(예: 비타민 D 기준 100) & 뮤 제로 \\
+\bottomrule
+\end{tabularx}
+\caption{이 장에서 새로 쓰는 기호. $H_0$, $H_a$, $\alpha$, $n$, $X$ 는
+\Cref{tab:ht-symbols}를 그대로 쓴다.}
+\label{tab:pv-symbols}
+\end{table}
+
+% =====================================================================
+\section{왜 필요한가}
+\label{sec:pv-why}
+% source: deck 10 slide 3, 4
+
+\begin{inbrief}
+  \item[Why] "다르다"는 판단에는 근거의 강도를 나타내는 숫자가 필요하다.
+             느낌만으로는 사람마다 결론이 갈린다.
+  \item[When] 두 집단(또는 값)을 비교했는데 그 차이가 우연인지 아닌지
+              애매할 때.
+  \item[Where] 신약 A와 B의 완치율 비교(슬라이드 4).
+  \item[How] "차이가 없는 세상"을 상상하고, 그 세상에서 지금 본 결과(또는
+             더 극단적인 결과)가 나올 확률을 잰다. 그 확률이 p값이다.
+\end{inbrief}
+
+이 절의 질문은 이 장 도입부의 개 재판 비유(슬라이드 3)를 약 A/B 비교로
+구체화한 것이다. "차이가 없는 세상"을 상상하고 그 세상에서 지금 본
+증거가 얼마나 드문지 재는 절차는 똑같다.
+
+한 사람에게 약 A, 한 사람에게 약 B를 주고 A만 나았다고 "A가 낫다"고 말할 수
+없다. 우연히 그럴 수 있기 때문이다. 두 명씩 줘도 마찬가지다. 그렇다면
+얼마나 많은 사람에게 줘야 확신할 수 있는가.
+
+반대 극단에서는 답이 분명하다. 1,046명 중 1,043명이 완치된 약과 1,434명 중
+2명만 완치된 약을 비교하면, 우연이라고 믿기 어렵다.
+
+\begin{align*}
+  &1043/1046 = 0.99713 && \text{99.7\%, 거의 전원 완치}\\
+  &2/1434 = 0.001395 && \text{0.14\%, 거의 아무도 완치되지 않음}
+\end{align*}
+
+\begin{pitfall}[슬라이드 값은 0.001\%, 다시 계산하면 0.14\%]
+슬라이드 4는 $2/1434$ 를 \textbf{0.001\%}로 적었다. $2/1434 = 0.0014$ 는
+비율이지 퍼센트가 아니다. 이를 퍼센트로 바꾸면 $0.14\%$ 다(비율 자체를
+퍼센트로 착각한 것으로 보인다). 99.7\%는 맞다.
+\end{pitfall}
+
+그 사이, 198명 중 73명 대 190명 중 59명은 판단이 서지 않는다.
+
+\begin{align*}
+  &73/198 = 0.3687 && \text{36.9\%}\\
+  &59/190 = 0.3105 && \text{31.1\%}
+\end{align*}
+
+\begin{pitfall}[슬라이드 값은 29\%, 다시 계산하면 31.1\%]
+\label{pit:pv-drug-2931}
+슬라이드 4는 $59/190$ 을 \textbf{29\%}로 적었다. $59/190=0.3105$ 는
+\textbf{31.1\%}다(이 장은 이 값을 그대로 쓴다). 36.9\%는 맞다.
+\end{pitfall}
+
+\textbf{"얼마나 확신하는가"를 숫자로 줄 도구가 필요하다.} 그것이 p값이고,
+슬라이드는 이 마지막 경우의 p값을 $0.24$로 적는다.
+
+\begin{example}[약 A 대 약 B]
+\label{ex:pv-drug}
+\Cref{tab:pv-drug-trials}가 표본 크기에 따라 같은 질문("A가 B보다 낫다고
+말할 수 있는가")의 확신이 어떻게 달라지는지 정리한다.
+\end{example}
+
+\begin{table}[ht]\centering
+\begin{tabularx}{\linewidth}{@{}X l l l l X@{}}
+\toprule
+사례 & 약 & 완치 & 비완치 & 완치율(재계산) & 판정(재계산한 p값, p-value) \\
+\midrule
+1명씩, 2명씩 & 없음 & 없음 & 없음 & 없음 & 표본 너무 작음, 판단 불가 \\
+대규모 & A & 1043 & 3 & 99.7\% & 우연으로 보기 어려움(계산 없음) \\
+       & B & 2 & 1432 & 0.14\% & \\
+약 200명씩 & A & 73 & 125 & 36.9\% & 확신하기 어려움($p\approx0.24$) \\
+           & B & 59 & 131 & 31.1\% & \\
+약 A 대 약 A(1) & A & 71 & 127 & 35.9\% & 진짜 차이 없음($p=1.0$) \\
+                & A' & 72 & 126 & 36.4\% & \\
+약 A 대 약 A(2) & A & 73 & 125 & 36.9\% & 진짜 차이 없음($p=0.917$) \\
+                & A' & 71 & 127 & 35.9\% & \\
+약 A 대 약 A(3) & A & 60 & 138 & 30.3\% & 진짜 차이 없어도 $p=0.012$
+                                          로 거짓 양성 가능 \\
+                & A' & 84 & 114 & 42.4\% & \\
+대표본(효과 크기) & A & 5005 & 9868 & 33.65\% & 차이 작지만 $p=0.044$
+                                                (\Cref{sec:pv-effect-size}) \\
+                  & B & 4800 & 9000 & 34.78\% & \\
+\bottomrule
+\end{tabularx}
+\caption{약 A 대 약 B(그리고 약 A 대 약 A) 비교, 표본 크기와 진짜 차이
+유무에 따라 확신·p값이 어떻게 달라지는지 정리(슬라이드 4, 5, 6, 7).
+완치율은 재계산 값이다. 슬라이드는 약 200명씩 사례를 각각 37\%,
+29\%(오류, \Cref{pit:pv-drug-2931} 함정 참고)로 적는다.}
+\label{tab:pv-drug-trials}
+\end{table}
+
+% =====================================================================
+\section{기준 0.05와 거짓 양성}
+\label{sec:pv-threshold}
+% source: deck 10 slide 5, 6
+
+\begin{inbrief}
+  \item[Why] "얼마나 작아야 작은가"에 답이 없으면 판정이 사람마다 달라진다.
+  \item[When] 데이터를 보기 전에 기준을 정할 때.
+  \item[Where] 약 A 대 약 A처럼 실제 차이가 없는 비교.
+  \item[How] 기준 0.05는 "차이가 없을 때 실험 100번 중 약 5번은 잘못
+             기각한다"는 약속이다. 이 잘못을 \term{거짓 양성}(False
+             Positive), \term{1종 오류}(Type I Error)라 부른다.
+\end{inbrief}
+
+슬라이드 5, 6은 약 A를 \textbf{약 A 자신}과 비교한다. 진짜 차이는 없다.
+그런데도 두 쌍을 뽑으면 p값이 달라진다.
+
+여기서 쓰는 $[[a,b],[c,d]]$ 표기는 $2\times2$ 표다. 첫 행이 첫 번째 표본의
+완치·비완치 인원, 둘째 행이 두 번째 표본의 완치·비완치 인원이다(예:
+$[[71,127],[72,126]]$은 첫 번째 표본에서 완치 71명·비완치 127명, 두 번째
+표본에서 완치 72명·비완치 126명). \term{카이제곱 검정}(Chi-squared Test)은
+"두 표본의 완치율이 같다"는 귀무가설 아래 이 표가 얼마나 드문지를 재는
+검정이고, 이 절의 p값은 모두 이 검정에서 나온다. \term{Yates 보정}(Yates'
+Continuity Correction)은 표본이 작을 때 카이제곱 값을 살짝 줄여 더 보수적인
+p값을 주는 보정이며, \term{피셔 정확검정}(Fisher's Exact Test)은 근사 없이
+정확한 확률을 계산하는 대안이다. 이 검정들의 계산식은 이 장에서 다루지
+않고, 슬라이드와 재계산이 주는 결과값만 그대로 옮긴다.
+
+\begin{align*}
+  &[[71,127],[72,126]] && \text{첫째 쌍}\\
+  &\chi^2_{\text{Yates}} = 0 && \text{Yates 보정 카이제곱}\\
+  &p = 1.0 && \text{완전히 같은 비율}
+\end{align*}
+\begin{align*}
+  &[[73,125],[71,127]] && \text{둘째 쌍}\\
+  &\chi^2_{\text{Yates}} = 0.011 && \text{Yates 보정 카이제곱}\\
+  &p = 0.917 && \text{역시 큰 p값}
+\end{align*}
+
+두 쌍 모두 큰 p값을 주지만, 표본을 다르게 뽑으면 작은 p값도 나올 수 있다.
+
+\begin{align*}
+  &[[60,138],[84,114]] && \text{역시 약 A 대 약 A}\\
+  &60/198 = 0.303 && \text{완치율(첫 행)}\\
+  &84/198 = 0.424 && \text{완치율(둘째 행)}\\
+  &\chi^2 = 6.29 && \text{보정 없음}\\
+  &p = 0.012 && \text{보정 없음 p값}\\
+  &p_{\text{Yates}} = 0.016 && \text{Yates 보정 p값}
+\end{align*}
+
+\textbf{진짜 차이가 없는데도} p값이 작게 나올 수 있다. 이것이 슬라이드 6의
+문장이다. 기준 0.05를 쓰면, 차이가 없는 실험 100번 중 약 5번은 이렇게
+잘못 기각한다. 이 잘못을 \term{거짓 양성}(False Positive), \term{1종 오류}
+(Type I Error)라 부른다. \Cref{fig:pv-false-positive}가 이것을 1,000번
+모의로 직접 보여준다.
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=0.75\linewidth]{10_05_false_positive.png}
+  \caption{완치율이 똑같은(36.9\%) 두 집단을 1,000번 비교한 p값의 분포.
+  카이제곱 검정(보정 없음)은 5\%에 가장 가깝게(약 4.6\%) 0.05 아래로
+  떨어진다. Yates 보정이나 피셔 정확검정을 쓰면 약 3.3\%로 더 보수적이게
+  나와, 슬라이드 6의 "5\%"를 눈으로 확인하기 어려워진다.}
+  \label{fig:pv-false-positive}
+\end{figure}
+
+기준 0.05가 법칙이 아니라 약속이라는 점은 \Cref{pit:ht-alpha}에서 이미
+다뤘다. 슬라이드 6도 "The threshold is arbitrary"라고 직접 적어 같은
+점을 확인해 준다.
+
+\begin{pitfall}[p값 0.24는 "24\% 확률로 차이가 없다"는 뜻이 아니다]
+p값은 \textbf{$H_0$ 가 참이라는 가정 아래} 지금 증거(또는 더 극단적인
+증거)가 나올 확률이다(\Cref{def:pvalue}). "차이가 없을 확률이 24\%"는
+$H_0$ 자체의 확률을 말하는 문장인데, p값은 그런 확률을 계산하지 않는다.
+p값 $0.24$는 "차이가 없다는 가정 아래에서도 이 정도 결과는 꽤 흔하다"는
+뜻일 뿐이다.
+\end{pitfall}
+
+% =====================================================================
+\section{p값은 효과 크기가 아니다}
+\label{sec:pv-effect-size}
+% source: deck 10 slide 7
+
+\begin{inbrief}
+  \item[Why] 작은 p값을 "큰 차이"로 읽는 실수가 가장 흔하다.
+  \item[When] 결론 문장을 쓸 때.
+  \item[Where] 약 A 34\% 대 약 B 35\%, 표본 약 29,000명.
+  \item[How] p값과 함께 차이 자체(\term{효과 크기}, Effect Size)를 따로
+             적는다.
+\end{inbrief}
+
+$[[5005,9868],[4800,9000]]$(슬라이드 7, \texttt{image15})은 완치율이
+겨우 다르다.
+
+\begin{align*}
+  &5005/14873 = 0.3365 && \text{33.65\%}\\
+  &4800/13800 = 0.3478 && \text{34.78\%}\\
+  &34.78 - 33.65 = 1.1\ \%\text{포인트} && \text{차이}\\
+  &\chi^2 = 4.07 && \text{보정 없음}\\
+  &z = 2.02 && \text{표준화 점수}\\
+  &p = 0.044 && \text{양측 p값}
+\end{align*}
+
+\begin{pitfall}[p값이 작다고 차이가 크다는 뜻은 아니다]
+표본이 \textbf{크면}(여기서는 약 14,000명씩) 아주 작은 차이(1.1\%포인트)도
+p값을 0.05 아래로 밀어낸다. p값 0.044는 "차이가 우연이 아닐 가능성이
+크다"는 뜻이지 "차이가 크다"는 뜻이 아니다. 결론 문장에는 항상 p값과
+\term{효과 크기}(Effect Size, 여기서는 1.1\%포인트)를 \textbf{함께} 적는다.
+\end{pitfall}
+
+% =====================================================================
+\section{이산 데이터의 p값: 세 부분}
+\label{sec:pv-discrete}
+% source: deck 10 slide 8-12
+
+\begin{inbrief}
+  \item[Why] "관측값이 나올 확률"만 보면 모든 결과가 드물어 보인다.
+  \item[When] 결과를 셀 수 있을 때(동전).
+  \item[Where] 동전 2번, 5번.
+  \item[How] 관측값의 확률 $+$ 똑같이 드문 다른 결과의 확률 $+$ 더 드문
+             결과의 확률.
+\end{inbrief}
+
+동전을 2번 던져 2번 다 앞면(HH)이 나왔다. "내 동전은 특별한가"라는 질문에
+"HH가 나올 확률은 $0.25$뿐이니 특별하다"고 답하면 안 된다. HH, HT, TH, TT
+\textbf{네 결과 모두} 확률이 $0.25$ 이하다. 모든 결과가 드물다면 "드묾"만으로는
+아무것도 가려낼 수 없다. \Cref{fig:pv-coin}가 동전 2번과 5번(뒤에 나올
+\Cref{ex:pv-coin5})의 결과 분포를 막대로 보여준다.
+
+\begin{align*}
+  &P(\text{HH}) = 0.5\times0.5 = 0.25 && \text{관측값}\\
+  &P(\text{TT}) = 0.25 && \text{똑같이 드묾(2/2 반대 방향)}\\
+  &P(\text{HT})+P(\text{TH}) = 0.25+0.25 = 0.5 && \text{HH보다 흔함, 더 드물지 않음}
+\end{align*}
+
+p값은 관측값의 확률에 \textbf{똑같이 드문 결과}, \textbf{더 드문 결과}의
+확률까지 더한다. \Cref{fig:pv-three-parts}가 동전 2번의 수형도와 세
+부분을 그림으로 정리한다.
+
+\begin{align*}
+  &0.25\ (\text{관측 HH}) + 0.25\ (\text{똑같이 드묾, TT}) + 0\ (\text{더 드문 결과 없음}) \\
+  &= 0.5
+\end{align*}
+
+$0.5$ 는 $0.05$ 보다 훨씬 크므로 기각 실패다. "HH가 나온 건 특별해 보이지만,
+TT도 똑같이 드물다는 걸 알면 그렇게 특별하지 않다."
+
+꽃에 비유하면 이해가 쉽다(슬라이드 11). 지금 보는 꽃이 "가장 희귀한 꽃"
+같아 보여도, 그것과 똑같이 희귀한 꽃이 여럿 있고 그보다 \textbf{더} 희귀한
+꽃도 많다는 걸 알면 더 이상 특별해 보이지 않는다. "더 드문 결과가 많을수록
+지금 본 결과는 덜 특별하다"는 것이 세 번째 부분(더 드묾)이 하는 일이다.
+
+\begin{example}[동전 5번 중 앞면 4번]
+\label{ex:pv-coin5}
+동전을 5번 던져 앞면이 4번 나왔다(슬라이드 12). $2^5=32$가지 결과가 있고,
+앞면 수 $k$ 별 경우의 수는 $\binom{5}{k}$ 로 $1,5,10,10,5,1$ 이다.
+
+\begin{align*}
+  &\binom{5}{4} = 5 && \text{관측값(앞4 뒤1)의 경우의 수}\\
+  &\binom{5}{1} = 5 && \text{똑같이 드묾(앞1 뒤4)의 경우의 수}\\
+  &\binom{5}{5}+\binom{5}{0} = 1+1 = 2 && \text{더 드묾(앞5 또는 앞0)의 경우의 수}\\
+  &(5+5+2)/32 = 12/32 = 0.375 && \text{양측 p값}
+\end{align*}
+
+$0.375 > 0.05$ 이므로 기각 실패다. "내 동전이 특별하다는 증거가 없다."
+\end{example}
+
+\begin{pitfall}[세 부분 = 양측 p값이다]
+\Cref{ex:ht-puppy}(강아지)와 \Cref{ex:ht-juan}(복권)은 단측
+($H_a$: 수컷이 더 많다, 당첨이 더 잦다)이라 "둘째 부분"(똑같이 드문
+반대쪽)이 애초에 없다. 세 부분 분해는 정의 하나(\Cref{def:pvalue})를
+\textbf{양측} 대립가설에 적용한 모양일 뿐이다. 같은 관측(앞면 4번)을
+단측($H_a$: 앞면이 더 잘 나온다)으로 물으면 둘째 부분이 빠진다.
+
+\begin{align*}
+  &(5+1)/32 = 6/32 = 0.1875 && \text{단측: 관측값(앞4) + 더 드묾(앞5)만}
+\end{align*}
+
+0번(앞면 0번)은 "앞면이 \textbf{더} 잘 나온다"는 방향의 반대쪽이므로 이
+단측 p값에는 들어가지 않는다.
+
+\Cref{tab:pv-three-parts-compare}가 양측과 단측을 나란히 둔다.
+\end{pitfall}
+
+\begin{table}[ht]\centering
+\begin{tabularx}{\linewidth}{@{}X l l@{}}
+\toprule
+$H_a$ & 포함하는 부분 & p값 \\
+\midrule
+$\neq$(양측) & 관측 + 똑같이 드묾 + 더 드묾 & $12/32=0.375$ \\
+$>$(단측, 앞면이 더 잘 나온다) & 관측 + 더 드묾만 & $6/32=0.1875$ \\
+\bottomrule
+\end{tabularx}
+\caption{동전 5번 중 앞면 4번, 양측과 단측 p값 비교.}
+\label{tab:pv-three-parts-compare}
+\end{table}
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=\linewidth]{10_01_coin_pvalue.png}
+  \caption{동전 2번(왼쪽)과 5번(오른쪽)의 결과 분포. 오른쪽 막대 색이
+  관측(주황, 앞면 4번), 똑같이 드묾(파랑, 앞면 1번), 더 드묾(빨강, 앞면
+  0 또는 5번)을 구분한다. 제목의 $12/32=0.375$가 세 색을 모두 더한 값이다.}
+  \label{fig:pv-coin}
+\end{figure}
+
+\begin{figure}[ht]\centering
+\begin{tikzpicture}[
+  level distance = 11mm,
+  edge from parent/.style = {draw = bookmuted},
+  every node/.style = {font=\small},
+  box/.style = {draw = bookrule, rounded corners = 2pt, minimum width = 30mm,
+                minimum height = 8mm, align = center}]
+  \node {시작}
+    child { node {앞} edge from parent node[left] {0.5}
+      child { node {HH, $0.25$} edge from parent node[left] {0.5} }
+      child { node {HT, $0.25$} edge from parent node[right] {0.5} } }
+    child { node {뒤} edge from parent node[right] {0.5}
+      child { node {TH, $0.25$} edge from parent node[left] {0.5} }
+      child { node {TT, $0.25$} edge from parent node[right] {0.5} } };
+\end{tikzpicture}
+\hspace{4mm}
+\begin{tikzpicture}[node distance = 3mm]
+  \node[draw=bookaccent, fill=bookaccentbg, rounded corners=2pt,
+        minimum width=30mm, minimum height=8mm, align=center, font=\small]
+        (obs) {관측\\$0.25$};
+  \node[draw=bookmuted, fill=booksurface, rounded corners=2pt,
+        minimum width=30mm, minimum height=8mm, align=center, font=\small,
+        below = of obs] (eq) {똑같이 드묾\\$0.25$};
+  \node[draw=bookwarn, fill=bookwarnbg, rounded corners=2pt,
+        minimum width=30mm, minimum height=8mm, align=center, font=\small,
+        below = of eq] (more) {더 드묾\\$0$};
+\end{tikzpicture}
+\caption{동전 2번의 수형도(왼쪽, 슬라이드 9 구조)와 관측이 HH일 때 세 부분
+(오른쪽, 값 없는 흐름도). 오른쪽 상자를 모두 더하면 $0.5$다.}
+\label{fig:pv-three-parts}
+\end{figure}
+
+% =====================================================================
+\section{연속 데이터의 p값: 넓이}
+\label{sec:pv-continuous}
+% source: deck 10 slide 13, 14
+
+\begin{inbrief}
+  \item[Why] 연속값에서는 한 점의 확률이 0이라 "관측값의 확률"을 셀 수
+             없다.
+  \item[When] 키, 농도 같은 측정값.
+  \item[Where] 브라질 여성 키.
+  \item[How] 관측값보다 극단적인 쪽의 곡선 아래 넓이를 더한다(양측이면
+             양쪽).
+\end{inbrief}
+
+동전은 결과를 셀 수 있지만, 키는 셀 수 없다. 키가 정확히 $142.000\ldots$
+cm일 확률은 $0$이다. 대신 "142 cm \textbf{보다} 작은 쪽"처럼 범위의 넓이를
+잰다.
+
+\begin{example}[브라질 여성 키]
+\label{ex:pv-height}
+1996년 브라질 15--49세 여성 키의 95\%가 142--169 cm 사이였다(슬라이드
+13, \Cref{fig:pv-height}). 이 구간의 중점과 폭에서 평균과 표준편차를
+되짚는다.
+
+\begin{align*}
+  &(142+169)/2 = 155.5 && \text{구간 중점, 평균 155.7과 근사(반올림 차)}\\
+  &169-142 = 27 && \text{구간 폭}\\
+  &2\times1.96 = 3.92 && \text{표준정규 95\% 구간 폭의 배수}\\
+  &27/3.92 = 6.89 && \text{95\% 구간에서 되짚은 표준편차}
+\end{align*}
+
+$\sigma=6.89$ cm는 \textbf{슬라이드에 없는 이 책의 유도값}이다. 키가
+$N(155.7,\,6.89^2)$을 따른다고 두고 142 cm의 양측 p값을 계산한다.
+
+\begin{align*}
+  &P(h<142) = 0.0234 && \text{왼쪽 꼬리}\\
+  &P(h>169) = 0.0268 && \text{오른쪽 꼬리(중점이 155.7이라 완전히 대칭은 아님)}\\
+  &0.0234+0.0268 = 0.0502 && \text{양측 p값}
+\end{align*}
+
+$0.0502$ 는 $0.05$ 보다 \textbf{약간 크다.}
+\end{example}
+
+\begin{pitfall}[슬라이드 값은 "귀무가설: 이 사람이 특별하다", 바르게는 반대다]
+\label{pit:pv-null-reversed}
+슬라이드 13은 "Null Hypothesis: This person is special from this
+distribution"이라고 적는다. 귀무가설은 항상 "차이가 없다"는 쪽이어야
+한다(\Cref{def:ht-null}). 올바른 문장은 "$H_0$: 이 사람은 이 분포에서
+나왔다(특별하지 않다)"다. 기각하면 그때 "특별하다"고 말한다.
+\end{pitfall}
+
+\begin{pitfall}[슬라이드는 p = 0.05를 유의하다고 적지만, 바르게는 경계에서
+기각 실패다]
+슬라이드 13은 $0.025+0.025=0.05$ 를 "statistically significant"라고
+적는다. \Cref{def:pvalue}와 \Cref{sec:ht-pvalue}의 규칙은 "p값이 $\alpha$
+\textbf{보다 작으면} 기각"이다. $0.05$는 $0.05$보다 작지 않으므로
+엄밀히는 \textbf{기각 실패}다. 142 cm는 경계선 바로 위에 있는 값이다. 이
+장의 재계산 $0.0502$도 마찬가지로 경계를 살짝 넘는다.
+\end{pitfall}
+
+두 번째 예에서는 평균 근처를 묻는다. 155.4--156 cm 사이에서 사람을 볼
+확률의 p값은 얼마인가.
+
+\begin{align*}
+  &P(155.4<h<156) = 0.035 && \text{가운데 띠}\\
+  &P(h<155.4) = 0.483 && \text{왼쪽 나머지}\\
+  &P(h>156) = 0.483 && \text{오른쪽 나머지}\\
+  &0.035+0.483+0.483 = 1.001\approx1 && \text{합계(반올림 오차)}
+\end{align*}
+
+\begin{keyidea}
+평균을 포함하는 구간의 양측 p값은 \textbf{언제나 1에 가깝다.} 평균 근처는
+전혀 드물지 않기 때문이다. p값이 크다고 "특별하다"는 뜻이 되지 않는 것과
+정반대로, p값이 작아야 비로소 "드물다"는 신호다.
+\end{keyidea}
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=\linewidth]{10_02_height_pvalue.png}
+  \caption{브라질 여성 키 $N(155.7,\,6.89^2)$($\sigma$는 이 책의 유도값,
+  \Cref{ex:pv-height}). 왼쪽: 142/169 cm 꼬리(각 0.0234, 0.0268), 양측
+  p값 0.0502(슬라이드는 각 0.025, 합 0.05로 적는다). 오른쪽:
+  [155.4, 156] 띠 0.035와 양쪽 나머지 각 0.483.}
+  \label{fig:pv-height}
+\end{figure}
+
+% =====================================================================
+\section{시뮬레이션과 모수적 계산}
+\label{sec:pv-sim-vs-param}
+% source: deck 10 slide 16, 17, 18
+
+\begin{inbrief}
+  \item[Why] 귀무가설 아래 분포를 알아야 넓이를 잰다. 그 분포를 만드는
+             길이 두 가지다.
+  \item[When] 표준오차를 알 때.
+  \item[Where] 비타민 D 평균 대 기준 100.
+  \item[How] (a) 귀무가설 세상에서 연구 10,000번을 모의해 관측값 이상을
+             센다, (b) 정규분포를 알면 $z=(\bar x-\mu_0)/\mathrm{SE}$ 로
+             바로 계산한다.
+\end{inbrief}
+
+\begin{example}[비타민 D 평균이 100보다 낮은가]
+\label{ex:pv-vitd}
+연구 질문(슬라이드 16): 중년/노년 유럽 남성의 평균 비타민 D가 "적정"
+수준인 100 nmol/L보다 낮은가. $H_0$: 평균 $=100$. 관측한 표본 평균은
+63(슬라이드 17, 18), 표준오차 $\mathrm{SE}=3.3$.
+
+\textbf{(a) 시뮬레이션.} $H_0$ 세상(평균 100, SE 3.3인 정규분포)에서 연구를
+10,000번 모의하면, 관측값 63 아래로 내려가는 경우가 \textbf{0번}이다
+(\Cref{fig:pv-vitd} 왼쪽).
+
+\begin{align*}
+  &0/10{,}000 && \text{시뮬레이션에서 63 이하가 나온 횟수}\\
+  &p < 1/10{,}000 && \text{p값은 이 비율보다 작다고만 말할 수 있다}
+\end{align*}
+
+\textbf{(b) 모수적 계산.} 정규분포임을 알면 $z$ 점수로 바로 계산한다.
+
+\begin{align*}
+  &63-100 = -37 && \text{분자(관측 평균 $-$ 귀무값)}\\
+  &-37/3.3 = -11.21 && \text{표준화 점수 } z\\
+  &p = 2\times P(Z<-11.21) \approx 3.6\times10^{-29} && \text{양측 p값, 사실상 0}
+\end{align*}
+
+두 방법 모두 $H_0$ 를 기각한다. 표본 평균의 분포가 정규분포에 가깝기
+때문에, 10,000번 모의(a)와 정규분포 공식(b)이 같은 결론에 이른다. 이는
+\Cref{sec:ht-simulation,sec:ht-exact}가 강아지 예제에서 보인 "시뮬레이션
+대 정확 계산" 짝과 같은 구조다.
+\end{example}
+
+\begin{pitfall}[슬라이드는 관측 평균으로 62와 63을 섞어 쓴다, 이 책은 63으로
+통일한다]
+\label{pit:pv-vitd-62-63}
+슬라이드 15(\texttt{image36})는 신뢰구간 계산에서 관측 평균 \textbf{62}를
+쓰지만, 슬라이드 17, 18(\texttt{image39}, \texttt{image41})의 시뮬레이션과
+$z$ 계산은 \textbf{63}을 쓴다. 이 장은 본문·그림 전부 \textbf{63}으로
+통일한다. 62를 써도 결론은 바뀌지 않는다($z=(62-100)/3.3=-11.52$, 여전히 사실상 0).
+\end{pitfall}
+
+\begin{pitfall}[슬라이드는 부호 없이 $z=11.2$, 다시 계산하면 $z=-11.21$이다]
+슬라이드 18은 "$z=(63-100)/3.3=11.2$"라고 부호 없이 적는다. $63-100=-37$
+이므로 $z=-11.21$ 이 정확한 값이다(크기만 보면 11.2가 맞다). 같은 슬라이드의
+"true average weight"라는 표현은 "비타민 D 평균"의 오타로 보인다.
+\end{pitfall}
+
+\begin{pitfall}[슬라이드는 연구 질문을 단측으로, 대립가설을 양측으로
+적었다. 바르게는 둘 다 단측($H_a: \mu<100$)이다]
+슬라이드 16의 연구 질문은 "100보다 \textbf{낮은가}"($H_a: \mu<100$, 단측)인데,
+같은 슬라이드가 적은 대립가설은 "평균이 100이 \textbf{아니다}"($H_a:\mu\neq
+100$, 양측)다. 바르게는 연구 질문과 대립가설의 방향을 하나로 맞춰야 한다.
+\Cref{pit:ht-direction}이 경고한 것과 같은 종류의 불일치다.
+어느 쪽으로 계산해도 이 예에서는 기각으로 결론이 같다.
+\end{pitfall}
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=\linewidth]{10_03_vitd_null.png}
+  \caption{비타민 D: $H_0$ 아래 표본 평균의 시뮬레이션 10,000개(왼쪽, 평균
+  100, SE 3.3)와 관측값 63(점선). 10,000개 중 63 이하는 0개다. 오른쪽:
+  관측 평균 63을 중심으로 한 표본 평균의 분포와 95\% 구간
+  $[56.4,\,69.6]$(\Cref{ex:pv-vitd}, \Cref{pit:pv-vitd-62-63}).}
+  \label{fig:pv-vitd}
+\end{figure}
+
+% =====================================================================
+\section{신뢰구간과 가설검정}
+\label{sec:pv-ci-duality}
+% source: deck 10 slide 15, 19, 20
+
+\begin{inbrief}
+  \item[Why] 같은 데이터에서 두 도구가 서로 다른 말을 하면 안 된다.
+  \item[When] 신뢰구간이 이미 있을 때.
+  \item[Where] 비타민 D 95\%, 99\% 구간, 배 두 품종.
+  \item[How] \term{유의수준}(Significance Level) $=1-$ \term{신뢰수준}
+             (Confidence Level). 귀무가설의 값이 구간 밖이면 기각,
+             안이면 기각 실패. 구간은 p값보다 정보가 많다(크기와
+             불확실성을 함께 준다).
+\end{inbrief}
+
+비타민 D 예제(관측 평균 63, SE 3.3)로 이어간다. 신뢰구간은
+$\text{관측값}\pm z\cdot\mathrm{SE}$ 형태로 만든다(슬라이드 15).
+
+\begin{align*}
+  &63 - 1.96\times3.3 = 56.53 && \text{95\% 구간 하한(정확한 1.96)}\\
+  &63 + 1.96\times3.3 = 69.47 && \text{95\% 구간 상한}\\
+  &63 \pm 2\times3.3 = [56.4,\ 69.6] && \text{슬라이드가 쓰는 반올림 2}
+\end{align*}
+
+\begin{pitfall}[슬라이드 값은 62 기준 95\% 구간 (55.4, 68.6), 다시
+계산하면 63 기준 (56.4, 69.6)이다]
+\label{pit:pv-vitd-ci}
+슬라이드 15는 관측 평균 62로 $62\pm2\times3.3=[55.4,\,68.6]$을 계산한다.
+\Cref{pit:pv-vitd-62-63}에서 밝힌 대로 이 장은 63으로 통일하므로, 95\%
+구간은 $[56.4,\,69.6]$, 99\% 구간은 $63\pm2.576\times3.3=[54.5,\,71.5]$다
+(슬라이드의 62 기준 99\% 구간은 $[53.5,\,70.5]$). 어느 쪽을 쓰든 귀무값
+100은 구간 \textbf{밖}이라 결론(기각)은 같다.
+\end{pitfall}
+
+두 구간 모두 귀무값 $100$을 포함하지 않는다(\Cref{fig:pv-ci-test} 위).
+\textbf{같은 데이터에서 신뢰구간과 가설검정이 같은 결론에 이른다.}
+\Cref{tab:pv-ci-vs-p}가 이 규칙을 정리한다.
+
+\begin{table}[ht]\centering
+\begin{tabularx}{\linewidth}{@{}l l X X@{}}
+\toprule
+신뢰수준(Confidence Level) & 유의수준(Significance Level, $\alpha$) & 귀무값이 구간 밖이면 & 귀무값이 구간 안이면 \\
+\midrule
+95\% & 0.05 & $p<0.05$, 기각 & $p\ge0.05$, 기각 실패 \\
+99\% & 0.01 & $p<0.01$, 기각 & $p\ge0.01$, 기각 실패 \\
+\bottomrule
+\end{tabularx}
+\caption{유의수준 $=1-$ 신뢰수준(슬라이드 19). 비타민 D의 두 구간 모두
+귀무값 100을 포함하지 않으므로 기각이다.}
+\label{tab:pv-ci-vs-p}
+\end{table}
+
+슬라이드 19는 "신뢰구간에서 p값을 항상 이끌어낼 수 있다"고 적는다. 이
+문장이 성립하려면 구간이 \textbf{관측값 $\pm z\cdot\mathrm{SE}$} 형태로
+만들어져야 한다. 이 장의 모든 구간(비타민 D, 배)이 그 형태다. 구간이 다른
+방식(예: 비대칭 구간, 부트스트랩 구간)으로 만들어졌다면 이 변환이 그대로
+성립하지 않는다.
+
+\begin{example}[배 두 품종의 평균 칼로리 차이]
+\label{ex:pv-pears}
+Bosc 배 65개의 평균 120 kcal, 표준편차 15. Anjou 배 65개의 평균 116
+kcal, 표준편차 13(슬라이드 20). $H_0$: 두 품종의 평균 칼로리 차이는
+$0$이다.
+
+\begin{align*}
+  &15/\sqrt{65} = 1.860 && \text{Bosc의 표준오차}\\
+  &13/\sqrt{65} = 1.612 && \text{Anjou의 표준오차}\\
+  &\mathrm{SE}_{\text{diff}} = \sqrt{1.860^2+1.612^2} = 2.462 && \text{차이의 표준오차}\\
+  &120-116 = 4 && \text{관측된 평균 차이}\\
+  &6.44/2.462 = 2.616 && \text{자유도 약 125인 t분포의 99\% 임계값과 일치}\\
+  &4 \pm 6.44 = [-2.44,\ 10.44] && \text{99\% 구간}
+\end{align*}
+
+구간 $[-2.44,\,10.44]$가 귀무값 $0$을 \textbf{포함한다.} 따라서 $p>0.01$,
+\textbf{기각 실패}다. 올바른 결론 문장은 "두 품종의 평균 칼로리가
+다르다고 말할 근거가 없다"다.
+\end{example}
+
+\begin{pitfall}[슬라이드는 가정문과 실제 결론을 한 화면에 섞어 적는다,
+바르게는 처음부터 끝까지 기각 실패다]
+슬라이드 20의 텍스트를 그대로 옮기면 다음과 같다.
+\begin{enumerate}
+  \item "이 값을 100번 계산하면 99번이 이 구간 안에 있다"는 해석이 틀렸다.
+        올바른 해석은 \textbf{같은 절차로 구간을 100번 만들면 약 99개가
+        참값을 포함한다}는 뜻이다(구간 하나를 100번 다시 \textbf{계산}하는
+        것이 아니라, 표본을 100번 다시 \textbf{뽑아} 구간을 100번 만든다).
+  \item "P-value $<$ 0.01 $\to$ reject $\to$ the pears \textbf{are}
+        different" 줄은 \textbf{"구간이 겹치지 않았다면"이라는 가정 아래의
+        문장}이다("If it did not overlap, we could say this is that 1 in
+        100 times"). 실제로는 구간이 $0$을 포함하므로 이 가정은 성립하지
+        않는다. 슬라이드의 실제 결론은 그 다음 줄, "$0$ is in the
+        interval $\to$ nothing surprising $\to$ P-value $>$ 0.01 $\to$ fail
+        to reject"다. 두 갈래를 나란히 적어 놓아 가정문을 실제 결론으로
+        잘못 읽기 쉽다.
+  \item 실제 결론 줄의 "Apples are the same in their average caloric
+        content"의 "Apples"는 "\textbf{Pears}"의 오타로 보인다(이 예는
+        배(Bosc, Anjou) 이야기이고 사과는 등장하지 않는다).
+  \item "the pears are different", "Apples[Pears] are the same"은 그
+        자체로도 \Cref{tab:ht-wording}의 틀린 표현이다. 기각했을 때도
+        "다르다고 증명했다"가 아니라 "다르다고 말할 근거가 있다"이고,
+        기각 실패일 때도 "같다"가 아니라 "다르다고 말할 근거가
+        \textbf{없다}"다.
+\end{enumerate}
+이 장의 실제 계산(위)과 슬라이드의 실제 결론은 \textbf{같다.} 둘 다 구간이
+$0$을 포함하므로 기각 실패다. 슬라이드에는 "반대 결론"이 없다. 가정문
+줄만 따로 떼어 읽으면 기각처럼 보일 뿐이다.
+\end{pitfall}
+
+\begin{table}[ht]\centering
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
+\toprule
+& 판정: 기각 & 판정: 기각 실패 \\
+\midrule
+진실: 차이 없음 & \term{거짓 양성}(False Positive, 1종 오류/Type I Error,
+  \Cref{sec:pv-threshold}) & 올바른 판정 \\
+진실: 차이 있음 & 올바른 판정 & (\term{2종 오류}(Type II Error),
+  \Cref{sec:pv-future}) \\
+\bottomrule
+\end{tabularx}
+\caption{진실과 판정의 $2\times2$ 표. 이 장은 거짓 양성(1종 오류) 칸만
+채운다. 나머지 오류 칸은 \Cref{sec:pv-future}에서 열린 질문으로 남긴다.}
+\label{tab:pv-error-types}
+\end{table}
+
+\begin{figure}[ht]\centering
+  \includegraphics[width=0.8\linewidth]{10_04_ci_vs_test.png}
+  \caption{위: 비타민 D 95\% 구간 $[56.4,\,69.6]$과 99\% 구간
+  $[54.5,\,71.5]$(둘 다 63 기준, \Cref{pit:pv-vitd-ci}) 모두 귀무값
+  100을 벗어난다. 아래: 배 두 품종의 칼로리 차이 99\% 구간
+  $[-2.44,\,10.44]$는 귀무값 0을 포함해 기각 실패다.}
+  \label{fig:pv-ci-test}
+\end{figure}
+
+% =====================================================================
+\section{어떻게 적용하는가}
+\label{sec:pv-apply}
+% source: deck 10 slide 21
+
+\begin{inbrief}
+  \item[Why] p값 하나만으로는 결론을 온전히 전달하지 못한다.
+  \item[When] 검정 결과를 문장으로 옮길 때.
+  \item[Where] 이 책 안의 모든 결론 문장.
+  \item[How] "[p값]이므로 [기각/기각 실패]다. 차이는 [효과 크기, 신뢰구간]
+             이다"라는 틀을 쓴다.
+\end{inbrief}
+
+\Cref{fig:ht-flow}의 다섯 단계 마지막에 이 문장 틀을 붙인다. p값만 적고
+끝내지 않는다.
+
+\begin{itemize}
+  \item \Cref{subsec:ci-compare}, \Cref{fig:ci-compare}: 버거(평균 620,
+        95\% 구간 $[557,686]$)와 치킨너겟(평균 275, 구간 $[211,345]$)의
+        캡션이 쓴 $p<0.05$가 바로 이 장의 신뢰구간-검정 쌍대성
+        (\Cref{sec:pv-ci-duality})의 한 사례다. 새 수치는 계산하지
+        않는다.
+  \item \Cref{pit:sd-se-ci}: 표준오차와 표준편차의 구분이
+        \Cref{ex:pv-vitd}에서 $z=-11.21$이라는 큰 값을 만드는 이유다.
+  \item \Cref{ch:hw1}: 과제 데이터로 결론 문장 틀을 채워 보는 연습(계산
+        없이 문장만).
+  \item \Cref{ch:project}: 프로젝트 결과 절에서 p값과 효과 크기를 함께
+        적었는지 점검한다.
+\end{itemize}
+
+확인 문제(슬라이드 21 Kahoot을 대신한다).
+
+\begin{enumerate}
+  \item 동전을 3번 던져 3번 모두 앞면이 나왔다. 양측 p값은
+        $2/8=0.25$다. 이 값이 $\alpha=0.05$ 보다 큰가 작은가, 결론은
+        기각인가 기각 실패인가.
+  \item p값이 $0.04$이고 두 집단의 차이가 1\%포인트일 때, "차이가 크다"고
+        말할 수 있는가.
+  \item 95\% 신뢰구간이 $0$을 포함할 때, $\alpha=0.05$ 기준의 결론은
+        무엇인가.
+\end{enumerate}
+
+% =====================================================================
+\section{앞으로}
+\label{sec:pv-future}
+% source: deck 10 slide 22-25
+
+이 덱의 마지막 네 슬라이드(22--25)는 다음 강의를 미리 보여준다. 두 집단의
+평균을 정식으로 비교하는 \term{t검정}(t-test), 분포 모양 전체를 비교하는
+\term{콜모고로프-스미르노프 검정}(Kolmogorov-Smirnov Test)이 그것이다.
+슬라이드 24, 25의 두 표본 t검정 공식과 토마토 예제는 이 장에서 계산하지
+않는다. 분포 비교를 다루는 다음 장이 이어받는다.
+
+\begin{itemize}
+  \item \Cref{ex:ht-distance}가 열어 둔 질문, "평균에서의 거리 비교를
+        정식 검정 통계량으로 만드는 방법"이 다음 장에서 이어진다.
+  \item \term{2종 오류}(Type II Error)와 \term{검정력}(Power): 이 장의
+        \Cref{tab:pv-error-types}가 채우지 못한 칸이다. \Cref{sec:ht-future}
+        의 검정력 질문과 같은 갈래다. 이 덱에는 계산 방법이 없다.
+  \item 검정을 여러 번 반복하면(유전자 수천 개를 한 번에 검정하는 경우처럼)
+        기준 $0.05$가 만드는 거짓 양성이 쌓인다. 이 덱에는 다루지 않으므로
+        열린 질문으로만 남긴다.
+\end{itemize}

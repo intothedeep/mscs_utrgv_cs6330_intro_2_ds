@@ -2,6 +2,7 @@
 
 import deck5_visualization
 import deck6_distributions
+import deck7_qq_normalization
 import deck9_hypothesis
 import deck10_pvalue
 import deck11_compare
@@ -23,6 +24,10 @@ def main() -> None:
     deck6 = deck6_distributions.build_all(df)
     print(f"  {len(deck6)} figures\n")
 
+    print("Deck 7 - Q-Q Plot and Normalization")
+    deck7 = deck7_qq_normalization.build_all(df)
+    print(f"  {len(deck7)} figures\n")
+
     print("Deck 9 - Hypothesis Testing")
     deck9 = deck9_hypothesis.build_all()
     print(f"  {len(deck9)} figures\n")
@@ -39,7 +44,7 @@ def main() -> None:
     skew = skew_cases.build_all()
     print(f"  {len(skew)} figures\n")
 
-    print(f"wrote {len(deck5) + len(deck6) + len(deck9) + len(deck10) + len(deck11) + len(skew)} "
+    print(f"wrote {len(deck5) + len(deck6) + len(deck7) + len(deck9) + len(deck10) + len(deck11) + len(skew)} "
           f"figures to {FIG_DIR}")
 
 

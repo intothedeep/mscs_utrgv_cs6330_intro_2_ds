@@ -256,23 +256,26 @@
     was collected in 2015, so a year such as \texttt{20}--\texttt{24} cannot mean
     2020--2024, and the counts per year decrease smoothly from the 1920s down to
     \texttt{00}, with no break that would mark a switch to the 2000s. The 129 rows with
-    year \texttt{0000} (a missing-value placeholder) were dropped. Age is the number of
-    completed years on 2015-01-01, the collection year. Keeping ages 1 to 99 leaves
-    \textbf{458{,}015} people (mean 45.3, median 43, range 15 to 99). The minimum of 15
-    is a result of the 19\textit{yy} rule, since the latest possible birth year is 1999.}
-  \answerfig{p2_1_age}{Age in 2015. One broad peak in the 30s and 40s and a long right
-    tail up to 99; most of the mass is between 25 and 60.}
+    year \texttt{0000} (a missing-value placeholder) were dropped. Per the professor's
+    instruction (2026-09-23), age is now the year difference \textbf{2026 minus birth
+    year} (month/day ignored), kept only if $1 \le$ age $\le 100$. Keeping that range
+    leaves \textbf{453{,}905} people (mean 56.87, median 55, range 27 to 100). The
+    minimum of 27 is a result of the 19\textit{yy} rule, since the latest possible birth
+    year is 1999 ($2026-1999=27$). Of the rest, 6{,}684 rows had age $>100$ and were
+    dropped; none had age $<1$.}
+  \answerfig{p2_1_age}{Age in 2026 ($n = 453{,}905$). One broad peak in the 40s and 50s
+    and a long right tail up to 100; most of the mass is between 36 and 71.}
 
   \item Screenshot of distribution/histogram of the first digit of age
   \answerfig{p2_2_first_digit}{First digit of age, with the uniform level $1/9$ (dashed)
-    and Benford's law (orange). The shares are 1.3\%, 11.3\%, 26.2\%, 28.3\%, 16.7\%,
-    9.0\%, 4.4\%, 2.2\% and 0.7\% for digits 1 to 9. The data is far from uniform and
-    also far from Benford: it peaks at 3 and 4, where Benford predicts a steady decline
-    from 1.}
+    and Benford's law (orange). The shares are 0.2\%, 0.7\%, 7.9\%, 24.5\%, 30.0\%,
+    18.9\%, 9.9\%, 5.4\% and 2.5\% for digits 1 to 9. The data is far from uniform and
+    also far from Benford: it peaks at 5 and 4, where Benford predicts 1 to be the most
+    common.}
 
   \item Screenshot of distribution/histogram of the last digit of age
   \answerfig{p2_3_last_digit}{Last digit of age, with the uniform level $1/10$ (dashed).
-    Every digit has a share between 8.95\% and 11.01\%, within 1.1 percentage points of
+    Every digit has a share between 8.95\% and 11.10\%, within 1.10 percentage points of
     10\%.}
 
   \item Discussion (what are those distribution?) Why do you think it is like this?
@@ -288,22 +291,27 @@
     bars in the age histogram), not from any preference for particular digits.
 
     \medskip
-    \textbf{First digit.} This is also expected once you notice that, for ages 10 to 99,
-    the first digit \emph{is} the decade of life. Its histogram is therefore the age
-    distribution grouped by decade, and it has the same shape as the age distribution:
-    one peak (in the 30s and 40s) with a right tail. Digit 1 is almost empty because
-    only ages 15 to 19 are possible and few actors are that young, and 9 is almost empty
-    because few actors reach their 90s. For the first digit to be uniform, every decade
-    from teens to 90s would need the same number of actors, which working actors clearly
-    are not.
+    \textbf{First digit.} This is also expected, once the two boundary decades are
+    accounted for separately. For ages 30 to 99, the first digit \emph{is} the decade of
+    life, and grouping by decade reproduces the shape of the age distribution: it peaks
+    at 5 (the 50s, 30.0\%) and 4 (the 40s, 24.5\%), matching the median of 55. Digit 2 is
+    small (0.7\%) not because few actors are in their 20s, but because the $1 \le
+    \text{age} \le 100$ rule only keeps ages 27 to 29 in that decade, three values out of
+    ten, a boundary effect of the reference year rather than a property of the data.
+    Digit 1 is smaller still (0.2\%): no age from 10 to 19 survives the rule (the
+    youngest possible age is 27), so the entire digit-1 count comes from the 816 people
+    with age exactly 100 ($816 / 453{,}905 = 0.18\%$, matching the observed share). For
+    the first digit to be uniform, every decade would need the same number of actors,
+    which working actors clearly are not, and the two extreme digits are further skewed
+    by where the $[1, 100]$ window happens to cut.
 
     \medskip
     \textbf{It is not Benford's law either.} Benford's law (first digit $d$ with
     probability $\log_{10}(1 + 1/d)$, so 1 is the most common at 30.1\%) applies to data
     that spans several orders of magnitude, such as populations, prices or the airport
     route counts in Problem~1, where the log of the value is spread out roughly evenly.
-    Age spans less than one order of magnitude (15 to 99) and is concentrated around 45,
-    so its first digit shows where that one hump sits, not Benford's pattern. In short,
+    Age spans less than one order of magnitude (27 to 100) and is concentrated around
+    55, so its first digit shows where that one hump sits, not Benford's pattern. In short,
     the last digit is uniform because it throws away where the value is and keeps only
     its position within a block of ten. The first digit keeps exactly that information,
     so its distribution follows the shape of the age distribution.}

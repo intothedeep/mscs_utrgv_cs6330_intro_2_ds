@@ -44,7 +44,7 @@ def _normal_sigma_bands(df: pd.DataFrame) -> str:
     pdf = stats.norm.pdf(grid, mu, sigma)
 
     fig, ax = plt.subplots(figsize=(7.8, 4.5))
-    for k, alpha, label in [(2, 0.14, "+/- 2 sigma = 95%"), (1, 0.22, "+/- 1 sigma = 68%")]:
+    for k, alpha, label in [(2, 0.14, "+/- 2 sigma = 95.45%"), (1, 0.22, "+/- 1 sigma = 68.27%")]:
         band = (grid >= mu - k * sigma) & (grid <= mu + k * sigma)
         ax.fill_between(grid[band], pdf[band], color=ACCENT, alpha=alpha, label=label)
     ax.plot(grid, pdf, color=ACCENT, lw=2.2)
@@ -199,6 +199,46 @@ def _bernoulli_binomial(df: pd.DataFrame) -> tuple[str, dict[str, float]]:
     }
 
 
+def _slide_recompute(df: pd.DataFrame, inside_2sigma: float, sw_p: float) -> None:
+    """A06 recompute table (arch-deck6.md sec:3): print slide value next to the
+    recomputed one for every row T08 owns. No new figures - print only."""
+    # R7/R7b: the 68-95-99.7 rule, computed from scipy.stats.norm rather than
+    # hard-coded, so a change in scipy's normal CDF would show up here too.
+    for k, slide_pct in [(1, 68), (2, 95), (3, 99.7)]:
+        pct = (stats.norm.cdf(k) - stats.norm.cdf(-k)) * 100
+        print(f"  R7 (+/-{k} sigma)  slide {slide_pct}%, recomputed {pct:.2f}%")
+
+    # R1, R3, R3b: exponential CDF 1 - e^{-lambda t}, computed with scipy/numpy,
+    # not hard-coded exponents.
+    r1 = 1 - np.exp(-0.2 * 3)
+    r3 = 1 - np.exp(-10 * 5 / 60)
+    r3b = 1 - np.exp(-1 * 5 / 60)
+    print(f"  R1  1-e^(-0.2*3)          slide 0.4512, recomputed {r1:.4f}")
+    print(f"  R3  1-e^(-10*5/60)        slide 0.0801, recomputed {r3:.4f} (arch: 0.5654)")
+    print(f"  R3b 1-e^(-1*5/60) (no lambda) slide n/a, recomputed {r3b:.4f} (arch: 0.0800)")
+
+    # R6: exact exponential inter-arrival probabilities vs the slide-18 geometric
+    # approximation (0.05, 0.0475, 0.045125).
+    approx = [0.05, 0.95 * 0.05, 0.95**2 * 0.05]
+    exact = [1 - np.exp(-0.05), np.exp(-0.05) - np.exp(-0.10), np.exp(-0.10) - np.exp(-0.15)]
+    for minute, (a, e) in enumerate(zip(approx, exact), start=1):
+        print(f"  R6  minute {minute}  geometric approx {a:.5f}, exact exponential {e:.5f}")
+
+    # R18: the three TODO values the existing chapter draft still owes.
+    print(f"  R18 calories inside +/-2 sigma  slide TODO 96.0%, recomputed {inside_2sigma:.1f}%")
+    print(f"  R18 Shapiro-Wilk p on calories  slide TODO 0.00038, recomputed {sw_p:.5f}")
+
+    v = np.sort(df["serving_size"].to_numpy())
+    n = v.size
+    emp = np.arange(1, n + 1) / n
+    a, b = v.min(), v.max()
+    d_uniform = np.max(np.abs(emp - (v - a) / (b - a)))
+    mu, sigma = stats.norm.fit(v)
+    d_normal = np.max(np.abs(emp - stats.norm.cdf(v, mu, sigma)))
+    print(f"  R18 serving_size max gap  uniform {d_uniform:.3f}, normal {d_normal:.3f}"
+          f"  (slide TODO 0.153 vs 0.101)")
+
+
 def build_all(df: pd.DataFrame) -> list[str]:
     """Render every deck-6 figure and report the fitted parameters."""
     p_norm, norm = _normal_fit(df)
@@ -215,4 +255,19 @@ def build_all(df: pd.DataFrame) -> list[str]:
     print(f"  FIT exponential(sugars) lambda = {expo['lambda']:.4f} (mean = {expo['mean']:.2f} g)")
     print(f"  FIT bernoulli(sodium>1000mg) p = {bern['p']:.4f}")
     print(f"  FIT binomial(n=10)     mean = {bern['mean']:.2f}, SD = {bern['sd']:.2f}")
+
+    v = df["calories"].to_numpy()
+    mu, sigma = stats.norm.fit(v)
+    inside_2sigma = np.mean((v >= mu - 2 * sigma) & (v <= mu + 2 * sigma)) * 100
+    _slide_recompute(df, inside_2sigma, sw_p)
+
     return [p_norm, p_band, p_cdf, p_exp, p_uni, p_pl, p_bin]
+
+
+if __name__ == "__main__":
+    from data import load
+    from style import apply_style
+
+    apply_style()
+    print("Deck 6 - Data and Distributions")
+    build_all(load())

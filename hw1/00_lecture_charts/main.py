@@ -1,5 +1,7 @@
 """Entry point: render every lecture-5 and lecture-6 figure from the fast-food data."""
 
+import deck3_data_matrix
+import deck4_basic_stats
 import deck5_visualization
 import deck6_distributions
 import deck7_qq_normalization
@@ -15,6 +17,14 @@ def main() -> None:
     apply_style()
     df = load()
     print(f"dataset: {df.shape[0]} items x {df.shape[1]} variables\n")
+
+    print("Deck 3 - Data and Matrix")
+    deck3 = deck3_data_matrix.build_all(df)
+    print(f"  {len(deck3)} figures\n")
+
+    print("Deck 4 - Basic Statistics")
+    deck4 = deck4_basic_stats.build_all()
+    print(f"  {len(deck4)} figures\n")
 
     print("Deck 5 - Basic Statistics and Visualization")
     deck5 = deck5_visualization.build_all(df)
@@ -44,7 +54,7 @@ def main() -> None:
     skew = skew_cases.build_all()
     print(f"  {len(skew)} figures\n")
 
-    print(f"wrote {len(deck5) + len(deck6) + len(deck7) + len(deck9) + len(deck10) + len(deck11) + len(skew)} "
+    print(f"wrote {len(deck3) + len(deck4) + len(deck5) + len(deck6) + len(deck7) + len(deck9) + len(deck10) + len(deck11) + len(skew)} "
           f"figures to {FIG_DIR}")
 
 

@@ -3,6 +3,7 @@
 import deck5_visualization
 import deck6_distributions
 import deck9_hypothesis
+import deck10_pvalue
 import skew_cases
 from data import load
 from style import FIG_DIR, apply_style
@@ -25,11 +26,15 @@ def main() -> None:
     deck9 = deck9_hypothesis.build_all()
     print(f"  {len(deck9)} figures\n")
 
+    print("Deck 10 - P-value")
+    deck10 = deck10_pvalue.build_all()
+    print(f"  {len(deck10)} figures\n")
+
     print("Book 2.3.2 - Skew sign and direction")
     skew = skew_cases.build_all()
     print(f"  {len(skew)} figures\n")
 
-    print(f"wrote {len(deck5) + len(deck6) + len(deck9) + len(skew)} figures to {FIG_DIR}")
+    print(f"wrote {len(deck5) + len(deck6) + len(deck9) + len(deck10) + len(skew)} figures to {FIG_DIR}")
 
 
 if __name__ == "__main__":

@@ -13,3 +13,6 @@
 2026-09-23 lec11: DONE, T22/T22r/T23/T24 closed, reviews/lec11.md PASS cycle 2, leftovers fixed by main session; KS two-sample exact p 0.0499, asymptotic 0.0815 (architecture.md §7.y), committed
 2026-09-23 q8-links: DONE, T25 by main session (numstat 1/0 ×3, clean build), T26 closed differently (main-session check, no reviews/q8-links.md)
 2026-09-23 plan: §3.1a–c archived → _archive/lec10-lec11.md; PLAN.md 286 lines, under 300, no split needed; next open task A07 (deck 7)
+2026-09-23 hw2: H03 closed out of plan, P2 age = 2026 − birth year (19yy), 1 ≤ age ≤ 100, 453,905 kept (was 458,015); code, figures, hw2/report, book HW2 chapter updated; hw2/report_submit/ untouched (4551718)
+2026-09-24 lec07: DONE, A07 (architecture.md §8 + §8.z Q12–Q16), T05/T05r (reviews/T05.md, cycle-2 fixes; scikit-learn in uv env for load_iris only, Q13), T06/T07 (reviews/lec07.md PASS cycle 2, minor items fixed by main session) (_archive/lec07.md)
+2026-09-24 plan: §3.2 archived → _archive/lec07.md; Q14 YES → new open T27 (§3.2a, main session, one line each in lec09/lec11/hw02); A06 dep += T27; next open T27 then A06

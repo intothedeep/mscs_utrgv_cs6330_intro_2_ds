@@ -76,12 +76,17 @@ Planning consequences (pm, 2026-09-23):
 - [x] **H02** HW2 chapter `chapters/hw02-data-distributions.tex` (+ one `\input` in
   `parts/part2-practice.tex`) written; `reviews/hw02.md` PASS in cycle 2; committed.
   Not in the original plan; added closed. Non-blocking leftovers → backlog X04.
+- [x] **H03** HW2 P2 age-rule update (2026-09-23, professor's instruction via owner):
+  age = 2026 − birth year, two-digit years stay 19yy, keep 1 ≤ age ≤ 100; 453,905 rows
+  kept (was 458,015). Code, figures, `hw2/report` and the book HW2 chapter updated
+  (commit 4551718). `hw2/report_submit/` is the owner's own template, not touched.
+  Out of plan; added closed.
 
 ## 3. Chapter requirements and task list
 
-Run strictly in block order 3.0 → 3.1 → 3.1a → 3.1b → 3.1c → 3.2 → 3.3 → 3.4 →
+Run strictly in block order 3.0 → 3.1 → 3.1a → 3.1b → 3.1c → 3.2 → 3.2a → 3.3 → 3.4 →
 3.5 → 3.6, IDs in order inside a block, one task at a time (T19–T26 run before A07:
-owner Order, 2026-09-23). Every writer/developer task is
+owner Order, 2026-09-23; T27 runs before A06). Every writer/developer task is
 followed by its reviewer task before the next chapter opens. "AC-W" = §4, applied
 to the task's output file. Paths relative to `book_intro_2_ds/` unless they start
 with `hw1/`. Every agent prompt restates: no model training, no notebook
@@ -120,34 +125,26 @@ A-tasks: In = architecture.md + `notes_text/<deck>/`; Out = architecture.md (app
 > (closed differently: main-session numstat + clean build, no reviewer dispatch). <!-- ARCHIVE: history-only -->
 > Detail: [_archive/lec10-lec11.md](./_archive/lec10-lec11.md)
 
-### 3.2 Deck 7 → `chapters/lec07-qq-normalization.tex` (`ch:qq-normalization`)
+### 3.2 Deck 7 → `lec07-qq-normalization.tex`: DONE (2026-09-24)
 
-Spec: architecture.md §4.2 (outline only).
+> [x] A07 (architecture.md §8 + §8.z Q12–Q16), [x] T05, [x] T05r (`reviews/T05.md`,
+> cycle-2 fixes; scikit-learn in uv env for `load_iris` only, Q13), [x] T06, [x] T07
+> (`reviews/lec07.md` PASS cycle 2; minor items fixed by main session). <!-- ARCHIVE: history-only -->
+> Detail: [_archive/lec07.md](./_archive/lec07.md)
 
-- [ ] **A07** system-architect. Append to architecture.md a §4.2 addendum: §3.3-style
-  slide map (slides 1–26), §3.4-style recompute table (slide 18 formula restored from
-  `media/image46.png` and 6000 / 5700 / 0.035 recomputed; iris discretization
-  boundaries; quantile-normalization hand example), figure list (label, file
-  `07_0N_*.png`, generator), iris data source, In brief drafts. Out:
-  `research/architecture.md` (append only). Dep: T26 PASS (was T04; owner Order 2026-09-23).
-  AC: every slide 1–26 in the map; every number the slides show has a recompute row
-  with verdict; every data figure has a filename.
-- [ ] **T05** developer. `hw1/00_lecture_charts/deck7_qq_normalization.py` → the
-  A07 figure list; register in `main.py`. Also print the `calories` Shapiro p and
-  `sugars` skew before/after log (architecture.md §4.2 item 14). Dep: A07.
-  AC: as T02 (runs in seconds, exit 0, all listed PNGs exist, printed values reported back).
-- [ ] **T05r** reviewer. Verify T05. Dep: T05.
-- [ ] **T06** sonnet-writer. Write the chapter + insert its `\input` line between
-  `04-distributions` and `lec09-hypothesis-testing` in part1. In: architecture.md §4.2 + A07, T05 values.
-  Out: `chapters/lec07-qq-normalization.tex`, `parts/part1-foundations.tex`. Dep: T05r.
-  AC: AC-W1..W10. Plus: labels `sec:qq-background`, `sec:qq-why`,
-  `sec:dist-check-hist`, `sec:dist-check-cdf`, `sec:qq`, `sec:qq-two-samples`,
-  `sec:discretization`, `sec:normalization`, `sec:quantile-norm`, `sec:robust-scaling`,
-  `sec:log-transform`, `sec:impute`, `sec:qq-apply`, `sec:qq-future`;
-  `fig:normal-fit` labels `06_01_normal_fit.png` here; background self-summarizes
-  CDF; `\log 0` pitfall cites `ex:zero-as-missing`; deck 2 slides 9–11 cited in
-  `sec:impute` (Q3); every A07 number and pitfall present.
-- [ ] **T07** reviewer. Out: `reviews/lec07.md`. Dep: T06.
+### 3.2a Q14 forward links → lec07 (lec09, lec11, hw02)
+
+Spec: architecture.md §8.8 "새 장으로 들어오는 링크" + §8.z Q14 (owner YES).
+
+- [ ] **T27** main session (same method as T25). Add ONE new source line per file,
+  existing sentences untouched: (a) `chapters/lec09-hypothesis-testing.tex` in
+  `sec:ht-future` → `\Cref{sec:qq}`; (b) `chapters/lec11-comparing-distributions.tex`
+  in `sec:cd-future` → `\Cref{sec:qq}`, `\Cref{fig:qq-calories}`; (c)
+  `chapters/hw02-data-distributions.tex` after the QQ definition in
+  `sec:hw2-compare-how` → `\Cref{sec:qq}` (one clause: axis orientation differs).
+  Dep: T07 PASS.
+  AC: `git diff --numstat` = `1 0` for each of the three files; added lines pass
+  AC-W3/W4; AC-W1/W2 clean build (0 undefined/multiply defined).
 
 ### 3.3 Deck 6 → fill `chapters/04-distributions.tex`
 
@@ -155,7 +152,7 @@ Spec: architecture.md §4.3.
 
 - [ ] **A06** system-architect (small; §4.3 already has the recompute values).
   §4.3 addendum: slide map (1–30); whether any new figure beyond existing
-  `06_0N_*.png` is needed (list or "none"). Dep: T07 PASS.
+  `06_0N_*.png` is needed (list or "none"). Dep: T07 PASS, T27.
 - [ ] **T08** developer. Extend `deck6_distributions.py` only for A06-listed figures
   (if "none": print the TODO values 96.0% and Shapiro 0.00038 and report). Dep: A06.
   AC: as T02.

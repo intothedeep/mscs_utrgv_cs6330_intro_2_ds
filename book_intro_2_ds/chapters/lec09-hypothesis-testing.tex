@@ -83,10 +83,14 @@ level"이라는 말을 쓰지 않고 "significance test"만 쓰지만, 이 장�
 기호 & 뜻 & 읽기 \\
 \midrule
 $H_0$ & \term{귀무가설}(Null Hypothesis): 차이 없음, 기존 값 그대로 & 에이치 제로 \\
+\midrule
 $H_a$ & \term{대립가설}(Alternative Hypothesis): 찾으려는 주장 & 에이치 에이 \\
+\midrule
 $p$ & 모수로서 성공 확률(예: $p = 50\%$). p값과는 다르다(위 함정 참고) & 피 \\
+\midrule
 $\alpha$ & \term{유의수준}(Significance Level): 미리 정한 기각 기준(이 장은
 1\%, \Cref{sec:ci}는 5\%) & 알파 \\
+\midrule
 $n$, $X$ & 시행 횟수, 성공 횟수 & \\
 \bottomrule
 \end{tabularx}
@@ -218,7 +222,9 @@ $H_0$: 회복 시간에 차이가 없다, $H_a$: 차이가 있다. 이 대립가
 올바른 표현 & 틀린 표현 \\
 \midrule
 "$H_0$ 를 기각한다" & "$H_0$ 가 틀렸다고 증명했다" \\
+\midrule
 "$H_0$ 를 기각하지 못한다" & "$H_0$ 를 채택한다" \\
+\midrule
 "기각할 증거가 부족하다" & "$H_0$ 가 옳다고 증명했다" \\
 \bottomrule
 \end{tabularx}
@@ -247,7 +253,9 @@ $H_a$ 는 다음 셋 중 하나다.
 $H_a$ & 이름 & 극단값의 방향 \\
 \midrule
 모수 $>$ 값 & 단측검정(오른쪽 꼬리) & 관측값보다 큰 쪽 \\
+\midrule
 모수 $<$ 값 & 단측검정(왼쪽 꼬리) & 관측값보다 작은 쪽 \\
+\midrule
 모수 $\neq$ 값 & 양측검정 & 양쪽 다 \\
 \bottomrule
 \end{tabular}
@@ -393,14 +401,23 @@ $0.0037 < 1\%$ 이므로 \textbf{기각한다}. 결론: "이 강아지들에서 
 $k$ (수컷 수) & 슬라이드 빈도(1000회 중) & 정확값 $1000\binom{15}{k}/2^{15}$ \\
 \midrule
 6  & 153 & 152.7 \\
+\midrule
 7  & 196 & 196.4 \\
+\midrule
 8  & 196 & 196.4 \\
+\midrule
 9  & 153 & 152.7 \\
+\midrule
 10 & 92  & 91.6 \\
+\midrule
 11 & 42  & 41.7 \\
+\midrule
 12 & 14  & 13.9 \\
+\midrule
 13 & 3   & 3.2 \\
+\midrule
 14 & 0   & 0.46 \\
+\midrule
 15 & 0   & 0.03 \\
 \bottomrule
 \end{tabularx}
@@ -476,13 +493,21 @@ $\sqrt{400 \cdot 0.1 \cdot 0.9} = 6$ 이다.
 반항적 비율(\%, 묶음) & 슬라이드 빈도(1000회 중) & 위에서부터 누적(꼬리 합) \\
 \midrule
 6  & 7   & 1000 \\
+\midrule
 7  & 40  & 993 \\
+\midrule
 8  & 93  & 953 \\
+\midrule
 9  & 173 & 860 \\
+\midrule
 10 & 327 & 687 \\
+\midrule
 11 & 253 & 360 \\
+\midrule
 12 & 73  & 107 \\
+\midrule
 13 & 27  & 34 \\
+\midrule
 14 & 7   & 7 \\
 \bottomrule
 \end{tabularx}
@@ -623,9 +648,12 @@ $C = \{20, 28, 34\}$, $D = \{22, 26, 37\}$.
 \midrule
 금성 생명체 & 생명체 없음 & 생명체 있음 & (증거 없음) & -- & 기각 실패
   (증거가 나오면 기각) \\
+\midrule
 강아지(\Cref{ex:ht-puppy}) & $p=0.5$ & $p>0.5$ & 0.0037 & 1\% & 기각 \\
+\midrule
 외계인 침공(\Cref{pit:ht-alien}) & $p=0.10$ & $p>0.10$ & 0.00664 &
   1\% & 기각(방향 문제는 \Cref{pit:ht-alien}) \\
+\midrule
 후안의 복권(\Cref{ex:ht-juan}) & $p=0.4$ & $p>0.4$ & 0.064 & 1\% & 기각 실패 \\
 \bottomrule
 \end{tabularx}

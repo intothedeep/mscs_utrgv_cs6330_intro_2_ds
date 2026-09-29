@@ -209,10 +209,13 @@ $10^\circ\mathrm{C}$ 보다 ``$10^\circ$ 더 덥다''라고는 말할 수 있어
 \midrule
 명목(Nominal)  & $=,\ \neq$                    & 최빈값(Mode)
                & 혈액형 $\cdot$ 우편번호 $\cdot$ 음식 종류 \\
+\midrule
 순서(Ordinal)  & $+\ <,\ >$                    & $+$ 중앙값(Median)
                & 학력 $\cdot$ 만족도 $\cdot$ 학점 \\
+\midrule
 구간(Interval) & $+\ -$                        & $+$ 평균(Mean) $\cdot$ 표준편차
                & 섭씨온도 $\cdot$ 연도 $\cdot$ 지능지수 \\
+\midrule
 비율(Ratio)    & $+\ \times,\ \div$            & $+$ 기하평균 $\cdot$ 변동계수
                & 칼로리 $\cdot$ 무게 $\cdot$ 금액 $\cdot$ 개수 \\
 \bottomrule
@@ -235,12 +238,19 @@ HW1 의 패스트푸드 영양정보 데이터
 변수 & 유형 & 그렇게 가른 이유 \\
 \midrule
 \texttt{restaurant}   & 명목(Nominal) & 식당 이름. 순서가 없다 \\
+\midrule
 \texttt{item}         & 명목(Nominal) & 메뉴 이름. 고유 식별자에 가깝다 \\
+\midrule
 \texttt{type}         & 명목(Nominal) & 음식 종류. 우열이 없다 \\
+\midrule
 \texttt{serving\_size}& 비율(Ratio)   & 0\,g 은 양이 없다는 뜻 \\
+\midrule
 \texttt{calories}     & 비율(Ratio)   & 0\,kcal 은 열량이 없다는 뜻 \\
+\midrule
 \texttt{fat}          & 비율(Ratio)   & 0\,g 은 지방이 없다는 뜻 \\
+\midrule
 \texttt{sodium}       & 비율(Ratio)   & 0\,mg 은 나트륨이 없다는 뜻 \\
+\midrule
 \texttt{sugars}       & 비율(Ratio)   & 0\,g 은 당류가 없다는 뜻 \\
 \bottomrule
 \end{tabularx}
@@ -304,6 +314,7 @@ HW1 의 패스트푸드 영양정보 데이터
 \midrule
 수치형(Numeric) & 태어난 연도(구간), 고객 수(비율)
   & 길이 $\cdot$ 무게(비율), 섭씨온도 $\cdot$ 경도(구간) \\
+\midrule
 범주형(Categorical) & 참/거짓(명목), 전공(명목), 만족도 1$\sim$5(순서)
   & 없음 \\
 \bottomrule
@@ -326,11 +337,15 @@ HW1 의 패스트푸드 영양정보 데이터
 항목 & 척도 & 이산/연속 & 근거 \\
 \midrule
 색(Color) & 명목(Nominal) & 이산형 & 색 이름 사이에 서열이 없다 \\
+\midrule
 경도(Longitude) & 구간(Interval) & 연속형 & $0^\circ$는 Greenwich를
   고른 약속일 뿐이다 \\
+\midrule
 강사 만족도 1$\sim$5 & 순서(Ordinal) & 이산형 & 등급 사이 간격이
   같다는 보장이 없다(\Cref{def:nominal-ordinal}) \\
+\midrule
 무게(Weight) & 비율(Ratio) & 연속형 & 0\,kg은 무게가 없다는 뜻이다 \\
+\midrule
 전공(College Major) & 명목(Nominal) & 이산형 & 전공 이름 사이에
   서열이 없다 \\
 \bottomrule
@@ -390,6 +405,7 @@ HW1 의 패스트푸드 영양정보 데이터
 \midrule
 행($\mathbf{x}_i$) & 표본(Sample), 인스턴스(Instance), 레코드(Record),
   객체(Object), 점(Point), 특징 벡터(Feature Vector) \\
+\midrule
 열($X_j$) & 속성(Attribute), 특징(Feature), 차원(Dimension),
   변수(Variable), 필드(Field) \\
 \bottomrule
@@ -408,9 +424,13 @@ HW1 의 패스트푸드 영양정보 데이터
 이름(Name) & 급여(Salary, \$) & 나이(Age, Years) \\
 \midrule
 Jane    & 90000 & 52 \\
+\midrule
 John    & 85000 & 48 \\
+\midrule
 Delilah & 75000 & 32 \\
+\midrule
 Dave    & 90000 & 53 \\
+\midrule
 Ellen   & 82000 & 44 \\
 \bottomrule
 \end{tabularx}
@@ -477,6 +497,7 @@ Ellen   & 82000 & 44 \\
 \midrule
 배열 차원(Array Dimension) & 값에 접근하는 인덱스(축)의 수. 표(행,
   열)는 축이 2개이므로 항상 배열 차원 2다 \\
+\midrule
 공간 차원(Space Dimension) & 속성의 수 $d$. 속성이 3개면 그 점들은
   3차원 공간에 놓인다 \\
 \bottomrule
@@ -515,9 +536,13 @@ Dave(53세, 90000)는 나이만 한 살 다를 뿐이라 그림에서 거의 겹
 급여(Salary, \$) & 나이(Age, Years) & 근속연수(Years in Service) \\
 \midrule
 90000 & 52 & 10 \\
+\midrule
 85000 & 48 & 20 \\
+\midrule
 75000 & 32 & 30 \\
+\midrule
 90000 & 53 & 40 \\
+\midrule
 82000 & 44 & 20 \\
 \bottomrule
 \end{tabularx}
@@ -589,9 +614,13 @@ Dave(53세, 90000)는 나이만 한 살 다를 뿐이라 그림에서 거의 겹
 나이(Age) & 급여(Salary) \\
 \midrule
 20 & 90000 \\
+\midrule
 30 & 85000 \\
+\midrule
 28 & 40000 \\
+\midrule
 40 & 95000 \\
+\midrule
 35 & 42000 \\
 \bottomrule
 \end{tabularx}
@@ -618,14 +647,23 @@ $\mathbf{x}_{149}, \mathbf{x}_{150}$은 virginica다.}
  & (Sepal Length) & (Sepal Width) & (Petal Length) & (Petal Width) & \\
 \midrule
 $\mathbf{x}_1$   & 5.1 & 3.5 & 1.4 & 0.2 & setosa \\
+\midrule
 $\mathbf{x}_2$   & 4.9 & 3.0 & 1.4 & 0.2 & setosa \\
+\midrule
 $\mathbf{x}_3$   & 4.7 & 3.2 & 1.3 & 0.2 & setosa \\
+\midrule
 $\mathbf{x}_4$   & 4.6 & 3.1 & 1.5 & 0.2 & setosa \\
+\midrule
 $\mathbf{x}_5$   & 5.0 & 3.6 & 1.4 & 0.2 & setosa \\
+\midrule
 $\mathbf{x}_6$   & 5.4 & 3.9 & 1.7 & 0.4 & setosa \\
+\midrule
 $\mathbf{x}_7$   & 4.6 & 3.4 & 1.4 & 0.3 & setosa \\
+\midrule
 $\mathbf{x}_8$   & 5.0 & 3.4 & 1.5 & 0.2 & setosa \\
+\midrule
 $\mathbf{x}_{149}$ & 6.2 & 3.4 & 5.4 & 2.3 & virginica \\
+\midrule
 $\mathbf{x}_{150}$ & 5.9 & 3.0 & 5.1 & 1.8 & virginica \\
 \bottomrule
 \end{tabularx}
@@ -690,6 +728,7 @@ versicolor, virginica)을 담은 명목 범주형(\Cref{sec:attr-categorical})
     영역 & RGB 색 & 질감 \\
     \midrule
     $r_1$ & \dots & \dots \\
+\midrule
     $r_2$ & \dots & \dots \\
     \bottomrule
     \end{tabular}};

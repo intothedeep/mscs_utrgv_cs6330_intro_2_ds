@@ -67,10 +67,15 @@ PDF를 쓰고, 그 값 자체는 확률이 아니라 \textbf{밀도}다. 확률�
 분포 & 연속/이산 & 이 장의 절 \\
 \midrule
 정규(Normal)     & 연속 & \Cref{sec:normal} \\
+\midrule
 지수(Exponential) & 연속 & \Cref{sec:exponential} \\
+\midrule
 멱법칙(Power Law) & 연속 & \Cref{sec:powerlaw} \\
+\midrule
 균등(Uniform)     & 연속·이산 둘 다 & \Cref{sec:uniform} \\
+\midrule
 베르누이(Bernoulli) & 이산 & \Cref{sec:binomial} \\
+\midrule
 이항(Binomial)     & 이산 & \Cref{sec:binomial} \\
 \bottomrule
 \end{tabularx}
@@ -290,7 +295,9 @@ $P(k-1<X<k) = e^{-\lambda(k-1)} - e^{-\lambda k}$로 구한다.
 분(1분 구간) & 기하분포 근사 & 지수분포 정확값 & 차이 \\
 \midrule
 1분째 & 0.05000 & 0.04877 & 0.0012 \\
+\midrule
 2분째 & 0.04750 & 0.04639 & 0.0011 \\
+\midrule
 3분째 & 0.045125 & 0.04413 & 0.0010 \\
 \bottomrule
 \end{tabularx}
@@ -607,14 +614,19 @@ $1000\,\text{mg}$을 넘는지 여부를 베르누이 시행으로, $n=10$번 �
 \midrule
 정규(Normal)     & 연속 & $\mu, \sigma^2$ & $\mu$ & $\sigma^2$
   & \Cref{sec:normal} \\
+\midrule
 지수(Exponential)     & 연속 & $\lambda$ & $1/\lambda$ & $1/\lambda^2$
   & \Cref{sec:exponential} \\
+\midrule
 멱법칙(Power Law)   & 연속 & $\alpha, x_{\min}$ & (조건부 존재) & (조건부 존재)
   & \Cref{sec:powerlaw} \\
+\midrule
 균등(Uniform)     & 연속 & $a, b$ & $(a+b)/2$ & $(b-a)^2/12$
   & \Cref{sec:uniform} \\
+\midrule
 베르누이(Bernoulli) & 이산 & $p$ & $p$ & $p(1-p)$
   & \Cref{sec:binomial} \\
+\midrule
 이항(Binomial)     & 이산 & $n, p$ & $np$ & $np(1-p)$
   & \Cref{sec:binomial} \\
 \bottomrule

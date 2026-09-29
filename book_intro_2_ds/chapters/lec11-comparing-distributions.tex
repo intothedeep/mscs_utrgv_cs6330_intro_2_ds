@@ -66,14 +66,23 @@ $n-1$이다.
 기호 & 뜻 \\
 \midrule
 $\bar x$, $s$ & 표본 평균, 표본 표준편차(Sample Standard Deviation) \\
+\midrule
 $\mu_0$ & 귀무가설이 정하는 기준값 \\
+\midrule
 $t$ & t통계량 \\
+\midrule
 $\nu$ 또는 df & 자유도 \\
+\midrule
 $m$ & 집단 수 \\
+\midrule
 $n$ & 집단당 표본 크기 \\
+\midrule
 SSB, SSW & 집단 간(Between), 집단 내(Within) 제곱합 \\
+\midrule
 $F$ & F통계량(분산분석용) \\
+\midrule
 $F_{\text{obs}}$, $F_{\text{exp}}$ & 관측/기대 누적분포함수(KS용) \\
+\midrule
 $D_n$ & KS 통계량, 두 누적분포함수 사이 최대 세로 격차 \\
 \bottomrule
 \end{tabularx}
@@ -344,6 +353,7 @@ $\sqrt{s_1^2/n_1 + s_2^2/n_2}$로 바꾼다. 두 표본이 독립이면 분산�
 밭 & 평균(Mean) $\bar x$ & 표준편차(SD) $s$ & $n$ & $s^2/n$ \\
 \midrule
 A & 1.3 & 0.5 & 22 & 0.011364 \\
+\midrule
 B & 1.6 & 0.3 & 24 & 0.00375 \\
 \bottomrule
 \end{tabularx}
@@ -483,6 +493,7 @@ $\{3, 2, 1\}$, 고등학생 $\{5, 3, 4\}$, 초등학생 $\{5, 6, 7\}$.
 요인 & 제곱합(SS) & 자유도(df) & 평균제곱(Mean Square, MS) & $F$ \\
 \midrule
 집단 간(Between) & 24 & 2 & 12 & 12 \\
+\midrule
 집단 내(Within) & 6 & 6 & 1 & -- \\
 \midrule
 전체(Total) & 30 & 8 & -- & -- \\
@@ -743,22 +754,39 @@ $F_x$, $F_y$, $|F_x - F_y|$를 보여준다.
 값 & $F_x$ & $F_y$ & $|F_x - F_y|$ \\
 \midrule
 1.2 & 0.1 & 0 & 0.1 \\
+\midrule
 1.4 & 0.2 & 0 & 0.2 \\
+\midrule
 1.9 & 0.3 & 0 & 0.3 \\
+\midrule
 3.7 & 0.4 & 0 & 0.4 \\
+\midrule
 4.4 & 0.5 & 0 & 0.5 \\
+\midrule
 4.8 & 0.6 & 0 & \textbf{0.6} \\
+\midrule
 5.6 & 0.6 & 0.125 & 0.475 \\
+\midrule
 6.5 & 0.6 & 0.25 & 0.35 \\
+\midrule
 6.6 & 0.6 & 0.375 & 0.225 \\
+\midrule
 6.9 & 0.6 & 0.5 & 0.1 \\
+\midrule
 9.2 & 0.6 & 0.625 & 0.025 \\
+\midrule
 9.7 & 0.7 & 0.625 & 0.075 \\
+\midrule
 10.4 & 0.7 & 0.75 & 0.05 \\
+\midrule
 10.6 & 0.7 & 0.875 & 0.175 \\
+\midrule
 17.3 & 0.8 & 0.875 & 0.075 \\
+\midrule
 19.3 & 0.8 & 1.0 & 0.2 \\
+\midrule
 21.1 & 0.9 & 1.0 & 0.1 \\
+\midrule
 28.4 & 1.0 & 1.0 & 0 \\
 \bottomrule
 \end{tabularx}
@@ -898,8 +926,11 @@ $0.0674$를 주는데, 이것은 위 콜모고로프 극한분포가 아니라 �
 비교 대상 & 통계량(Statistic) & 귀무가설(Null Hypothesis) 아래 분포 & 이 장의 예제 & p값 \\
 \midrule
 평균(2집단) & $t$ & t분포 & \Cref{ex:cd-tomato} & 0.024/0.020 \\
+\midrule
 평균(3집단 이상) & $F$ & F분포 & \Cref{ex:cd-cartoon} & 0.008 \\
+\midrule
 분포 전체(가설 분포 있음) & $D_n$ & KS 분포(정확) & \Cref{ex:cd-ks-normal} & 0.2997 \\
+\midrule
 분포 전체(가설 분포 없음) & $D$ & KS 분포(정확) & \Cref{ex:cd-ks-two} & 0.0499 \\
 \bottomrule
 \end{tabularx}

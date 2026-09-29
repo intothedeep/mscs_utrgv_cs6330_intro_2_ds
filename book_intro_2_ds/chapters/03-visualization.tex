@@ -87,7 +87,9 @@ $k$번째 백분위수는 값들을 나누어, $k\%$ 가 그 아래에 놓이고
 이름 & 몇 등분 & 표기 & 비고 \\
 \midrule
 사분위수(Quartile) & 4 & $Q_1, Q_2, Q_3$ & $Q_1$ = 하사분위수(Lower Quartile) \\
+\midrule
 십분위수(Decile) & 10 & $D_1 \dots D_9$ & \\
+\midrule
 백분위수(Percentile) & 100 & $P_1 \dots P_{99}$ & $P_{50} = Q_2 = $ 중앙값 \\
 \bottomrule
 \end{tabularx}
@@ -118,7 +120,9 @@ $n = 6$ 이므로 $i$번째 값의 위치는 $(i-1)/(n-1) = (i-1)/5$ 다.
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
 $i$ & 1 & 2 & 3 & 4 & 5 & 6 \\
+\midrule
 값 & 1.3 & 2.2 & 2.7 & 3.1 & 3.3 & 3.7 \\
+\midrule
 위치 & 0.0 & 0.2 & 0.4 & 0.6 & 0.8 & 1.0 \\
 \bottomrule
 \end{tabular}
@@ -270,7 +274,9 @@ Representation)이다. 만드는 법은 단순하다.
 무엇 & 계산 & 무엇을 말하는가 \\
 \midrule
 표준편차 $\sd$ & $\sigma$ & \textbf{데이터}가 얼마나 퍼져 있는가 \\
+\midrule
 표준오차 $\mathrm{SE}$ & $\sigma/\sqrt{n}$ & \textbf{평균 추정값}이 얼마나 불안정한가 \\
+\midrule
 신뢰구간 $\mathrm{CI}$ & $\approx \bar{x} \pm 1.96\,\mathrm{SE}$ & 참평균이 있을 법한 범위 \\
 \bottomrule
 \end{tabularx}
@@ -411,8 +417,11 @@ $\IQR$ 자체보다 커져서 \textbf{노치가 상자 밖으로 뒤집혀 나�
 기호 & 의미 \\
 \midrule
 $s$ & 표준편차(Standard Deviation) \\
+\midrule
 $n$ & 관측값의 개수 \\
+\midrule
 $z$ & 표에서 읽는 $z$ 값. $95\%$ 신뢰구간이면 $1.96$ \\
+\midrule
 $\bar{x}$ & 신뢰구간을 구하려는 대상 값 \\
 \bottomrule
 \end{tabularx}
@@ -509,13 +518,21 @@ $s$ 는 분자에 있기 때문이다.
 묻는 것 & 형태 & 그 형태인 이유 \\
 \midrule
 한 변수의 분포 & 히스토그램(Histogram) & 구간별 개수를 직접 센다 \\
+\midrule
 분포를 겹쳐서 비교 & 밀도 곡선(Density Line) & 겹쳐도 서로를 가리지 않는다 \\
+\midrule
 여러 집단의 분포 & 작은 배수(Small Multiples) & 축을 공유해 비교를 성립시킨다 \\
+\midrule
 집단이 많을 때의 요약 & 에러바(Error Bar) & 중심과 퍼짐만 남겨 자리를 아낀다 \\
+\midrule
 집단의 중심과 퍼짐 & 박스플롯(Box Plot) & 다섯 개 숫자로 요약해 나란히 놓는다 \\
+\midrule
 중앙값의 차이 판정 & 노치 박스플롯(Notched Box Plot) & 불확실성을 상자에 새긴다 \\
+\midrule
 분포의 \emph{모양}까지 & 바이올린(Violin Plot) & 박스가 버린 봉우리를 되살린다 \\
+\midrule
 모든 점을 그대로 & 바코드(Barcode Chart) & 아무것도 버리지 않는다 \\
+\midrule
 추정값의 불확실성 & 신뢰구간(Confidence Interval) & 겹치는지로 차이를 판정한다 \\
 \bottomrule
 \end{tabularx}

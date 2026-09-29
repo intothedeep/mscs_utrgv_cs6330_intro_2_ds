@@ -300,13 +300,19 @@ $F(x) \to 1$ ($x \to \infty$).
 $k$ & $P(X=k)$ (확률) & $F(k)=P(X\le k)$ (누적확률) \\
 \midrule
 1 & 1/6 & 1/6 = 0.167 \\
+\midrule
 2 & 1/6 & 2/6 = 0.333 \\
+\midrule
 3 & 1/6 & 3/6 = 0.5 \\
+\midrule
 4 & 1/6 & 4/6 = 0.667 \\
+\midrule
 5 & 1/6 & 5/6 = 0.833 \\
+\midrule
 6 & 1/6 & 6/6 = 1 \\
 \midrule
 $a < 1$ & 없음 & $F(a) = 0$ \\
+\midrule
 $a > 6$ & 없음 & $F(a) = 1$ \\
 \bottomrule
 \end{tabular}
@@ -471,6 +477,7 @@ $m=10$)다.
 데이터 & 평균 & 중앙값 \\
 \midrule
 $\{1,2,3,4,5\}$   & 3.0  & 3 \\
+\midrule
 $\{1,2,3,4,100\}$ & 22.0 & 3 \\
 \bottomrule
 \end{tabular}
@@ -519,6 +526,7 @@ $\{1,2,3,4,100\}$ & 22.0 & 3 \\
  & 값 & 이 숫자가 실제로 가리키는 것 \\
 \midrule
 $\sd$  & 21.02 & 밀크셰이크 12개에 끌려 올라간 값 \\
+\midrule
 $\IQR$ &  8.00 & 일반 메뉴가 실제로 차지하는 폭 \\
 \bottomrule
 \end{tabularx}
@@ -635,6 +643,7 @@ $\IQR$ 로부터 기계적으로 계산된다.
 데이터 & 최빈값(Mode) & 범위(Range) \\
 \midrule
 $\{1,2,2,3,5\}$   & 2 & 4 \\
+\midrule
 $\{1,2,2,3,100\}$ & 2 & 99 \\
 \bottomrule
 \end{tabular}
@@ -652,10 +661,15 @@ $4 \to 99$로 25배 가까이 뛴다.
 통계량(Statistic) & 극단값 하나에 흔들리는가 & 근거 \\
 \midrule
 평균(Mean) & 흔들림 & \Cref{ex:resistance} \\
+\midrule
 중앙값(Median) & 안 흔들림 & \Cref{ex:resistance} \\
+\midrule
 최빈값(Mode) & 안 흔들림(단, 아래 함정 참고) & \Cref{ex:mode-range} \\
+\midrule
 범위(Range) & 흔들림 & \Cref{ex:mode-range} \\
+\midrule
 표준편차(Standard Deviation) & 흔들림 & \Cref{sec:spread} \\
+\midrule
 사분위범위(IQR) & 안 흔들림 & \Cref{sec:spread} \\
 \bottomrule
 \end{tabularx}
@@ -709,6 +723,7 @@ $\{1,2,2,2,3,3\}$에서는 최빈값이 2로 바뀐다. 게다가 연속 측정�
 \midrule
 \term{왜도}(Skewness) & \textbf{분포}의 모양 & 분포가 좌우 대칭이 아닌 정도.
   $\gamma = \E[(x-\mu)^3]/\sigma^3$ \\
+\midrule
 \term{편향}(Bias) & \textbf{추정량}의 정확도 & 추정값의 기댓값이 참값에서
   벗어난 크기. $\mathrm{Bias}(\hat\theta) = \E[\hat\theta] - \theta$ \\
 \bottomrule
@@ -767,9 +782,13 @@ Standardized Moment Coefficient)이고, \texttt{pandas} 의 \texttt{.skew()} 가
 $x_i$ & $x_i - \bar{x}$ & $(x_i-\bar{x})^2$ & $(x_i-\bar{x})^3$ \\
 \midrule
 1  & $-3$ & 9  & $-27$ \\
+\midrule
 2  & $-2$ & 4  & $-8$  \\
+\midrule
 3  & $-1$ & 1  & $-1$  \\
+\midrule
 4  & $0$  & 0  & $0$   \\
+\midrule
 10 & $6$  & 36 & $216$ \\
 \midrule
 합 & $0$ & 50 & 180 \\
@@ -802,8 +821,11 @@ $x_i$ & $x_i - \bar{x}$ & $(x_i-\bar{x})^2$ & $(x_i-\bar{x})^3$ \\
 \texttt{sugars} 의 왜도 계산 방식 & 값 \\
 \midrule
 $g_1$ (보정 전)                                  & 2.6765 \\
+\midrule
 $G_1$ (보정 후)                                  & 2.7088 \\
+\midrule
 $m_3 / s^3$ (분모만 $\mathrm{ddof}=1$)           & 2.6447 \\
+\midrule
 \texttt{pandas .skew()}                          & 2.7088 \\
 \bottomrule
 \end{tabular}
@@ -825,7 +847,9 @@ $n-1$ 로 나눔)를 쓰면서 분자 $m_3$ 는 $n$ 으로 나눈 값이라, \te
 부호 & 이름 & 모양 & 평균과 중앙값의 관계 \\
 \midrule
 $\gamma > 0$ & 우측 왜도(Right-skewed) & 오른쪽 꼬리가 김 & 평균 $>$ 중앙값 \\
+\midrule
 $\gamma = 0$ & 대칭(Symmetric)         & 종 모양         & 평균 $=$ 중앙값 \\
+\midrule
 $\gamma < 0$ & 좌측 왜도(Left-skewed)  & 왼쪽 꼬리가 김  & 평균 $<$ 중앙값 \\
 \bottomrule
 \end{tabularx}
@@ -943,16 +967,20 @@ $60$에서 뺀 거울상($60-x$)이라 $G_1$ 의 부호가 정확히 뒤집히�
 히스토그램(Histogram) & 봉우리가 왼쪽, 막대가 오른쪽으로 길게 늘어짐
   & 봉우리가 가운데, 양쪽 막대 길이가 비슷함
   & 봉우리가 오른쪽, 막대가 왼쪽으로 길게 늘어짐 \\
+\midrule
 선 그래프(Line Chart, 밀도 곡선 Density Line) & 봉우리가 평균 왼쪽, 오른쪽 꼬리가 김
   & 봉우리가 평균과 거의 겹침
   & 봉우리가 평균 오른쪽, 왼쪽 꼬리가 김 \\
+\midrule
 박스플롯(Box Plot) & 중앙값 선이 상자 왼쪽에 치우침, 오른쪽 수염이 길고
   오른쪽에 이상치
   & 중앙값 선이 상자 가운데 근처, 양쪽 수염 길이가 비슷함
   & 중앙값 선이 상자 오른쪽에 치우침, 왼쪽 수염이 길고 왼쪽에 이상치 \\
+\midrule
 바이올린 플롯(Violin Plot) & 오른쪽으로 가늘고 긴 꼬리
   & 좌우가 거의 대칭인 모양
   & 왼쪽으로 가늘고 긴 꼬리 \\
+\midrule
 바코드 차트(Barcode Chart) & 막대가 왼쪽에 몰리고 오른쪽으로 갈수록 성겨짐
   & 막대가 가운데를 중심으로 고르게 퍼짐
   & 막대가 오른쪽에 몰리고 왼쪽으로 갈수록 성겨짐 \\
@@ -978,7 +1006,9 @@ $60$에서 뺀 거울상($60-x$)이라 $G_1$ 의 부호가 정확히 뒤집히�
 \begin{tabular}{@{}ll@{}}
 \toprule
 $|\gamma| < 0.5$        & 거의 대칭 --- 평균 + 표준편차 \\
+\midrule
 $0.5 \le |\gamma| \le 1$ & 중간 --- 평균도 쓸 만하나 주의 \\
+\midrule
 $|\gamma| > 1$          & 강한 왜도 --- \textbf{중앙값 + $\IQR$} \\
 \bottomrule
 \end{tabular}
@@ -1050,6 +1080,7 @@ $\gamma = 2.71$ 만 보면 ``완만하게 늘어진 긴 꼬리''를 상상하게
  & $n$ & 평균 & 중앙값 & $\IQR$ \\
 \midrule
 0을 값으로 (옳음)   & 126 & 13.29 & 7.0 & 8.0 \\
+\midrule
 0을 결측으로 (틀림) & 109 & 15.36 & 8.0 & 6.0 \\
 \bottomrule
 \end{tabular}

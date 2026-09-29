@@ -121,8 +121,11 @@ $n = 3409$, $x_{\min} = 1$일 때
 모수(Parameter) & 공항 노선(Airport) & 영화 평점(Movie) \\
 \midrule
 $\alpha$ (멱법칙 Power Law, $x_{\min}$ 포함) & $1.612$ ($x_{\min}=1$) & $1.851$ ($x_{\min}=1.9$) \\
+\midrule
 $\lambda$ (지수 Exponential)      & $0.0504$               & $0.1606$ \\
+\midrule
 $[a, b]$ (균등 Uniform)           & $[1, 915]$             & $[1.9, 8.5]$ \\
+\midrule
 $\mu, \sigma$ (정규 Normal, $n{-}1$) & $19.845,\ 53.506$   & $6.227,\ 0.893$ \\
 \bottomrule
 \end{tabular}
@@ -228,8 +231,11 @@ $P(X\geq x)$, 둘 다 로그-로그 축. 38\%의 공항이 노선 1--2개뿐이�
 분포(Distribution) & 모수(Parameter) & KS 거리 $D$ & 판정(Verdict) \\
 \midrule
 멱법칙(Power Law)     & $\alpha=1.612,\ x_{\min}=1$ & \textbf{0.209} & 최선, 꼬리는 과대추정 \\
+\midrule
 지수(Exponential)     & $\lambda=0.0504$            & 0.379          & 꼬리가 너무 빨리 줄어듦 \\
+\midrule
 정규(Normal)           & $\mu=19.8,\ \sigma=53.5$   & 0.358          & 음수 36\% 허용, 구조적 실패 \\
+\midrule
 균등(Uniform)          & $[1, 915]$                  & 0.857          & 최악, 형태 자체가 다름 \\
 \bottomrule
 \end{tabular}
@@ -289,8 +295,11 @@ CDF. 중앙값 6.3, 평균 6.23으로 6.3 근처에서 한 개의 봉우리를 �
 분포(Distribution) & 모수(Parameter) & KS 거리 $D$ & 판정(Verdict) \\
 \midrule
 정규(Normal)           & $\mu=6.227,\ \sigma=0.893$   & \textbf{0.055} & 최선, 양 끝만 이탈 \\
+\midrule
 균등(Uniform)           & $[1.9, 8.5]$                  & 0.394          & 봉우리를 무시함 \\
+\midrule
 멱법칙(Power Law)      & $\alpha=1.851,\ x_{\min}=1.9$ & 0.485          & 단조감소, 구조적 실패 \\
+\midrule
 지수(Exponential)      & $\lambda=0.1606$              & 0.490          & 단조감소, 최악 \\
 \bottomrule
 \end{tabular}

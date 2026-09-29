@@ -76,8 +76,10 @@ $\binom{5}{k}/32$(\Cref{sec:pv-discrete})가 그대로 쓴다.
 \midrule
 $z$ & \term{표준화 점수}(z-score): 관측값이 평균에서 표준오차 몇 개만큼
       떨어져 있는가, $z=(\bar x-\mu_0)/\mathrm{SE}$ & 지 \\
+\midrule
 $\mathrm{SE}$ & \term{표준오차}(Standard Error): 표본 평균의 흩어짐. 표준편차와
                 다르다(\Cref{pit:sd-se-ci}) & 에스이 \\
+\midrule
 $\mu_0$ & 귀무가설이 정한 값(예: 비타민 D 기준 100) & 뮤 제로 \\
 \bottomrule
 \end{tabularx}
@@ -151,19 +153,31 @@ $\mu_0$ & 귀무가설이 정한 값(예: 비타민 D 기준 100) & 뮤 제로 \
 사례 & 약 & 완치 & 비완치 & 완치율(재계산) & 판정(재계산한 p값, p-value) \\
 \midrule
 1명씩, 2명씩 & 없음 & 없음 & 없음 & 없음 & 표본 너무 작음, 판단 불가 \\
+\midrule
 대규모 & A & 1043 & 3 & 99.7\% & 우연으로 보기 어려움(계산 없음) \\
+\midrule
        & B & 2 & 1432 & 0.14\% & \\
+\midrule
 약 200명씩 & A & 73 & 125 & 36.9\% & 확신하기 어려움($p\approx0.24$) \\
+\midrule
            & B & 59 & 131 & 31.1\% & \\
+\midrule
 약 A 대 약 A(1) & A & 71 & 127 & 35.9\% & 진짜 차이 없음($p=1.0$) \\
+\midrule
                 & A' & 72 & 126 & 36.4\% & \\
+\midrule
 약 A 대 약 A(2) & A & 73 & 125 & 36.9\% & 진짜 차이 없음($p=0.917$) \\
+\midrule
                 & A' & 71 & 127 & 35.9\% & \\
+\midrule
 약 A 대 약 A(3) & A & 60 & 138 & 30.3\% & 진짜 차이 없어도 $p=0.012$
                                           로 거짓 양성 가능 \\
+\midrule
                 & A' & 84 & 114 & 42.4\% & \\
+\midrule
 대표본(효과 크기) & A & 5005 & 9868 & 33.65\% & 차이 작지만 $p=0.044$
                                                 (\Cref{sec:pv-effect-size}) \\
+\midrule
                   & B & 4800 & 9000 & 34.78\% & \\
 \bottomrule
 \end{tabularx}
@@ -363,6 +377,7 @@ $0.375 > 0.05$ 이므로 기각 실패다. "내 동전이 특별하다는 증거
 $H_a$ & 포함하는 부분 & p값 \\
 \midrule
 $\neq$(양측) & 관측 + 똑같이 드묾 + 더 드묾 & $12/32=0.375$ \\
+\midrule
 $>$(단측, 앞면이 더 잘 나온다) & 관측 + 더 드묾만 & $6/32=0.1875$ \\
 \bottomrule
 \end{tabularx}
@@ -616,6 +631,7 @@ $\text{관측값}\pm z\cdot\mathrm{SE}$ 형태로 만든다(슬라이드 15).
 신뢰수준(Confidence Level) & 유의수준(Significance Level, $\alpha$) & 귀무값이 구간 밖이면 & 귀무값이 구간 안이면 \\
 \midrule
 95\% & 0.05 & $p<0.05$, 기각 & $p\ge0.05$, 기각 실패 \\
+\midrule
 99\% & 0.01 & $p<0.01$, 기각 & $p\ge0.01$, 기각 실패 \\
 \bottomrule
 \end{tabularx}
@@ -687,6 +703,7 @@ $0$을 포함하므로 기각 실패다. 슬라이드에는 "반대 결론"이 �
 \midrule
 진실: 차이 없음 & \term{거짓 양성}(False Positive, 1종 오류/Type I Error,
   \Cref{sec:pv-threshold}) & 올바른 판정 \\
+\midrule
 진실: 차이 있음 & 올바른 판정 & (\term{2종 오류}(Type II Error),
   \Cref{sec:pv-future}) \\
 \bottomrule

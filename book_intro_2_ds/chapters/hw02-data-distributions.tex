@@ -183,12 +183,12 @@ CCDF·PDF를 겹쳐 그리면 어디가 맞고 틀리는지는 보이지만, ``�
 비교하기는 어렵다. 분포 전체를 한 번에 대조하면서도 숫자 하나로 요약할 도구가
 필요하다.
 
-\term{분위수 대 분위수 도표}(Quantile-Quantile Plot, QQ Plot)는 $x$축에 데이터
-분위수, $y$축에 모형 표본 분위수를 찍는다. 점이 기준선 $y=x$ 위에 있으면 두 분포가
+\term{분위수 대 분위수 도표}(Quantile-Quantile Plot, QQ Plot)는 $x$축에 모형 표본
+분위수, $y$축에 데이터 분위수를 찍는다. 점이 기준선 $y=x$ 위에 있으면 두 분포가
 같은 모양이라는 뜻이고, 선에서 벗어난 방향이 어디서 어떻게 다른지 말해준다. 로그
 축을 쓸 때는 표본에 음수나 0이 섞일 수 있어(정규 표본만 해당, 지수 표본은 항상
 양수다) 그 값을 먼저 제외했다.
-강의의 Q-Q 플롯(\Cref{sec:qq})은 축을 반대로 둔다(가로축이 이론 분위수, 세로축이 데이터).
+강의의 Q-Q 플롯(\Cref{sec:qq})과 같은 방향이다(가로축이 이론 분위수, 세로축이 데이터).
 비교를 숫자 하나로도 요약했다. \term{콜모고로프--스미르노프 거리}(KS Distance)
 $D$는 데이터의 경험적 CDF와 모형 \textbf{표본}의 경험적 CDF 사이 세로 격차의
 최댓값이다(\Cref{sec:cdf}). 모형 자체의 이론적 CDF가 아니라 모형에서 뽑은 표본을
@@ -201,13 +201,15 @@ $D$는 데이터의 경험적 CDF와 모형 \textbf{표본}의 경험적 CDF 사
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\linewidth]{p1a_0_data.png}
-\caption{공항 노선 수의 경험적 분포(Empirical Distribution). 왼쪽은 값별 확률 $P(X=k)$, 오른쪽은 CCDF
-$P(X\geq x)$, 둘 다 로그-로그 축. 38\%의 공항이 노선 1--2개뿐이고, 가장 큰
+\caption{공항 노선 수의 경험적 분포(Empirical Distribution). 위 줄은 보통 축(Linear Axes)의
+히스토그램(Histogram, 막대 폭 20)과 CDF로, 92\%의 공항이 노선 60개 이하에 몰려 있다.
+아래 줄은 같은 데이터를 로그-로그 축(Log-Log Axes)으로 펼친 것으로, 왼쪽은 값별 확률
+$P(X=k)$, 오른쪽은 CCDF $P(X\geq x)$다. 38\%의 공항이 노선 1--2개뿐이고, 가장 큰
 공항은 915개다.}
 \label{fig:hw2-airport-data}
 \end{figure}
 
-\Cref{fig:hw2-airport-data}에서 왼쪽 PDF가 이미 직선에 가깝다. 이는 멱법칙의
+\Cref{fig:hw2-airport-data}의 아래 왼쪽 PDF(로그-로그 축)가 이미 직선에 가깝다. 이는 멱법칙의
 특징이다. 38.0\%의 공항이 노선 1--2개뿐이고, 99번째 백분위수는 285개인데 최댓값은
 915개다. 왜도(Skewness)는 6.0으로(\Cref{sec:skewness}) 강하게 오른쪽으로 치우쳐
 있다.
@@ -215,7 +217,10 @@ $P(X\geq x)$, 둘 다 로그-로그 축. 38\%의 공항이 노선 1--2개뿐이�
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\linewidth]{p1a_1_powerlaw.png}
-\caption{공항 노선 수 대 멱법칙 모형($\alpha=1.612$, $x_{\min}=1$). CCDF는 1에서
+\caption{공항 노선 수 대 멱법칙 모형($\alpha=1.612$, $x_{\min}=1$). 위 왼쪽은 로그-로그
+축의 PDF, 위 오른쪽은 보통 축의 CDF, 아래 왼쪽은 로그-로그 축의 CCDF, 아래 오른쪽은
+QQ 플롯(QQ Plot)이다. 보통 축에서는 두 CDF가
+거의 겹치고, 차이는 노선 1000개 너머에 있는 모형 표본 1.6\%에 숨어 있다. CCDF는 1에서
 약 60개 노선까지 데이터를 따라가고, QQ 점도 그 구간에서 $y=x$ 위에 있다. 100개를
 넘으면 모형은 계속 뻗어 $10^4$--$10^5$개짜리 공항을 만들어내지만, 데이터는 915에서
 멈춘다. $D=0.209$.}

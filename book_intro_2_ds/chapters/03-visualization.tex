@@ -1,4 +1,4 @@
-\chapter{시각화 --- 요약이 숨긴 것을 보기}
+\chapter{시각화: 요약이 숨긴 것을 보기}
 \label{ch:visualization}
 % source: deck 5 slide 1
 
@@ -58,7 +58,7 @@ Visualization'')를 옮긴다. 이 장을 읽는 데 필요한 개념을 먼저 
 
 \begin{inbrief}
   \item[Why] 평균 하나로는 부족하고, 분포의 \emph{여러 지점}을 알아야 하기 때문이다.
-  \item[When] 박스플롯, $\IQR$, 신뢰구간 --- 이 장의 거의 모든 도구가 분위수 위에 선다.
+  \item[When] 박스플롯, $\IQR$, 신뢰구간: 이 장의 거의 모든 도구가 분위수 위에 선다.
   \item[Where] 왜도가 있는 데이터에서 특히 중요하다. 평균은 무너져도 분위수는 버틴다.
   \item[How] 정렬 $\rightarrow$ 각 값에 $0$에서 $1$까지의 위치를 매김 $\rightarrow$
              원하는 위치에서 보간(Interpolation).
@@ -76,7 +76,7 @@ $k$번째 백분위수는 값들을 나누어, $k\%$ 가 그 아래에 놓이고
 \begin{aside}[둘의 관계]
 백분위수는 분위수의 \textbf{부분집합}이다. 분위수 \contains{} 백분위수.
 같은 지점을 부르는 이름이 둘인 셈이라 혼용되지만, 엄밀히는 \emph{눈금의 개수}가
-다르다 --- 사분위수(Quartile)는 4등분, 십분위수(Decile)는 10등분, 백분위수는
+다르다. 사분위수(Quartile)는 4등분, 십분위수(Decile)는 10등분, 백분위수는
 100등분이다. 소프트웨어에서는 보통 $0 \sim 1$ 을 받는 \texttt{quantile()} 하나로
 통일되어 있다.
 \end{aside}
@@ -110,12 +110,12 @@ $k$번째 백분위수는 값들을 나누어, $k\%$ 가 그 아래에 놓이고
 \label{ex:quantile}
 강의 예제다. 여섯 개의 값이 있다: $3.7,\ 2.7,\ 3.3,\ 1.3,\ 2.2,\ 3.1$.
 
-\textbf{1단계 --- 정렬한다.}
+\textbf{1단계: 정렬한다.}
 \[
   1.3,\quad 2.2,\quad 2.7,\quad 3.1,\quad 3.3,\quad 3.7
 \]
 
-\textbf{2단계 --- 각 값에 $0$부터 $1$까지 등간격의 위치를 매긴다.}
+\textbf{2단계: 각 값에 $0$부터 $1$까지 등간격의 위치를 매긴다.}
 $n = 6$ 이므로 $i$번째 값의 위치는 $(i-1)/(n-1) = (i-1)/5$ 다.
 
 \begin{table}[H]\centering
@@ -132,14 +132,14 @@ $i$ & 1 & 2 & 3 & 4 & 5 & 6 \\
 \end{tabular}
 \end{table}
 
-\textbf{3단계 --- 0.25는 눈금 사이에 있으므로 보간한다.}
+\textbf{3단계: 0.25는 눈금 사이에 있으므로 보간한다.}
 $0.25$ 는 $0.2$(값 2.2)와 $0.4$(값 2.7) 사이에 있다. $0.2$ 에서
 $0.05$ 만큼 갔으므로 전체 간격 $0.2$ 의 $1/4$ 지점이다.
 \[
   0.75 \times 2.2 + 0.25 \times 2.7 = 1.65 + 0.675 = \mathbf{2.325}
 \]
 
-즉 하사분위수는 2.325다. \textbf{데이터에 없는 값}이라는 점에 주의하자 ---
+즉 하사분위수는 2.325다. \textbf{데이터에 없는 값}이라는 점에 주의하자.
 분위수는 관측값 중 하나일 필요가 없다.
 \end{example}
 
@@ -207,7 +207,7 @@ Representation)이다. 만드는 법은 단순하다.
 
 \begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_03_small_multiples.png}
-  \caption{작은 배수(Small Multiples). 축을 공유해야 비교가 성립한다 --- 패널마다
+  \caption{작은 배수(Small Multiples). 축을 공유해야 비교가 성립한다. 패널마다
   축 범위가 다르면 눈은 그 차이를 읽지 못한다.}
   \label{fig:small-multiples}
 \end{figure}
@@ -219,7 +219,7 @@ Representation)이다. 만드는 법은 단순하다.
 \end{pitfall}
 
 % =====================================================================
-\section{선 그래프 --- 밀도에 더 가까이}
+\section{선 그래프: 밀도에 더 가까이}
 \label{sec:density-line}
 
 \begin{inbrief}
@@ -233,7 +233,7 @@ Representation)이다. 만드는 법은 단순하다.
 
 강의의 기준은 명확하다. \emph{``곡선이 충분히 매끄러우면서도 분포를 정확히
 표현하도록, 충분한 수의 구간을 쓴다.''} 두 조건이 서로 반대 방향으로 당기므로
-절충점을 찾아야 한다 --- \Cref{subsec:binning}의 문제가 그대로 이어진다.
+절충점을 찾아야 한다. \Cref{subsec:binning}의 문제가 그대로 이어진다.
 
 \begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_04_density_line.png}
@@ -243,7 +243,7 @@ Representation)이다. 만드는 법은 단순하다.
 \end{figure}
 
 % =====================================================================
-\section{에러바 --- 요약을 나란히 놓기}
+\section{에러바: 요약을 나란히 놓기}
 \label{sec:errorbar}
 
 \begin{inbrief}
@@ -334,8 +334,8 @@ Representation)이다. 만드는 법은 단순하다.
 
 \begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_09_barcode.png}
-  \caption{바코드 차트. 점 하나하나가 보이므로 \emph{빈 구간}이 눈에 띈다 ---
-  요약통계로는 절대 드러나지 않는 정보다.}
+  \caption{바코드 차트. 점 하나하나가 보이므로 \emph{빈 구간}이 눈에 띈다. 요약통계로는
+  절대 드러나지 않는 정보다.}
   \label{fig:barcode}
 \end{figure}
 
@@ -352,7 +352,7 @@ Representation)이다. 만드는 법은 단순하다.
 \begin{inbrief}
   \item[Why] 여러 집단의 중심과 퍼짐을 한 화면에서 비교하기 위해서다.
   \item[When] 집단이 3개 이상이고 각 집단의 분포가 대체로 단봉일 때.
-  \item[Where] 이봉분포에는 쓰면 안 된다 --- 박스플롯은 봉우리 개수를 표현하지 못한다.
+  \item[Where] 이봉분포에는 쓰면 안 된다. 박스플롯은 봉우리 개수를 표현하지 못한다.
   \item[How] $Q_1$ 에서 $Q_3$ 까지 상자를 그리고, $1.5 \times \IQR$ 이내의 가장 먼
              관측값까지 수염을 뻗고, 그 밖은 이상치로 찍는다.
 \end{inbrief}
@@ -367,7 +367,7 @@ Representation)이다. 만드는 법은 단순하다.
   \label{fig:box-compare}
 \end{figure}
 
-강의는 붓꽃 데이터에서 두 가지를 읽는다 --- 꽃받침(Sepal)의 중앙값이 꽃잎(Petal)
+강의는 붓꽃 데이터에서 두 가지를 읽는다: 꽃받침(Sepal)의 중앙값이 꽃잎(Petal)
 보다 높고, 꽃잎 쪽의 값의 퍼짐이 더 크다. 이 두 문장이 박스플롯에서 읽어야 할
 것의 전부다. \textbf{중심의 차이}와 \textbf{퍼짐의 차이}.
 
@@ -387,7 +387,7 @@ $\rightarrow$ 버거 591 로 단조 증가한다.
 \end{figure}
 
 \term{노치}(Notch)는 중앙값 주변의 불확실성을 상자에 직접 새긴 것이다. 두 집단의
-노치가 겹치지 않으면 중앙값이 통계적으로 다르다고 본다 --- \Cref{sec:ci}의
+노치가 겹치지 않으면 중앙값이 통계적으로 다르다고 본다. \Cref{sec:ci}의
 신뢰구간 비교를 박스플롯 안으로 가져온 것이다.
 
 \begin{pitfall}[노치가 상자보다 커지면 표본이 부족한 것]
@@ -402,14 +402,14 @@ $\IQR$ 자체보다 커져서 \textbf{노치가 상자 밖으로 뒤집혀 나�
 
 \begin{inbrief}
   \item[Why] 계산한 통계값에 \emph{얼마나 불확실성이 있는지}를 함께 말하기 위해서다.
-  \item[When] 표본에서 계산한 값으로 모집단을 말하려 할 때 --- 즉 거의 항상.
+  \item[When] 표본에서 계산한 값으로 모집단을 말하려 할 때, 즉 거의 항상.
   \item[Where] 두 집단이 ``정말로'' 다른지 판단할 때. 겹치는지만 보면 된다.
   \item[How] 공식($\bar{x} \pm z \cdot \sigma/\sqrt{n}$) 또는 부트스트랩
              (Bootstrap) 둘 중 하나로 구한다.
 \end{inbrief}
 
 \term{신뢰구간}(Confidence Interval)은 특정 통계값에 얼마나 불확실성이 있는지를
-나타낸다. 설문 조사에서 ``오차 범위''(Margin of Error)라고 부르는 것과 같다 ---
+나타낸다. 설문 조사에서 ``오차 범위''(Margin of Error)라고 부르는 것과 같다.
 전체 모집단을 조사했다면 얻었을 값이 이 범위 안에 있으리라는 뜻이다.
 
 \subsection{공식으로 구하기}
@@ -470,7 +470,7 @@ $z = 1.96$ 의 의미는 이렇다. 평균에서 $-1.96$ 부터 $+1.96$ 표준�
   \draw[arrow] (d) -- (e);
   \draw[arrow] (d.east) -- ++(9mm,0) |- (b.east);
 \end{tikzpicture}
-\caption{부트스트랩 절차. 핵심은 \textbf{복원추출}이다 --- 중복을 허용하지 않으면
+\caption{부트스트랩 절차. 핵심은 \textbf{복원추출}이다. 중복을 허용하지 않으면
 매번 같은 표본이 나와 아무 변동도 생기지 않는다.}
 \label{fig:bootstrap-flow}
 \end{figure}
@@ -484,7 +484,7 @@ $z = 1.96$ 의 의미는 이렇다. 평균에서 $-1.96$ 부터 $+1.96$ 표준�
 
 \begin{pitfall}[이 히스토그램은 버거의 분포가 아니다]
 \Cref{fig:bootstrap}의 히스토그램은 \textbf{10{,}000개 ``평균''의 분포}이지
-69개 버거의 분포가 아니다. 가로축 범위가 555--690 정도로 좁은 이유가 여기 있다 ---
+69개 버거의 분포가 아니다. 가로축 범위가 555--690 정도로 좁은 이유가 여기 있다.
 개별 버거는 140부터 1240까지 퍼져 있지만, 69개의 평균은 그만큼 흔들리지 않는다.
 이 둘을 혼동하면 ``버거는 전부 600칼로리 근처''라는 완전히 틀린 결론에 이른다.
 \end{pitfall}
@@ -517,7 +517,7 @@ $s$ 는 분자에 있기 때문이다.
 \end{pitfall}
 
 % =====================================================================
-\section{형태 고르기 --- 정리}
+\section{형태 고르기: 정리}
 \label{sec:choosing-form}
 
 \begin{table}[H]\centering

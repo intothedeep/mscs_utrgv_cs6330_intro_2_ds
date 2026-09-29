@@ -680,9 +680,7 @@ $C = \{20, 28, 34\}$, $D = \{22, 26, 37\}$.
 \begin{figure}[H]\centering
 \begin{tikzpicture}[
   node distance = 7mm,
-  flowbox/.style = {draw = bookrule, fill = booksurface, rounded corners = 2pt,
-                   minimum width = 62mm, minimum height = 9mm, align = center,
-                   font = \small},
+  flowbox/.append style = {minimum width = 62mm, minimum height = 9mm},
   arrow/.style  = {-{Stealth[length=2.2mm]}, draw = bookmuted}]
   \node[flowbox] (h)      {$H_0$ 와 $H_a$ 를 세운다};
   \node[flowbox, below = of h]   (alpha)  {유의수준 $\alpha$ 를 미리 정한다};
@@ -698,7 +696,8 @@ $C = \{20, 28, 34\}$, $D = \{22, 26, 37\}$.
   \draw[arrow] (pval) -- (dec);
 \end{tikzpicture}
 \caption{가설검정 다섯 단계. 방향(3단계)은 데이터를 보기 전에 정한다
-(\Cref{pit:ht-direction}).}
+(\Cref{pit:ht-direction}). 파란 배경의 상자는 기각 여부가 갈리는 마지막
+결정 단계다.}
 \label{fig:ht-flow}
 \end{figure}
 

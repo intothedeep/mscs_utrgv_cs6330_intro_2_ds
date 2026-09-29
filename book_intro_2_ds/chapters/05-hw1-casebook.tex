@@ -1,9 +1,9 @@
-\chapter{과제 1 --- 패스트푸드 영양 데이터}
+\chapter{과제 1: 패스트푸드 영양 데이터}
 \label{ch:hw1}
 
 \begin{aside}
 결과 자체는 제출본(\texttt{hw1/report/})에 있다. 이 장에는 \textbf{판단의 과정}을
-남긴다 --- 무엇을 망설였고, 왜 그렇게 정했는지.
+남긴다: 무엇을 망설였고, 왜 그렇게 정했는지.
 \end{aside}
 
 \section{데이터}
@@ -13,14 +13,14 @@
 관계를 수로 적으면: 6개 유형이 126개 메뉴를 담고 \contains, 그중 버거가 69개로
 절반이 넘는다.
 
-\section{Q1 --- 어떤 요약통계가 ``적절한가''}
+\section{Q1: 어떤 요약통계가 ``적절한가''}
 \label{sec:hw1-q1}
 
 문제는 \textit{appropriate} descriptive statistics를 요구했다. ``적절''의 기준을
 스스로 정해야 했고, 왜도를 기준으로 삼았다(\Cref{sec:skewness}).
 % TODO: 판단 근거를 더 쓸 것.
 
-\section{Q2 --- 전체 레코드를 보는 이유}
+\section{Q2: 전체 레코드를 보는 이유}
 \label{sec:hw1-q2}
 
 첫 번째 망설임은 범위였다. 최소·최대 칼로리 항목을 \emph{나트륨 상위 5개 안에서}
@@ -60,7 +60,7 @@ $87 \times 9 = 783$\,kcal이므로, 1240\,kcal 중 약 \textbf{63\%}가 지방�
 변수들이 말하고, \textbf{분포의 어디쯤인가}는 Q1의 요약통계가 말한다. 축이 둘이다.
 \end{keyidea}
 
-\section{Q3 --- 동점 처리}
+\section{Q3: 동점 처리}
 \label{sec:hw1-q3}
 
 조건은 \texttt{calories < 500} \textbf{그리고} \texttt{sodium < 1000}이고, 두 조건을
@@ -105,7 +105,7 @@ Hardee's        & 2 & 12 & 16.7\% \\
 \texttt{reindex(..., fill\_value=0)}으로 0 행을 복원해야 한다.
 \end{pitfall}
 
-\section{Q4--Q5 --- 평균이 비교 가능하지 않은 경우}
+\section{Q4--Q5: 평균이 비교 가능하지 않은 경우}
 \label{sec:hw1-q45}
 
 Q4에서 버거는 평균 칼로리가 가장 높았지만(620.20), 동시에 가장 넓게 퍼져 있었다.
@@ -155,7 +155,7 @@ Chick-fil-A의 평균 330.00이 최저인 것은 음식이 가벼워서가 아�
 있는가(메뉴 구성이 그것이다). 셋째, $n$이 충분한가(In-N-Out Burger는 5개뿐이다). 넷째,
 그래서 어떻게 비교해야 하는가. 마지막 답이 Q6, 즉 음식 유형을 고정하고 비교하는 것이다.
 
-\section{Q6 --- \texttt{idxmin()} 을 쓰지 않은 이유}
+\section{Q6: \texttt{idxmin()} 을 쓰지 않은 이유}
 \label{sec:hw1-q6}
 
 각 음식 유형에서 평균 칼로리가 가장 낮은 식당을 찾는 방법은 여러 가지이고, 이 데이터에서는
@@ -188,7 +188,7 @@ chicken, grilled chicken, nuggets와 Chick-fil-A의 버거다. 존재하는 68�
 0.00이 되어 ``0칼로리 너겟을 판다''는 뜻이 되기 때문이다. 표시용 격자와 계산용 표를
 분리한 셈이다.
 
-\section{Q7 --- 조용히 실패하는 버그}
+\section{Q7: 조용히 실패하는 버그}
 \label{sec:hw1-q7}
 
 주어진 코드는 다음과 같았다.

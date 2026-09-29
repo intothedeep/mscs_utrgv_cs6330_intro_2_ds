@@ -91,7 +91,7 @@ $D_n$ & KS 통계량, 두 누적분포함수 사이 최대 세로 격차 \\
 \end{table}
 
 \begin{pitfall}[$F$는 이 장에서 두 가지 뜻으로 쓰인다]
-분산분석의 \textbf{F통계량}(위 표의 $F$)과 누적분포함수인
+분산분석의 \textbf{F통계량}(\Cref{tab:cd-symbols}의 $F$)과 누적분포함수인
 \textbf{$F_{\text{obs}}$, $F_{\text{exp}}$}는 이름만 같을 뿐 다른
 대상이다. 아래 첨자가 있으면 누적분포함수, 없으면 분산분석의 통계량으로
 읽는다. 슬라이드는 이 둘을 구분 없이 $F$로 적는다.
@@ -142,9 +142,8 @@ $D_n$ & KS 통계량, 두 누적분포함수 사이 최대 세로 격차 \\
 \begin{figure}[H]\centering
 \begin{tikzpicture}[
   x = 1mm, y = 1mm,
-  flowbox/.style = {draw = bookrule, fill = booksurface, rounded corners = 2pt,
-                   minimum width = 34mm, minimum height = 9mm, align = center,
-                   font = \small, inner sep = 1pt},
+  flowbox/.append style = {minimum width = 34mm, minimum height = 9mm,
+                            inner sep = 1pt},
   leafbox/.style = {draw = bookaccent, fill = bookaccentbg, rounded corners = 2pt,
                    minimum width = 34mm, minimum height = 11mm, align = center,
                    font = \small, inner sep = 1pt},

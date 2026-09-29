@@ -81,7 +81,9 @@ $k$번째 백분위수는 값들을 나누어, $k\%$ 가 그 아래에 놓이고
 통일되어 있다.
 \end{aside}
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{사분위수, 십분위수, 백분위수의 몇 등분과 표기를 정리한 표.}
+\label{tab:viz-quantile-names}
 \begin{tabularx}{\linewidth}{@{}l l l X@{}}
 \toprule
 이름 & 몇 등분 & 표기 & 비고 \\
@@ -93,7 +95,7 @@ $k$번째 백분위수는 값들을 나누어, $k\%$ 가 그 아래에 놓이고
 백분위수(Percentile) & 100 & $P_1 \dots P_{99}$ & $P_{50} = Q_2 = $ 중앙값 \\
 \bottomrule
 \end{tabularx}
-\end{center}
+\end{table}
 
 \begin{pitfall}[0\% 분위수는 왜 최솟값인가]
 강의가 던지는 질문이다. $0\%$ 분위수(0번째 백분위수)는 \textbf{최솟값}이다.
@@ -116,7 +118,9 @@ $k$번째 백분위수는 값들을 나누어, $k\%$ 가 그 아래에 놓이고
 \textbf{2단계 --- 각 값에 $0$부터 $1$까지 등간격의 위치를 매긴다.}
 $n = 6$ 이므로 $i$번째 값의 위치는 $(i-1)/(n-1) = (i-1)/5$ 다.
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{여섯 개 값을 정렬한 뒤 각 값에 매긴 $0$부터 $1$까지의 위치.}
+\label{tab:viz-quantile-position}
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
 $i$ & 1 & 2 & 3 & 4 & 5 & 6 \\
@@ -126,7 +130,7 @@ $i$ & 1 & 2 & 3 & 4 & 5 & 6 \\
 위치 & 0.0 & 0.2 & 0.4 & 0.6 & 0.8 & 1.0 \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
 
 \textbf{3단계 --- 0.25는 눈금 사이에 있으므로 보간한다.}
 $0.25$ 는 $0.2$(값 2.2)와 $0.4$(값 2.7) 사이에 있다. $0.2$ 에서
@@ -268,7 +272,10 @@ Representation)이다. 만드는 법은 단순하다.
 \label{pit:sd-se-ci}
 에러바의 길이로 쓰이는 후보가 셋이고, \textbf{길이가 서로 몇 배씩 차이 난다}.
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{에러바 길이의 세 후보(표준편차, 표준오차, 신뢰구간)가 각각
+무엇을 계산하고 무엇을 말하는지 비교한 표.}
+\label{tab:viz-errorbar-candidates}
 \begin{tabularx}{\linewidth}{@{}l l X@{}}
 \toprule
 무엇 & 계산 & 무엇을 말하는가 \\
@@ -280,7 +287,7 @@ Representation)이다. 만드는 법은 단순하다.
 신뢰구간 $\mathrm{CI}$ & $\approx \bar{x} \pm 1.96\,\mathrm{SE}$ & 참평균이 있을 법한 범위 \\
 \bottomrule
 \end{tabularx}
-\end{center}
+\end{table}
 
 버거 데이터로 보면 $\sd = 277.16$ 이지만 $\mathrm{SE} = 277.16/\sqrt{69} = 33.37$
 로 \textbf{8배 넘게 차이} 난다. 캡션에 무엇인지 쓰지 않은 에러바는 읽을 수 없다.
@@ -411,7 +418,10 @@ $\IQR$ 자체보다 커져서 \textbf{노치가 상자 밖으로 뒤집혀 나�
   \mathrm{CI} = \bar{x} \pm z \cdot \frac{s}{\sqrt{n}}
 \]
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{신뢰구간 공식에 나오는 기호 $s$, $n$, $z$, $\bar{x}$의 의미를
+정리한 표.}
+\label{tab:viz-ci-symbols}
 \begin{tabularx}{\linewidth}{@{}l X@{}}
 \toprule
 기호 & 의미 \\
@@ -425,7 +435,7 @@ $z$ & 표에서 읽는 $z$ 값. $95\%$ 신뢰구간이면 $1.96$ \\
 $\bar{x}$ & 신뢰구간을 구하려는 대상 값 \\
 \bottomrule
 \end{tabularx}
-\end{center}
+\end{table}
 
 $z = 1.96$ 의 의미는 이렇다. 평균에서 $-1.96$ 부터 $+1.96$ 표준편차 사이의 값이
 무작위로 뽑힐 확률이 $95\%$ 다. 뒤집으면, 어떤 값이 무작위로 뽑힐 확률이 $5\%$

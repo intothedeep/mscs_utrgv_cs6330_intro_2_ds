@@ -232,7 +232,10 @@ $10^\circ\mathrm{C}$ 보다 ``$10^\circ$ 더 덥다''라고는 말할 수 있어
 HW1 의 패스트푸드 영양정보 데이터
 (\Cref{ch:hw1})는 여덟 개 변수를 가진다. 유형을 가르면 이렇게 된다.
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{HW1 패스트푸드 영양정보 데이터의 여덟 변수를 척도(Nominal/Ratio)로
+분류한 표.}
+\label{tab:attr-hw1-vars}
 \begin{tabularx}{0.95\linewidth}{@{}l l X@{}}
 \toprule
 변수 & 유형 & 그렇게 가른 이유 \\
@@ -254,7 +257,7 @@ HW1 의 패스트푸드 영양정보 데이터
 \texttt{sugars}       & 비율(Ratio)   & 0\,g 은 당류가 없다는 뜻 \\
 \bottomrule
 \end{tabularx}
-\end{center}
+\end{table}
 
 수치형 다섯 개가 전부 비율 척도이므로 평균 $\cdot$ 표준편차 $\cdot$ 비율 계산이
 모두 합법이다. 반면 명목 변수 셋에는 최빈값과 빈도만 쓸 수 있다 ---
@@ -331,7 +334,10 @@ HW1 의 패스트푸드 영양정보 데이터
 1$\sim$5점 라디오 버튼이다). 척도 답은 슬라이드와 같고, 이산/연속은
 이 책이 추가했다.
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{다섯 항목의 척도(Scale)와 이산/연속(Discrete/Continuous)을 함께
+매긴 표.}
+\label{tab:attr-scale-discrete-continuous}
 \begin{tabularx}{\linewidth}{@{}l l l X@{}}
 \toprule
 항목 & 척도 & 이산/연속 & 근거 \\
@@ -350,7 +356,7 @@ HW1 의 패스트푸드 영양정보 데이터
   서열이 없다 \\
 \bottomrule
 \end{tabularx}
-\end{center}
+\end{table}
 
 경도는 $180^\circ$와 $-180^\circ$가 같은 지점을 가리키는 원형 값이라,
 두 경도의 ``차이''를 구할 때도 이 점을 조심해야 한다.

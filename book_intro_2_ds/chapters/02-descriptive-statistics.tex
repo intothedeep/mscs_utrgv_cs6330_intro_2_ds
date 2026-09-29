@@ -471,7 +471,10 @@ $m=10$)다.
 다섯 개의 값 $\{1,\ 2,\ 3,\ 4,\ 5\}$ 에서 평균과 중앙값은 모두 3이다.
 마지막 값만 $5 \to 100$ 으로 바꾸면:
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{마지막 값을 $5 \to 100$ 으로 바꿨을 때 평균과 중앙값이 각각
+어떻게 바뀌는지 보여주는 표.}
+\label{tab:desc-resistance-mean-median}
 \begin{tabular}{lrr}
 \toprule
 데이터 & 평균 & 중앙값 \\
@@ -481,7 +484,7 @@ $\{1,2,3,4,5\}$   & 3.0  & 3 \\
 $\{1,2,3,4,100\}$ & 22.0 & 3 \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
 
 평균은 7배 넘게 뛰었지만 중앙값은 그대로 3이다. 그리고 바뀐 평균 22는
 \textbf{다섯 개 값 중 네 개보다 크다} --- 대표값으로서 아무 의미가 없다.
@@ -520,7 +523,10 @@ $\{1,2,3,4,100\}$ & 22.0 & 3 \\
 
 과제 데이터의 \texttt{sugars}(당류) 변수가 이 차이를 극단적으로 보여준다.
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{과제 데이터 \texttt{sugars}(당류) 변수의 표준편차와 IQR이
+가리키는 값을 비교한 표.}
+\label{tab:desc-sd-vs-iqr-sugars}
 \begin{tabularx}{0.85\linewidth}{@{}l r X@{}}
 \toprule
  & 값 & 이 숫자가 실제로 가리키는 것 \\
@@ -530,7 +536,7 @@ $\sd$  & 21.02 & 밀크셰이크 12개에 끌려 올라간 값 \\
 $\IQR$ &  8.00 & 일반 메뉴가 실제로 차지하는 폭 \\
 \bottomrule
 \end{tabularx}
-\end{center}
+\end{table}
 
 $\sd = 21.02$ 는 \textbf{실존하지 않는 폭}이다. 대부분의 메뉴는 3--11\,g 사이에
 있고, 21이라는 숫자는 소수의 밀크셰이크가 만들어 낸 것이다.
@@ -637,7 +643,10 @@ $\IQR$ 로부터 기계적으로 계산된다.
 최빈값이 정의되지 않으므로, 값 하나를 중복시킨 $\{1,2,2,3,5\}$로
 바꿔서 비교한다.
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{마지막 값을 $5 \to 100$ 으로 바꿨을 때 최빈값과 범위가 각각
+어떻게 바뀌는지 보여주는 표.}
+\label{tab:desc-mode-range-resistance}
 \begin{tabular}{lrr}
 \toprule
 데이터 & 최빈값(Mode) & 범위(Range) \\
@@ -647,7 +656,7 @@ $\{1,2,2,3,5\}$   & 2 & 4 \\
 $\{1,2,2,3,100\}$ & 2 & 99 \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
 
 마지막 값을 $5 \to 100$으로 바꿔도 최빈값은 2로 그대로지만, 범위는
 $4 \to 99$로 25배 가까이 뛴다.
@@ -716,7 +725,10 @@ $\{1,2,2,2,3,3\}$에서는 최빈값이 2로 바뀐다. 게다가 연속 측정�
 두 단어가 일상어로는 모두 ``치우침''이지만, 통계학에서는 \textbf{완전히 다른
 개념}이고 서로 바꿔 쓸 수 없다.
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{왜도(Skewness)와 편향(Bias)이 각각 무엇의 성질인지, 정의가
+무엇인지 비교한 표.}
+\label{tab:desc-skew-vs-bias}
 \begin{tabularx}{\linewidth}{@{}l l X@{}}
 \toprule
 용어 & 무엇의 성질인가 & 정의 \\
@@ -728,7 +740,7 @@ $\{1,2,2,2,3,3\}$에서는 최빈값이 2로 바뀐다. 게다가 연속 측정�
   벗어난 크기. $\mathrm{Bias}(\hat\theta) = \E[\hat\theta] - \theta$ \\
 \bottomrule
 \end{tabularx}
-\end{center}
+\end{table}
 
 왜도는 \emph{데이터가 어떻게 생겼는지}를 말하고, 편향은 \emph{내 추정 방법이
 틀렸는지}를 말한다. 완벽하게 편향 없는 방법으로 추정해도 왜도가 큰 분포는
@@ -776,7 +788,10 @@ Standardized Moment Coefficient)이고, \texttt{pandas} 의 \texttt{.skew()} 가
 \label{ex:skew-by-hand}
 데이터 $\{1,\ 2,\ 3,\ 4,\ 10\}$, $n = 5$ 이다.
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{데이터 $\{1,2,3,4,10\}$의 편차, 편차의 제곱, 편차의 세제곱을
+값마다 계산한 표.}
+\label{tab:desc-skew-by-hand}
 \begin{tabular}{lrrr}
 \toprule
 $x_i$ & $x_i - \bar{x}$ & $(x_i-\bar{x})^2$ & $(x_i-\bar{x})^3$ \\
@@ -794,7 +809,7 @@ $x_i$ & $x_i - \bar{x}$ & $(x_i-\bar{x})^2$ & $(x_i-\bar{x})^3$ \\
 합 & $0$ & 50 & 180 \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
 
 평균은 $\bar{x} = 20/5 = 4$ 다. 이어서
 
@@ -815,7 +830,10 @@ $x_i$ & $x_i - \bar{x}$ & $(x_i-\bar{x})^2$ & $(x_i-\bar{x})^3$ \\
 처럼 $n=5$ 면 1.49로 크지만, 이 책의 데이터처럼 $n=126$ 이면 1.0121이라 $g_1$ 과 $G_1$ 의
 차이는 1\% 남짓이다.
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{과제 데이터 \texttt{sugars}(당류) 변수의 왜도를 계산 방식별로
+정리한 표.}
+\label{tab:desc-sugars-skew-methods}
 \begin{tabular}{lr}
 \toprule
 \texttt{sugars} 의 왜도 계산 방식 & 값 \\
@@ -829,7 +847,7 @@ $m_3 / s^3$ (분모만 $\mathrm{ddof}=1$)           & 2.6447 \\
 \texttt{pandas .skew()}                          & 2.7088 \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
 
 \begin{pitfall}[분자와 분모의 나눗셈을 섞지 않는다]
 위 표의 셋째 줄 $m_3/s^3$ 는 흔한 오답이다. 분모에는 표본표준편차($\mathrm{ddof}=1$,
@@ -841,7 +859,10 @@ $n-1$ 로 나눔)를 쓰면서 분자 $m_3$ 는 $n$ 으로 나눈 값이라, \te
 \subsection{부호와 방향}
 \label{sec:skew-sign}
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{왜도의 부호(Sign)별로 이름, 모양, 평균과 중앙값의 관계를
+정리한 표.}
+\label{tab:desc-skew-sign}
 \begin{tabularx}{\linewidth}{@{}l l l X@{}}
 \toprule
 부호 & 이름 & 모양 & 평균과 중앙값의 관계 \\
@@ -853,7 +874,7 @@ $\gamma = 0$ & 대칭(Symmetric)         & 종 모양         & 평균 $=$ 중�
 $\gamma < 0$ & 좌측 왜도(Left-skewed)  & 왼쪽 꼬리가 김  & 평균 $<$ 중앙값 \\
 \bottomrule
 \end{tabularx}
-\end{center}
+\end{table}
 
 왜 평균만 끌려가는지는 \Cref{ex:resistance}에서 이미 봤다. 그래서 왜도는
 그림에서 \textbf{두 세로선 사이의 틈}으로 나타난다.
@@ -1002,7 +1023,10 @@ $60$에서 뺀 거울상($60-x$)이라 $G_1$ 의 부호가 정확히 뒤집히�
 \subsection{판단 기준}
 \label{sec:skew-rule}
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{왜도 $|\gamma|$ 의 크기별로 평균과 중앙값 중 무엇을 쓸지 정리한
+판단 기준표.}
+\label{tab:desc-skew-rule}
 \begin{tabular}{@{}ll@{}}
 \toprule
 $|\gamma| < 0.5$        & 거의 대칭 --- 평균 + 표준편차 \\
@@ -1012,7 +1036,7 @@ $0.5 \le |\gamma| \le 1$ & 중간 --- 평균도 쓸 만하나 주의 \\
 $|\gamma| > 1$          & 강한 왜도 --- \textbf{중앙값 + $\IQR$} \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
 
 \texttt{sugars} 는 $\gamma = 2.71$ 이고, 결정적으로 \textbf{평균 13.29가
 $Q_3 = 11$ 보다 크다}. 즉 전체의 82.5\%가 ``평균 이하''다. 평균이라는 단어의
@@ -1074,7 +1098,11 @@ $\gamma = 2.71$ 만 보면 ``완만하게 늘어진 긴 꼬리''를 상상하게
 과제 데이터에서 \texttt{sugars == 0} 인 항목은 17개이고, 전부 감자튀김(10개)과
 치킨너겟(7개)이다. 이들은 실제로 당류가 없는 음식이다. 이를 결측으로 바꾸면:
 
-\begin{center}
+\begin{table}[H]\centering
+\caption{과제 데이터 \texttt{sugars}(당류) 변수에서 0을 값으로 둘 때와
+결측으로 바꿀 때, $n$과 평균, 중앙값, $\IQR$이 각각 어떻게 달라지는지
+보여주는 표.}
+\label{tab:desc-zero-as-missing}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
  & $n$ & 평균 & 중앙값 & $\IQR$ \\
@@ -1084,7 +1112,7 @@ $\gamma = 2.71$ 만 보면 ``완만하게 늘어진 긴 꼬리''를 상상하게
 0을 결측으로 (틀림) & 109 & 15.36 & 8.0 & 6.0 \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
 
 감자튀김의 당류 중앙값이 0\,g에서 1.15\,g으로 바뀐다. \textbf{당류가 없는
 음식이 당류를 가진 것처럼 보이게 된다.} 게다가 $n$ 이 126에서 109로 줄어

@@ -99,10 +99,12 @@ def qq_panel(ax: plt.Axes, data: np.ndarray, sample: np.ndarray, log: bool) -> N
         dq, sq = dq[keep], sq[keep]
         ax.set_xscale("log")
         ax.set_yscale("log")
-    ax.scatter(dq, sq, s=12, color=MODEL_COLOR, zorder=3)
+    # Usual convention (scipy probplot, statsmodels, R qqnorm, lecture 7 slides): the model
+    # is the reference on x, the observed data is on y.
+    ax.scatter(sq, dq, s=12, color=MODEL_COLOR, zorder=3)
     lo, hi = min(dq.min(), sq.min()), max(dq.max(), sq.max())
     ax.plot([lo, hi], [lo, hi], color=INK, lw=1, ls="--", label="y = x (perfect fit)")
-    ax.set(xlabel="data quantile", ylabel="model-sample quantile", title="QQ plot")
+    ax.set(xlabel="model-sample quantile", ylabel="data quantile", title="QQ plot")
     ax.legend(loc="upper left")
 
 
@@ -113,21 +115,65 @@ def save(fig: plt.Figure, name: str) -> None:
 
 
 def plot_airport_data(x: np.ndarray) -> None:
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 3.8))
+    # Top row on linear axes shows how bunched up the data is; the bottom row on log-log
+    # axes spreads that bunch out so the shape and the tail can be read.
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(10, 7.2))
+    ax1.hist(x, bins=np.arange(0, x.max() + 20, 20), weights=np.full(len(x), 1 / len(x)),
+             color=DATA_COLOR)
+    ax1.set(xlabel="routes per airport", ylabel="share of airports",
+            title="PDF, linear axes (bin = 20 routes)")
+    ax2.plot(*ecdf(x), color=DATA_COLOR, lw=2)
+    share_60 = float(np.mean(x <= 60))
+    ax2.axvline(60, color=INK, lw=1, ls="--")
+    ax2.text(80, 0.5, f"{share_60:.0%} of airports\nhave ≤ 60 routes", color=INK)
+    ax2.set(xlabel="routes per airport", ylabel="P(X ≤ x)", title="CDF, linear axes")
     # Routes are integers, so plot P(X = k) per value instead of log bins (which leave gaps).
     values, counts = np.unique(x, return_counts=True)
-    ax1.scatter(values, counts / len(x), s=12, color=DATA_COLOR)
-    ax1.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
-            ylabel="P(X = k) (log)", title="PDF (probability mass per value)")
-    ax2.plot(*ccdf(x), color=DATA_COLOR, lw=2, label="data")
-    ax2.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
-            ylabel="P(X ≥ x) (log)", title="CCDF")
+    ax3.scatter(values, counts / len(x), s=12, color=DATA_COLOR)
+    ax3.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
+            ylabel="P(X = k) (log)", title="PDF, log-log (probability mass per value)")
+    ax4.plot(*ccdf(x), color=DATA_COLOR, lw=2, label="data")
+    ax4.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
+            ylabel="P(X ≥ x) (log)", title="CCDF, log-log")
     fig.suptitle(f"Airport routes: empirical distribution (n = {len(x)})")
     save(fig, "p1a_0_data")
 
 
+def log_binned_pdf(v: np.ndarray, bins: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Density per log bin, normalised by the WHOLE sample so values off the bins still count."""
+    counts, edges = np.histogram(v, bins=bins)
+    density = counts / (len(v) * np.diff(edges))
+    centers = np.sqrt(edges[:-1] * edges[1:])
+    keep = counts > 0
+    return centers[keep], density[keep]
+
+
 def plot_airport_model(x: np.ndarray, key: str, label: str, sample: np.ndarray) -> None:
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 3.8))
+    fig, ((axp, ax0), (ax1, ax2)) = plt.subplots(2, 2, figsize=(10, 7.2))
+    # PDF on log-log axes with log-width bins: the model sample is continuous, so the
+    # per-value mass used for the data-only figure does not apply here.
+    bins = np.logspace(0, 6, 37)
+    axp.plot(*log_binned_pdf(x, bins), "o-", ms=4, color=DATA_COLOR, label="data")
+    axp.plot(*log_binned_pdf(sample, bins), "o-", ms=4, color=MODEL_COLOR,
+             label="model sample")
+    outside = float(np.mean((sample < bins[0]) | (sample > bins[-1])))
+    if outside > 0.01:
+        axp.text(0.98, 0.92, f"{outside:.0%} of the sample\nlies outside [1, 1e6]",
+                 transform=axp.transAxes, ha="right", va="top", color=INK)
+    axp.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
+            ylabel="density (log)", title="PDF, log-log (log-width bins)")
+    axp.legend(loc="lower left")
+    # Linear-axis CDF, cut at the data's range; the share of the sample beyond it is stated.
+    ax0.plot(*ecdf(x), color=DATA_COLOR, lw=2, label="data")
+    ax0.plot(*ecdf(sample), color=MODEL_COLOR, lw=2, label="model sample")
+    x_hi = 1.1 * float(x.max())
+    ax0.set_xlim(min(0.0, float(np.quantile(sample, 0.001))), x_hi)
+    beyond = float(np.mean(sample > x_hi))
+    if beyond > 0.001:
+        ax0.text(0.98, 0.35, f"{beyond:.1%} of the sample\nlies beyond this axis",
+                 transform=ax0.transAxes, ha="right", color=INK)
+    ax0.set(xlabel="routes per airport", ylabel="P(X ≤ x)", title="CDF, linear axes")
+    ax0.legend(loc="lower right")
     ax1.plot(*ccdf(x), color=DATA_COLOR, lw=2, label="data")
     # CCDF over the FULL sample, then hide x <= 0 (log axis); filtering first would renormalise.
     xs, ps = ccdf(sample)

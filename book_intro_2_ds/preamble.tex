@@ -50,6 +50,11 @@
 \usepackage{listings}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta, positioning, fit, backgrounds, calc}
+% figkit: [H] float, 흐름도 상자 스타일, \figorbox (.claude/skills/latex-figkit 사본).
+% caption 을 옵션과 함께 먼저 불렀으므로 그 뒤에 와야 옵션 충돌이 없다.
+\usepackage{figkit}
+\renewcommand{\flowaltname}{기준선}
+\renewcommand{\flownewname}{바뀐 단계}
 
 % -------------------------------------------------------------- 레이아웃
 \usepackage[a4paper, margin=2.6cm, headheight=14pt]{geometry}
@@ -147,8 +152,9 @@
 \crefname{example}{예제}{예제}
 \crefname{chapter}{장}{장}
 \crefname{section}{절}{절}
-\crefname{figure}{그림}{그림}
-\crefname{table}{표}{표}
+% 번호 표제는 한국어 문서에서도 Figure/Table 이다 (latex.md §10). 캡션도 같은 이름을 쓴다.
+\crefname{figure}{Figure}{Figures}
+\crefname{table}{Table}{Tables}
 
 % =====================================================================
 %  시각 스타일
@@ -171,6 +177,12 @@
   {\color{bookaccent}\thesection}{0.7em}{}
 \titleformat{\subsection}{\normalfont\large\bfseries\color{bookink}}
   {\color{bookaccent}\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries\color{bookink}}
+  {\color{bookaccent}\thesubsubsection}{0.7em}{}
+
+% 세 수준 모두 번호를 매기고 목차에 싣는다 (latex.md §15).
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
 
 % ``In brief.'' 블록의 description 라벨을 고정폭으로 세운다 (AUTHORING.md 1.6).
 \newenvironment{inbrief}%

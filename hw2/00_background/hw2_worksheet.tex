@@ -1,0 +1,92 @@
+% =====================================================================
+%  CS 6330 HW2 worksheet: print and answer by hand
+%  Two questions per page, each with a blank half page below it.
+%  Questions follow the submit template (report_submit/hw2_taeklim_report.tex)
+%  word for word, lettered (a), (b), ... within each data set.
+%  Figure questions show the figure that hw2/code/p1.py and p2.py write
+%  to hw2/figures/.
+%  Build: latexmk -C && latexmk -xelatex hw2_worksheet.tex
+% =====================================================================
+\documentclass[11pt]{article}
+
+\usepackage[letterpaper,margin=0.75in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{caption}
+
+\captionsetup{font=small, labelfont=bf}
+\setlength{\parindent}{0pt}
+\pagestyle{plain}
+
+\newcommand{\figdir}{../figures}
+
+% Letters restart at (a) for each data set.
+\newcounter{qn}
+\newcommand{\group}[1]{\def\grp{#1}\setcounter{qn}{0}}
+
+% A fixed half-page box, so two land on each page.
+\newcommand{\question}[1]{%
+  \stepcounter{qn}%
+  \noindent\begin{minipage}[t][0.48\textheight][t]{\linewidth}
+    {\small \grp}\par\smallskip
+    \textbf{(\alph{qn}) #1}
+  \end{minipage}\par}
+
+% Same box with the code's figure under the question: #1 file, #2 caption, #3 question.
+\newcommand{\figquestion}[3]{%
+  \stepcounter{qn}%
+  \noindent\begin{minipage}[t][0.48\textheight][t]{\linewidth}
+    {\small \grp}\par\smallskip
+    \textbf{(\alph{qn}) #3}\par\medskip
+    {\centering
+     \includegraphics[width=\linewidth,height=0.28\textheight,keepaspectratio]{\figdir/#1.png}\par
+     \captionof{figure}{#2}\par}
+  \end{minipage}\par}
+
+\begin{document}
+
+\group{Problem 1. Airport data}
+\question{What is the $\alpha$ if the distribution is power law?}
+\question{What is the $\lambda$ if the distribution is exponential?}
+\question{What is $[a, b]$ if the distribution is uniform?}
+\question{What is $\mu$ and $\sigma$ if the distribution is normal?}
+\figquestion{p1a_0_data}{Distribution of the airport routes data.}
+  {Screen shot of the visualization of distribution of data}
+\figquestion{p1a_1_powerlaw}{Airport data vs.\ samples from the fitted power law model.}
+  {Screen shot of the visualization of distribution of data if it was power law}
+\figquestion{p1a_2_exponential}{Airport data vs.\ samples from the fitted exponential model.}
+  {Screen shot of the visualization of distribution of data if it was exponential}
+\figquestion{p1a_3_uniform}{Airport data vs.\ samples from the fitted uniform model.}
+  {Screen shot of the visualization of distribution of data if it was uniform}
+\figquestion{p1a_4_normal}{Airport data vs.\ samples from the fitted normal model.}
+  {Screen shot of the visualization of distribution of data if it was normal}
+\question{What is the distribution of data based on your observation? Discuss}
+
+\group{Problem 1. Movie Rating data}
+\question{What is the $\alpha$ if the distribution is power law?}
+\question{What is the $\lambda$ if the distribution is exponential?}
+\question{What is $[a, b]$ if the distribution is uniform?}
+\question{What is $\mu$ and $\sigma$ if the distribution is normal?}
+\figquestion{p1b_0_data}{Distribution of the movie rating data.}
+  {Screen shot of the visualization of distribution of data}
+\figquestion{p1b_1_powerlaw}{Movie rating data vs.\ samples from the fitted power law model.}
+  {Screen shot of the visualization of distribution of data if it was power law}
+\figquestion{p1b_2_exponential}{Movie rating data vs.\ samples from the fitted exponential model.}
+  {Screen shot of the visualization of distribution of data if it was exponential}
+\figquestion{p1b_3_uniform}{Movie rating data vs.\ samples from the fitted uniform model.}
+  {Screen shot of the visualization of distribution of data if it was uniform}
+\figquestion{p1b_4_normal}{Movie rating data vs.\ samples from the fitted normal model.}
+  {Screen shot of the visualization of distribution of data if it was normal}
+\question{What is the distribution of data based on your observation? Discuss}
+
+\group{Problem 2. Age data}
+\figquestion{p2_1_age}{Distribution of age.}
+  {Screenshot of distribution/histogram of the age}
+\figquestion{p2_2_first_digit}{Distribution of the first digit of age.}
+  {Screenshot of distribution/histogram of the first digit of age}
+\figquestion{p2_3_last_digit}{Distribution of the last digit of age.}
+  {Screenshot of distribution/histogram of the last digit of age}
+\question{Discussion (what are those distribution?) Why do you think it is like this?}
+
+\end{document}

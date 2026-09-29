@@ -17,6 +17,14 @@
 \usepackage{float}
 \usepackage[colorlinks,linkcolor=blue!60!black,filecolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
 \usepackage{cleveref}
+\usepackage{listings}
+\usepackage{etoolbox}
+\lstset{basicstyle=\ttfamily\small, columns=fullflexible, frame=single,
+        rulecolor=\color{black!30}, backgroundcolor=\color{black!3},
+        showstringspaces=false}
+% Keep each code block on one page.
+\BeforeBeginEnvironment{lstlisting}{\par\medskip\noindent\begin{minipage}{\linewidth}}
+\AfterEndEnvironment{lstlisting}{\end{minipage}\par\medskip}
 
 \newsavebox{\calloutbox}
 \newenvironment{callout}[1][]
@@ -43,6 +51,17 @@
 
 \begin{document}
 \maketitle
+
+\begin{callout}[HW2 두 문제에 공통으로 담긴 핵심]
+\begin{enumerate}
+  \item 분포는 데이터를 요약하는 \term{가정}이다.
+  \item 가정은 반드시 \term{시각적으로 검증}해야 한다.
+  \item 결과는 \term{데이터가 생성된 과정}으로 설명해야 한다.
+\end{enumerate}
+\end{callout}
+
+\tableofcontents
+\clearpage
 
 % Overview first: people share vs amount share, then Lorenz, then the normal.
 % (a),(b): alpha = 2.16, x_min = 1 (the 80/20 case, sec:pareto), E[X] = 7.25.
@@ -841,10 +860,286 @@ $C = (\alpha-1)\,x_{\min}^{\alpha-1}$(\Cref{sec:normalize})를 넣고 적분하�
   \item $1 < \alpha \le 2$: 표본 평균조차 수렴하지 않는다. 평균보다 중앙값(Median)이
         나은 요약이다.
 \end{itemize}
-문제 1(a)의 공항 데이터는 $\hat\alpha = 1.612$로 마지막 경우다(\Cref{sec:p1a}).
+문제 1의 공항 데이터는 $\hat\alpha = 1.612$로 마지막 경우다(\Cref{sec:p1a}).
 
 $\alpha$가 작을수록 꼬리가 두껍고, ``상위 소수가 전체 양의 대부분을 가진다''(80/20)는
 현상이 강해진다. 이 부분은 \Cref{fig:overview}의 사람 대 양 그림과 이어진다.
+
+% =====================================================================
+\section{모수 추정(Parameter Estimation)이란}
+\label{sec:param-est}
+
+\begin{callout}[질문]
+모수 추정? 영어로 말해주고 이게 뭔지 왜 해야 하는지 어떻게 하는지 그래서 왜 중요한지?
+\end{callout}
+
+\paragraph{In brief.}
+\begin{description}
+  \item[What] 분포의 ``손잡이''(모수)를 데이터에 맞게 돌려 값을 정하는 일이다.
+  \item[Why] 분포 이름만으로는 계산도 생성도 할 수 없다. 숫자가 있어야 모형이 된다.
+  \item[How] 데이터가 나올 확률(우도)이 가장 커지는 값을 고른다(MLE).
+  \item[Caution] 틀린 분포를 골라도 숫자는 나온다. 그래서 그림으로 검증한다.
+\end{description}
+
+\subsection{무엇인가: 모수는 분포의 손잡이다}
+\term{모수}(Parameter)는 분포의 모양과 위치를 정하는 숫자다. ``지수분포''는 하나의
+분포가 아니라 $\lambda$ 값마다 하나씩 있는 분포들의 \term{가족}(Family)이다.
+\term{모수 추정}(Parameter Estimation)은 이 가족 가운데 데이터에 가장 맞는 하나를
+고르는 일, 곧 모수 값을 데이터로 정하는 일이다. 추정한 값에는 모자를 씌워
+$\hat\lambda$, $\hat\alpha$처럼 쓴다(참값 $\lambda$와 구별).
+
+\begin{table}[H]
+  \centering
+  \caption{HW2 문제 1의 네 분포 가족과 모수.}
+  \label{tab:param-families}
+  \begin{tabular}{lll}
+    \toprule
+    분포 가족 & 모수 & 모수가 정하는 것 \\
+    \midrule
+    멱법칙(Power Law) & $\alpha$ (와 $x_{\min}$) & 꼬리가 줄어드는 빠르기 \\
+    \midrule
+    지수분포(Exponential) & $\lambda$ & 줄어드는 비율, 평균 $1/\lambda$ \\
+    \midrule
+    균등분포(Uniform) & $a$, $b$ & 값이 나올 수 있는 범위 \\
+    \midrule
+    정규분포(Normal) & $\mu$, $\sigma$ & 중심과 퍼짐 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{왜 해야 하나: 숫자가 있어야 모형이 된다}
+``이 데이터는 지수분포다''라는 말만으로는 할 수 있는 것이 없다. $\lambda$가 정해져야
+비로소 다음이 가능하다.
+\begin{itemize}
+  \item \term{계산}: ``노선이 $50$개 넘는 공항의 비율''처럼 확률을 구한다.
+  \item \term{생성}: 그 분포에서 난수 표본을 뽑는다. 과제가 요구하는 일이다.
+  \item \term{비교}: 네 모형을 같은 데이터 위에 겹쳐 그려 어느 것이 맞는지 본다.
+\end{itemize}
+
+\subsection{어떻게 하나: 최대우도추정(MLE)}
+\paragraph{아이디어.} 모수 후보마다 ``이 모수라면 지금 가진 데이터가 나올 확률이
+얼마인가''를 계산하고, 그 확률이 가장 큰 후보를 고른다. 그 확률을
+\term{우도}(Likelihood)라 하고, 이 방법을 \term{최대우도추정}(MLE, Maximum Likelihood
+Estimation)이라 한다. 관측값이 서로 독립이면 우도는 각 점의 밀도를 곱한 것이다.
+\[
+  L(\lambda) = f(x_1)\,f(x_2)\cdots f(x_n)
+  \qquad \text{(모수 $\lambda$일 때 데이터 전체의 ``그럴듯함'')}
+\]
+
+\paragraph{예제: 지수분포, 데이터 $\{1, 2, 4\}$.}
+$f(x) = \lambda e^{-\lambda x}$이므로
+\begin{align*}
+  L(\lambda) &= \lambda e^{-\lambda \cdot 1} \cdot \lambda e^{-\lambda \cdot 2} \cdot \lambda e^{-\lambda \cdot 4}
+    && \text{세 점의 밀도를 곱했다}\\
+             &= \lambda^3 e^{-7\lambda}
+    && \text{지수끼리 더했다: $1+2+4 = 7$}
+\end{align*}
+후보 세 개를 넣어 본다(\Cref{tab:likelihood}).
+
+\begin{table}[H]
+  \centering
+  \caption{지수분포 우도 $L(\lambda) = \lambda^3 e^{-7\lambda}$를 세 후보에서 계산한 값.}
+  \label{tab:likelihood}
+  \begin{tabular}{rrrr}
+    \toprule
+    $\lambda$ & $\lambda^3$ & $e^{-7\lambda}$ & $L(\lambda)$ \\
+    \midrule
+    $0.2$ & $0.0080$ & $0.2466$ & $0.00197$ \\
+    \midrule
+    $\mathbf{3/7 \approx 0.43}$ & $0.0787$ & $0.0498$ & $\mathbf{0.00392}$ \\
+    \midrule
+    $1$ & $1$ & $0.00091$ & $0.00091$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+$\lambda = 3/7$에서 가장 크다. 미분으로 정확히 구하면 다음과 같다.
+\begin{align*}
+  \ln L &= 3 \ln\lambda - 7\lambda
+    && \text{곱을 합으로 바꾸려고 로그}\\
+  \frac{d \ln L}{d\lambda} &= \frac{3}{\lambda} - 7 = 0
+    && \text{꼭대기에서 기울기 $0$}\\
+  \hat\lambda &= \frac{3}{7} = \frac{1}{\bar x}
+    && \text{$\bar x = 7/3$: 평균의 역수}
+\end{align*}
+일반적으로 지수분포의 MLE는 $\hat\lambda = 1/\bar x$다. 다른 분포도 같은 방법으로
+공식이 나온다(\Cref{tab:mle-formulas}).
+
+\begin{callout}[질문]
+3.3: only shows exponential distribution, how to get power law distribution?
+\end{callout}
+
+\paragraph{예제: 멱법칙(Power Law), 같은 데이터 $\{1, 2, 4\}$.}
+순서는 지수분포와 똑같다. 우도(Likelihood)를 쓰고, 로그를 씌우고, 미분해서 $0$으로 둔다.
+한 가지 다른 점은 $x_{\min}$이다. $x_{\min}$은 먼저 정해 두고 $\alpha$만 추정한다.
+여기서는 HW2 코드와 같이 데이터의 최솟값 $x_{\min} = 1$로 둔다.
+
+\Cref{eq:pdf}에 로그를 씌워 점 하나의 로그 밀도(Log Density)를 구한다.
+
+\begin{callout}[질문]
+$\ln f(x_i) = \ln\frac{\alpha-1}{x_{\min}} - \alpha \ln\frac{x_i}{x_{\min}}$ \dots\ how did you get this?
+\end{callout}
+
+로그 법칙(Logarithm Rules) 세 개만 쓴다(\Cref{tab:log-rules}). 로그를 쓰는 이유는
+곱을 합으로 바꾸기 위해서다. 우도는 $n$개 밀도의 곱이라, 로그를 씌우면 다루기 쉬운 합이 된다.
+
+\begin{table}[H]
+  \centering
+  \caption{유도에 쓰는 로그 법칙 세 개와 숫자로 확인한 값.}
+  \label{tab:log-rules}
+  \begin{tabular}{lll}
+    \toprule
+    법칙 & 식 & 숫자 예 \\
+    \midrule
+    곱은 합 & $\ln(A \cdot B) = \ln A + \ln B$ & $\ln(2 \cdot 3) = 0.693 + 1.099 = 1.792$ \\
+    \midrule
+    나눗셈은 빼기 & $\ln(A / C) = \ln A - \ln C$ & $\ln(6/2) = 1.792 - 0.693 = 1.099$ \\
+    \midrule
+    거듭제곱은 곱 & $\ln(B^p) = p \ln B$ & $\ln(2^3) = 3 \times 0.693 = 2.079$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\Cref{eq:pdf}는 ``상수 $\times$ 거듭제곱''의 꼴이다. 앞의 상수를
+$A = \frac{\alpha-1}{x_{\min}}$, 뒤의 거듭제곱을 $B^p$로 보면
+($B = \frac{x_i}{x_{\min}}$, $p = -\alpha$) 한 줄에 법칙 하나씩 쓴다.
+\begin{align*}
+  \ln f(x_i) &= \ln\left[\frac{\alpha-1}{x_{\min}} \cdot \left(\frac{x_i}{x_{\min}}\right)^{-\alpha}\right]
+    && \text{\Cref{eq:pdf}에 로그를 씌웠다}\\
+             &= \ln\frac{\alpha-1}{x_{\min}} + \ln\left(\frac{x_i}{x_{\min}}\right)^{-\alpha}
+    && \text{곱은 합: $\ln(A \cdot B^p) = \ln A + \ln B^p$}\\
+             &= \ln\frac{\alpha-1}{x_{\min}} - \alpha \ln\frac{x_i}{x_{\min}}
+    && \text{거듭제곱은 곱: $\ln B^{-\alpha} = -\alpha \ln B$}\\
+             &= \ln(\alpha-1) - \ln x_{\min} - \alpha \ln\frac{x_i}{x_{\min}}
+    && \text{나눗셈은 빼기: $\ln\frac{\alpha-1}{x_{\min}} = \ln(\alpha-1) - \ln x_{\min}$}
+\end{align*}
+
+\paragraph{숫자로 확인.} $\alpha = 2.5$, $x_{\min} = 2$, $x_i = 4$로 두 쪽을 따로 계산한다.
+\begin{align*}
+  &f(4) = \frac{1.5}{2} \cdot 2^{-2.5} = 0.75 \times 0.1768 = 0.1326 && \text{밀도를 먼저 계산}\\
+  &\ln 0.1326 = -2.021 && \text{왼쪽: 그 값에 로그}\\
+  &\ln 1.5 - \ln 2 - 2.5 \ln 2 = 0.405 - 0.693 - 1.733 = -2.021 && \text{오른쪽: 마지막 줄의 식}
+\end{align*}
+두 값이 같다.
+$n$개 점을 모두 더한다. 로그 우도(Log-Likelihood)가 된다.
+\begin{align*}
+  \ln L(\alpha) &= n \ln(\alpha-1) - n \ln x_{\min} - \alpha S
+    && \text{$S = \textstyle\sum_i \ln(x_i/x_{\min})$로 묶었다}\\
+  \frac{d \ln L}{d\alpha} &= \frac{n}{\alpha-1} - S = 0
+    && \text{$\alpha$로 미분, $\ln x_{\min}$ 항은 상수라 사라진다}\\
+  \alpha - 1 &= \frac{n}{S}
+    && \text{정리}\\
+  \hat\alpha &= 1 + \frac{n}{\sum_i \ln(x_i/x_{\min})}
+    && \text{\Cref{eq:mle}과 같다}
+\end{align*}
+
+$\{1, 2, 4\}$에 넣는다.
+\begin{align*}
+  &S = \ln 1 + \ln 2 + \ln 4 = 0 + 0.693 + 1.386 = 2.079 && \text{로그의 합}\\
+  &\hat\alpha = 1 + 3 / 2.079 = 2.443 && \text{추정값}
+\end{align*}
+후보를 넣어 보면 정말 $\hat\alpha$에서 우도가 가장 크다(\Cref{tab:likelihood-pl}).
+$x_{\min} = 1$이면 $L(\alpha) = (\alpha-1)^3 (1 \cdot 2 \cdot 4)^{-\alpha} = (\alpha-1)^3\, 8^{-\alpha}$이다.
+
+\begin{table}[H]
+  \centering
+  \caption{멱법칙 우도 $L(\alpha) = (\alpha-1)^3\, 8^{-\alpha}$를 세 후보에서 계산한 값.}
+  \label{tab:likelihood-pl}
+  \begin{tabular}{rrrr}
+    \toprule
+    $\alpha$ & $(\alpha-1)^3$ & $8^{-\alpha}$ & $L(\alpha)$ \\
+    \midrule
+    $2$ & $1$ & $0.01563$ & $0.0156$ \\
+    \midrule
+    $\mathbf{2.443}$ & $3.003$ & $0.00622$ & $\mathbf{0.0187}$ \\
+    \midrule
+    $3$ & $8$ & $0.00195$ & $0.0156$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+지수분포와 비교하면 차이는 하나다. 지수분포는 $x_i$ 자체의 평균을 쓰고
+($\hat\lambda = 1/\bar x$), 멱법칙은 $\ln(x_i/x_{\min})$의 평균을 쓴다
+($\hat\alpha = 1 + 1/\overline{\ln(x/x_{\min})}$). 멱법칙은 ``몇 배인가''로 재는 분포라
+로그 눈금에서 평균을 낸다.
+
+\begin{table}[H]
+  \centering
+  \caption{HW2 문제 1의 네 분포에서 MLE로 얻는 추정 공식.}
+  \label{tab:mle-formulas}
+  \begin{tabular}{ll}
+    \toprule
+    분포 & 추정 공식 \\
+    \midrule
+    멱법칙 & $\hat\alpha = 1 + n \big/ \sum_i \ln(x_i/x_{\min})$ (\Cref{sec:estimate}) \\
+    \midrule
+    지수분포 & $\hat\lambda = 1/\bar x$ \\
+    \midrule
+    균등분포 & $\hat a = \min_i x_i$, $\hat b = \max_i x_i$ \\
+    \midrule
+    정규분포 & $\hat\mu = \bar x$, $\hat\sigma = $ 표본 표준편차 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{callout}[질문]
+균등 분포 standard deviation?
+\end{callout}
+
+\paragraph{균등분포(Uniform Distribution)의 표준편차(Standard Deviation).}
+균등분포의 모수는 $a$, $b$뿐이라 표준편차를 따로 추정하지 않는다. $a$, $b$가 정해지면
+표준편차도 따라 정해진다.
+\[
+  \sigma = \frac{b-a}{\sqrt{12}} \approx 0.289\,(b-a)
+  \qquad \text{(범위 폭의 약 $29\%$)}
+\]
+유도는 분산(Variance) $= E[X^2] - (E[X])^2$(\Cref{sec:alpha})를 그대로 쓴다.
+밀도(Density)는 $[a, b]$ 위에서 $f(x) = \frac{1}{b-a}$로 일정하다.
+\begin{align*}
+  E[X] &= \int_a^b \frac{x}{b-a}\,dx = \frac{b^2 - a^2}{2(b-a)} = \frac{a+b}{2}
+    && \text{가운데 점}\\
+  E[X^2] &= \int_a^b \frac{x^2}{b-a}\,dx = \frac{b^3 - a^3}{3(b-a)} = \frac{a^2 + ab + b^2}{3}
+    && \text{$b^3 - a^3 = (b-a)(a^2+ab+b^2)$}\\
+  \mathrm{Var}[X] &= \frac{a^2 + ab + b^2}{3} - \frac{a^2 + 2ab + b^2}{4}
+    && \text{빼기}\\
+  &= \frac{4a^2 + 4ab + 4b^2 - 3a^2 - 6ab - 3b^2}{12}
+    && \text{통분: 분모 $12$}\\
+  &= \frac{a^2 - 2ab + b^2}{12} = \frac{(b-a)^2}{12}
+    && \text{정리}
+\end{align*}
+제곱근을 씌우면 $\sigma = (b-a)/\sqrt{12}$다.
+
+\paragraph{예: 영화 평점에 균등분포를 맞추면.}
+\texttt{01\_movie\_votes.csv}($n = 4392$, python으로 계산, 2026/09/29)의 최솟값과 최댓값이
+$\hat a = 1.9$, $\hat b = 8.5$다.
+\begin{align*}
+  &(8.5 - 1.9)/\sqrt{12} = 6.6 / 3.464 = 1.91 && \text{균등분포가 예측하는 표준편차}\\
+  &0.89 && \text{실제 데이터의 표본 표준편차}
+\end{align*}
+균등분포는 실제보다 두 배 넘게 퍼진다고 말한다. 실제 평점은 평균 $6.2$ 근처에 몰려
+있는데, 균등분포는 $2$점과 $8$점이 $6$점만큼 흔하다고 가정하기 때문이다. 이것도
+공식은 숫자를 내지만 모형은 틀린 경우다.
+
+\subsection{그래서 왜 중요한가: 틀린 가정에도 숫자는 나온다}
+\Cref{tab:mle-formulas}의 공식은 \term{어떤 데이터에 넣어도 숫자를 돌려준다.}
+공식은 ``이 가족이 맞다면 어느 값이 가장 나은가''에만 답한다. ``이 가족이 맞는가''에는
+답하지 않는다.
+
+\paragraph{예: 공항 데이터에 정규분포를 맞추면.}
+\texttt{01\_airport\_routes.csv}($n = 3409$)에 정규분포 공식을 넣으면(python으로 계산,
+2026/09/29)
+\begin{align*}
+  &\hat\mu = 19.8,\ \hat\sigma = 53.5 && \text{공식은 문제없이 숫자를 낸다}\\
+  &P(X < 0) = \Phi\!\left(\tfrac{0 - 19.8}{53.5}\right) = 0.355 && \text{이 모형이 말하는 ``노선 수가 음수인 공항''의 비율}
+\end{align*}
+노선 수는 음수일 수 없는데, 이 모형에서 표본을 뽑으면 약 $36\%$가 음수로 나온다.
+실제 데이터의 중앙값은 $4$인데 $\hat\mu = 19.8$이다. 소수의 허브 공항(최대 $915$)이
+평균을 끌어올렸기 때문이다(\Cref{sec:alpha}의 ``평균이 한 값으로 수렴하지 않는다''와
+같은 이야기).
+
+숫자만 보면 이 잘못이 보이지 않는다. \term{추정한 모수로 표본을 생성해 실제 데이터와
+겹쳐 그리면} 곧바로 보인다. 과제가 PDF, CDF, QQ plot 중 하나로 확인하라고 하는
+이유이고, 첫 쪽의 핵심 2(가정은 시각적으로 검증한다)가 뜻하는 것이다.
 
 % =====================================================================
 \section{데이터에서 $\alpha$ 추정하기}
@@ -874,7 +1169,205 @@ $x_{\min}$은 데이터의 최솟값으로 둔다.
 $\hat\alpha \approx 1.96 < 2$이므로, 이 모형에서는 평균이 유한하지 않다.
 
 % =====================================================================
-\section{HW2 문제 1(a): 공항 노선 수 데이터}
+\section{HW2 문제 1: 모수 여덟 개 구하기 (단계별)}
+\label{sec:p1-steps}
+
+\begin{callout}[질문]
+I need airport and movie data for p1-b? \dots\ I need steps to find each and add them into notes
+\end{callout}
+
+\paragraph{먼저 구조.} 문제 1의 (a)--(d)는 데이터셋이 아니라 \term{모형}(Model)이다.
+과제 원문은 ``For each of these datasets, consider the following models: (a) \dots\ (d)''다.
+그래서 모형 네 개를 데이터 두 개에 각각 적용해 모수를 여덟 번 구한다
+(\Cref{tab:p1-eight}). 제출 템플릿도 ``Airport data''와 ``Movie Rating data'' 아래에 같은
+문항 네 개를 두 번 둔다.
+
+\begin{table}[H]
+  \centering
+  \caption{문제 1의 모수 여덟 개와 KS 거리 $D$ (\texttt{hw2/code/p1.py} 출력, 2026/09/29).
+    $D$가 작을수록 모형 표본이 데이터와 가깝다. 데이터마다 가장 작은 $D$를 굵게 적었다.}
+  \label{tab:p1-eight}
+  \begin{tabular}{lllll}
+    \toprule
+    데이터 & (a) 멱법칙 $\hat\alpha$ & (b) 지수 $\hat\lambda$ & (c) 균등 $[\hat a, \hat b]$ & (d) 정규 $\hat\mu$, $\hat\sigma$ \\
+    \midrule
+    공항 노선 수 & $1.612$ & $0.0504$ & $[1, 915]$ & $19.845$, $53.506$ \\
+    \quad KS $D$ & $\mathbf{0.209}$ & $0.379$ & $0.857$ & $0.358$ \\
+    \midrule
+    영화 평점 & $1.851$ & $0.1606$ & $[1.9, 8.5]$ & $6.227$, $0.893$ \\
+    \quad KS $D$ & $0.485$ & $0.490$ & $0.394$ & $\mathbf{0.055}$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+아래 네 소절은 모형 하나씩, 공식 $\to$ 코드 한 줄 $\to$ 두 데이터에 넣은 숫자의 순서로 적는다.
+공식이 왜 그런지는 \Cref{sec:param-est}(최대우도추정, MLE)에 있다. 숫자는 모두 python으로
+다시 계산해 코드 출력과 맞췄다.
+
+\begin{table}[H]
+  \centering
+  \caption{단계에 쓰는 기초 값 (python으로 계산, 2026/09/29).}
+  \label{tab:p1-basics}
+  \begin{tabular}{lrr}
+    \toprule
+    값 & 공항 노선 수 & 영화 평점 \\
+    \midrule
+    개수 $n$ & $3409$ & $4392$ \\
+    \midrule
+    합 $\sum x_i$ & $67652$ & $27348.7$ \\
+    \midrule
+    최솟값 $\min x_i$ & $1$ & $1.9$ \\
+    \midrule
+    최댓값 $\max x_i$ & $915$ & $8.5$ \\
+    \midrule
+    편차 제곱합 $\sum (x_i - \bar x)^2$ & $9756906.22$ & $3503.28$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{(a) 멱법칙(Power Law): $\hat\alpha$}
+\paragraph{공식.} $\hat\alpha = 1 + n \big/ \sum_i \ln(x_i/x_{\min})$ (\Cref{eq:mle}),
+$x_{\min}$은 데이터 최솟값.
+\begin{lstlisting}[language=Python]
+x_min = x.min()
+alpha = 1 + len(x) / np.log(x / x_min).sum()
+\end{lstlisting}
+\paragraph{단계.}
+\begin{enumerate}
+  \item $x_{\min}$을 정한다(최솟값).
+  \item 값마다 $x_{\min}$으로 나누고 로그를 씌운다: $\ln(x_i/x_{\min})$.
+  \item 모두 더한다: $S$.
+  \item $\hat\alpha = 1 + n/S$.
+\end{enumerate}
+\begin{align*}
+  \text{공항:}\ &x_{\min} = 1,\ S = 5569.43,\ \hat\alpha = 1 + 3409/5569.43 = 1.612
+    && \text{(\Cref{tab:p1a-alpha-steps})}\\
+  \text{영화:}\ &x_{\min} = 1.9,\ S = 5163.93,\ \hat\alpha = 1 + 4392/5163.93 = 1.851
+    && \text{$\ln(x_i/1.9)$의 합}
+\end{align*}
+
+\subsection{(b) 지수분포(Exponential): $\hat\lambda$}
+\paragraph{공식.} $\hat\lambda = 1/\bar x$ (평균의 역수, \Cref{sec:param-est}의 예제).
+\begin{lstlisting}[language=Python]
+lam = 1 / x.mean()
+\end{lstlisting}
+\paragraph{단계.}
+\begin{enumerate}
+  \item 평균을 구한다: $\bar x = \sum x_i / n$.
+  \item 역수를 취한다: $\hat\lambda = 1/\bar x$.
+\end{enumerate}
+\begin{align*}
+  \text{공항:}\ &\bar x = 67652 / 3409 = 19.845,\ \hat\lambda = 1/19.845 = 0.0504 \\
+  \text{영화:}\ &\bar x = 27348.7 / 4392 = 6.227,\ \hat\lambda = 1/6.227 = 0.1606
+\end{align*}
+
+\subsection{(c) 균등분포(Uniform): $[\hat a, \hat b]$}
+\paragraph{공식.} $\hat a = \min_i x_i$, $\hat b = \max_i x_i$. 균등분포의 밀도는 구간
+안에서 $1/(b-a)$로 일정하다. 모든 점을 담는 가장 좁은 구간일 때 밀도가 가장 커서
+우도가 가장 크다. 그래서 최솟값과 최댓값이다.
+\begin{lstlisting}[language=Python]
+a, b = x.min(), x.max()
+\end{lstlisting}
+\begin{align*}
+  \text{공항:}\ &[\hat a, \hat b] = [1, 915] \\
+  \text{영화:}\ &[\hat a, \hat b] = [1.9, 8.5]
+\end{align*}
+
+\subsection{(d) 정규분포(Normal): $\hat\mu$, $\hat\sigma$}
+\paragraph{공식.} $\hat\mu = \bar x$, $\hat\sigma = \sqrt{\sum_i (x_i - \bar x)^2 / (n-1)}$.
+HW2 코드는 $n-1$로 나눈다(표본 표준편차(Sample Standard Deviation), \texttt{ddof=1}).
+MLE는 $n$으로 나누지만, $n$이 수천이라 차이는 소수 넷째 자리 이하다.
+\begin{lstlisting}[language=Python]
+mu, sigma = x.mean(), x.std(ddof=1)
+\end{lstlisting}
+\paragraph{단계.}
+\begin{enumerate}
+  \item 평균 $\hat\mu = \bar x$ ((b)에서 이미 구했다).
+  \item 값마다 평균과의 차이를 제곱해 더한다(편차 제곱합).
+  \item $n - 1$로 나누고 제곱근을 씌운다.
+\end{enumerate}
+\begin{align*}
+  \text{공항:}\ &\hat\mu = 19.845,\ \hat\sigma = \sqrt{9756906.22 / 3408} = \sqrt{2862.94} = 53.506 \\
+  \text{영화:}\ &\hat\mu = 6.227,\ \hat\sigma = \sqrt{3503.28 / 4391} = \sqrt{0.7978} = 0.893
+\end{align*}
+
+\paragraph{다음 단계.} 모수를 구한 것은 절반이다. 각 모형에서 표본을 뽑아
+(\Cref{sec:p1a-sample}) 데이터와 겹쳐 그리고, 어느 모형이 맞는지 판단한다
+(\Cref{sec:p1a-range}, \Cref{sec:ccdf-vs-pdf}). \Cref{tab:p1-eight}의 KS 거리는
+공항에는 멱법칙, 영화에는 정규분포가 가장 가깝다고 말한다.
+
+\subsection{KS 거리(Kolmogorov--Smirnov Distance)란}
+\label{sec:ks}
+
+\begin{callout}[질문]
+what is KS distance?
+\end{callout}
+
+\paragraph{고치는 문제.} 모형 네 개를 그림으로 비교하면 그림이 여러 장 필요하고, 어느
+모형이 ``더'' 가까운지 말하기 어렵다. 두 분포의 차이를 \term{숫자 하나}로 요약하고 싶다.
+
+\paragraph{정의.} 두 분포의 누적분포함수(CDF)를 겹쳐 그렸을 때, 두 곡선 사이
+세로 간격 가운데 가장 큰 값이다.
+\[
+  D = \max_x \bigl|\, F_{\text{data}}(x) - F_{\text{model}}(x) \,\bigr|
+  \qquad \text{($F(x)$ = ``$x$ 이하인 비율'')}
+\]
+\begin{itemize}
+  \item $F$는 $0$과 $1$ 사이이므로 $D$도 $0$과 $1$ 사이다.
+  \item $D = 0$이면 두 분포가 같고, $1$에 가까울수록 크게 다르다.
+  \item 한 곳만 크게 어긋나도 $D$가 커진다. ``가장 나쁜 곳 하나''를 재는 거리다.
+\end{itemize}
+
+\paragraph{예제: 공항 데이터와 균등분포 $[1, 915]$.}
+균등분포의 CDF는 $F(x) = (x - 1)/914$인 직선이다. 데이터의 CDF는 처음에 급하게 오른다.
+간격이 가장 큰 곳은 노선 $60$개다(\Cref{fig:ks-uniform}, python으로 계산, 2026/09/29).
+\begin{align*}
+  &F_{\text{data}}(60) = 0.922 && \text{실제 공항의 $92.2\%$가 노선 $60$개 이하}\\
+  &F_{\text{model}}(60) = (60 - 1)/914 = 0.065 && \text{균등 모형은 $6.5\%$라고 말한다}\\
+  &D = 0.922 - 0.065 = 0.857 && \text{가장 큰 간격}
+\end{align*}
+
+% Data CDF points: python bisect on sorted 01_airport_routes.csv (2026/09/29).
+% x scale: 915 routes = 10 cm; y scale: 1 = 5 cm.
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[x=0.01093cm,y=5cm]
+    \draw[black!12] (0,0.5) -- (915,0.5);
+    \draw[black!12] (0,1) -- (915,1);
+    \draw[->] (0,0) -- (960,0) node[right] {노선 수 $x$};
+    \draw[->] (0,0) -- (0,1.12) node[above] {$F(x) = P(X \le x)$};
+    \foreach \v in {0,200,400,600,800} \draw (\v,0.02) -- (\v,-0.02) node[below,font=\small] {\v};
+    \foreach \p in {0.5,1} \draw (8,\p) -- (-8,\p) node[left,font=\small] {\p};
+    \draw[very thick,blue!70!black]
+      (1,0.209) -- (2,0.380) -- (4,0.557) -- (10,0.736) -- (20,0.828) -- (40,0.889)
+      -- (60,0.922) -- (100,0.952) -- (150,0.969) -- (200,0.980) -- (300,0.991)
+      -- (400,0.996) -- (600,1) -- (915,1);
+    \draw[very thick,orange!85!black,dashed] (1,0) -- (915,1);
+    \draw[<->,thick,red!70!black] (60,0.065) -- (60,0.922);
+    \node[red!70!black,right,font=\small] at (70,0.5) {$D = 0.857$ ($x = 60$)};
+    \node[blue!70!black,font=\small,anchor=west] at (420,1.06) {데이터 CDF};
+    \node[orange!85!black,font=\small,anchor=west] at (560,0.45) {균등 $[1, 915]$ CDF};
+  \end{tikzpicture}
+  \caption{공항 데이터의 CDF(파란 실선)와 균등분포 $[1, 915]$의 CDF(주황 점선).
+    빨간 화살표가 두 곡선의 가장 큰 세로 간격 $D = 0.857$이다(노선 $60$개).}
+  \label{fig:ks-uniform}
+\end{figure}
+
+\paragraph{숫자 하나로 비교.} 공항 데이터에서 네 모형의 $D$는 멱법칙 $0.209$, 지수
+$0.379$, 균등 $0.857$, 정규 $0.358$이다(\Cref{tab:p1-eight}). 가장 작은 멱법칙이 가장
+가깝다.
+
+\paragraph{주의 1: 코드는 공식이 아니라 표본과 비교한다.} HW2 코드는
+\texttt{scipy.stats.ks\_2samp(data, sample)}, 곧 두 표본(Two-Sample) KS를 쓴다. 모형의
+공식 CDF 대신 모형에서 뽑은 표본(\Cref{sec:p1a-sample})의 CDF와 비교한다. 그래서 씨드를
+바꾸면 $D$가 조금 달라진다. 균등분포는 공식 CDF로 계산해도 $0.857$로 같다.
+
+\paragraph{주의 2: $D$는 ``얼마나''만 말한다.} 어디가 왜 다른지는 말하지 않는다.
+멱법칙은 $D$가 가장 작지만, 노선 $100$개 이상의 꼬리에서 어긋난다(\Cref{sec:p1a-range}).
+이것은 그림을 봐야 보인다. 그래서 $D$는 그림과 함께 쓴다.
+
+% =====================================================================
+\section{HW2 문제 1: 공항 노선 수 데이터}
 \label{sec:p1a}
 \lecnote{\booksec{10.4} 공항 노선 수, \booksec{10.3} 네 모형을 비교하는 방법. KS 거리는 \bookch{8} \booksec{8.8}, Q-Q 플롯은 \bookch{5} \booksec{5.5}.}
 
@@ -890,13 +1383,165 @@ What is the $\alpha$ if the distribution is power law?
   &\hat\alpha = 1.612     && \text{\Cref{eq:mle}의 결과}
 \end{align*}
 
+\begin{callout}[질문]
+그러면 현재 항공 데이터를 가지고 이 formular에 대입해서 alpha를 구하는 건가?
+\end{callout}
+
+\paragraph{대입 과정.} 그렇다. \Cref{sec:param-est}의 \{1, 2, 4\} 예제와 같은 계산을
+공항 $3409$개에 한다(python으로 다시 계산, 2026/09/29). HW2 코드
+(\texttt{hw2/code/p1.py}의 \texttt{fit\_power\_law})도 같은 식이다.
+
+먼저 공항마다 ``최솟값의 몇 배인가''에 로그를 씌운다. 세 공항만 보이면 다음과 같다.
+\begin{align*}
+  &\text{AAX}:\ \ln(1/1) = 0         && \text{노선 1개 (이런 공항이 $713$곳)}\\
+  &\text{MFE}:\ \ln(6/1) = 1.792     && \text{노선 6개 (McAllen)}\\
+  &\text{ATL}:\ \ln(915/1) = 6.819   && \text{노선 915개 (최대)}
+\end{align*}
+$3409$개를 모두 더하고 식에 넣는다.
+\begin{align*}
+  &S = \textstyle\sum_{i=1}^{3409} \ln(x_i / 1) = 5569.43 && \text{로그의 합}\\
+  &S / n = 5569.43 / 3409 = 1.634 && \text{로그의 평균 (보통 공항은 최솟값의 $e^{1.634} \approx 5$배)}\\
+  &\hat\alpha = 1 + 3409 / 5569.43 = 1.612 && \text{\Cref{eq:mle}}
+\end{align*}
+\Cref{tab:p1a-alpha-steps}에 단계를 한데 모았다.
+
+\begin{table}[H]
+  \centering
+  \caption{공항 데이터로 $\hat\alpha$를 구하는 단계 (python으로 계산, 2026/09/29).}
+  \label{tab:p1a-alpha-steps}
+  \begin{tabular}{llp{0.4\linewidth}}
+    \toprule
+    단계 & 값 & 뜻 \\
+    \midrule
+    $n$ & $3409$ & 공항 수 \\
+    \midrule
+    $x_{\min}$ & $1$ & 데이터 최솟값 (노선 1개) \\
+    \midrule
+    $S = \sum_i \ln(x_i / x_{\min})$ & $5569.43$
+      & 공항마다 ``최솟값의 몇 배인가''에 로그(Log)를 씌워 모두 더한 값 \\
+    \midrule
+    $S / n$ & $1.634$ & 그 로그 값의 평균 \\
+    \midrule
+    $\hat\alpha = 1 + n / S$ & $1 + 3409 / 5569.43 = 1.612$ & 추정값 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{주의.} $x_{\min} = 1$로 둔 것은 \term{모든 공항이} 멱법칙을 따른다는 가정이다.
+실제 데이터는 대개 어떤 값 이상의 꼬리에서만 멱법칙을 따르고, $x_{\min}$을 바꾸면
+$\hat\alpha$도 바뀐다. 이 가정이 맞는지는 공식이 알려 주지 않는다. 모형에서 표본을
+생성해 겹쳐 그려야 알 수 있다(\Cref{sec:p1a-range}).
+
 \subsection{$\hat\alpha = 1.612$가 뜻하는 것}
 $1 < \hat\alpha < 2$이다. \Cref{sec:alpha}의 조건에 따라 확률분포는 되지만,
 이 모형에서는 평균도 분산도 유한하지 않다. 그래서 모형에서 뽑은 표본은
 노선이 $10^4$에서 $10^5$개인 공항까지 만들어 낸다. 실제 데이터는 최대
 $915$에서 멈춘다.
 
+\subsection{모형에서 표본 뽑기: 역변환 샘플링(Inverse Transform Sampling)}
+\label{sec:p1a-sample}
+
+\begin{callout}[질문]
+Airport data vs.\ samples from the fitted power law model.: how can we get samples
+from the fitted power law model?
+\end{callout}
+
+\paragraph{고치는 문제.}
+과제는 추정한 모형에서 데이터와 같은 개수($n = 3409$)의 난수 표본(Random Sample)을
+뽑아 실제 데이터와 겹쳐 그리라고 한다. 지수, 균등, 정규분포는 numpy에 표본 함수가
+있지만 멱법칙(Power Law) 표본 함수는 없다. 그래서 직접 만든다.
+
+\paragraph{아이디어.}
+컴퓨터가 기본으로 주는 난수는 $0$과 $1$ 사이의 균등 난수(Uniform Random Number)
+$u$ 하나뿐이다. 이것을 원하는 분포의 값으로 바꾸는 다리가 \term{누적분포함수}(CDF,
+Cumulative Distribution Function) $F(x) = P(X \le x)$다. $F$는 값 $x$를 ``$x$ 이하인
+비율''($0$에서 $1$ 사이)로 보낸다. 거꾸로 비율 $u$를 넣어 $x$를 푸는 함수
+$F^{-1}(u)$를 쓰면, $u$가 균등하게 퍼져 있을 때 나온 $x$들은 정확히 $F$를 따른다.
+``$u = 0.9$''는 ``아래에서 $90\%$ 자리의 값''을 달라는 뜻이기 때문이다.
+
+\paragraph{유도.}
+멱법칙의 꼬리 확률은 $P(X \ge x) = (x/x_{\min})^{-(\alpha-1)}$이다(\Cref{sec:pdf-origin}).
+\begin{align*}
+  u &= F(x) = 1 - \left(\frac{x}{x_{\min}}\right)^{-(\alpha-1)}
+    && \text{CDF $= 1 -$ 꼬리 확률}\\
+  1 - u &= \left(\frac{x}{x_{\min}}\right)^{-(\alpha-1)}
+    && \text{$x$가 있는 항을 한쪽으로}\\
+  (1 - u)^{-1/(\alpha-1)} &= \frac{x}{x_{\min}}
+    && \text{양변을 $-1/(\alpha-1)$ 제곱}\\
+  x &= x_{\min}\,(1 - u)^{-1/(\alpha-1)}
+    && \text{$x_{\min}$을 곱했다}
+\end{align*}
+HW2 코드(\texttt{hw2/code/p1.py}의 \texttt{sample\_models})가 이 줄을 그대로 쓴다.
+\begin{lstlisting}[language=Python]
+pl_sample = x_min * (1.0 - rng.random(n)) ** (-1.0 / (alpha - 1.0))
+\end{lstlisting}
+\texttt{rng.random}은 $[0, 1)$에서 뽑으므로 $u = 0$은 나와도 $u = 1$은 나오지 않는다.
+그래서 $1 - u$는 $0$이 되지 않고, $0$의 음수 제곱(무한대)이 생기지 않는다.
+\texttt{rng}는 씨드(Seed) $6330$으로 고정해서 그림을 다시 만들 수 있게 했다.
+
+\paragraph{예제: 공항 데이터, $\hat\alpha = 1.612$, $x_{\min} = 1$.}
+지수는 $-1/(\hat\alpha - 1) = -1/0.612 = -1.634$다. $u$ 몇 개를 넣어 보고, 실제 데이터의
+같은 위치 값과 나란히 놓는다(\Cref{tab:p1a-inverse}, python으로 계산, 2026/09/29).
+
+\begin{table}[H]
+  \centering
+  \caption{역변환 샘플링으로 얻는 멱법칙 표본 값과 실제 공항 데이터의 같은 위치 값.}
+  \label{tab:p1a-inverse}
+  \begin{tabular}{rrr}
+    \toprule
+    $u$ & 모형 $x = (1-u)^{-1.634}$ & 실제 데이터의 같은 위치 \\
+    \midrule
+    $0.5$ (중앙값) & $3.1$ & $4$ \\
+    \midrule
+    $0.9$ & $43$ & $45$ \\
+    \midrule
+    $0.99$ & $1851$ & $283$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+$90\%$ 자리까지는 모형과 데이터가 거의 같다. $99\%$ 자리에서 모형은 $1851$을 내고
+실제 데이터는 $283$이다. 실제 최대는 $915$인데 모형은 이보다 큰 값을 계속 만든다.
+\Cref{sec:p1a-range}에서 본 ``약 $100$개 이상에서 어긋난다''가 이 숫자로도 드러난다.
+
+\begin{callout}[질문]
+so you use distribution formular to find data predicted?
+\end{callout}
+
+\paragraph{예측이 아니라 가상의 데이터다.}
+분포 공식을 쓰는 것은 맞다. 다만 나오는 것은 공항마다의 예측값(Predicted Value)이
+아니라 \term{가상의 데이터}(Synthetic Data)다. 흐름은 다음과 같다.
+\begin{enumerate}
+  \item 실제 데이터로 모수를 추정한다: $\hat\alpha = 1.612$ (\Cref{tab:p1a-alpha-steps}).
+  \item $\hat\alpha$를 역변환 공식 $x = x_{\min}(1-u)^{-1/(\hat\alpha-1)}$에 넣는다.
+  \item 균등 난수 $u$를 $3409$개 뽑아 넣는다. 가짜 공항 $3409$곳의 노선 수가 나온다.
+  \item 가짜 데이터와 진짜 데이터의 \term{분포 모양}을 겹쳐 그려 비교한다.
+\end{enumerate}
+
+\paragraph{예측과 다른 점.}
+\begin{itemize}
+  \item 가짜 값 하나하나는 특정 공항과 짝이 없다. ``ATL의 노선 수를 예측한 값''이 아니다.
+  \item 이 표본이 답하는 질문은 ``세상이 정말 이 모형대로라면, 공항 $3409$곳의 노선 수는
+        어떻게 퍼져 있을까?''다.
+  \item 그래서 점 하나하나가 아니라 전체 모양을 비교한다. 중앙값(Median)이 비슷한가,
+        $90\%$ 자리 값이 비슷한가, 꼬리(Tail)가 어디까지 가는가. QQ plot은 이 위치들을
+        하나씩 짝지어 그린 그림이다.
+  \item 난수라서 씨드(Seed)를 바꾸면 값은 달라진다. 그래도 모양은 거의 같다.
+\end{itemize}
+\Cref{tab:p1a-inverse}에서 $50\%$, $90\%$ 자리는 맞고 $99\%$ 자리는 크게 어긋났다.
+모양이 맞는 구간과 어긋나는 구간이 모형을 판단하는 근거다. 첫 쪽 핵심 2
+(가정은 시각적으로 검증한다)가 이것이다.
+
+\paragraph{나머지 세 모형.} numpy 함수를 그대로 쓴다. 지수분포 함수는 $\lambda$가 아니라
+평균 $1/\lambda$(척도(Scale))를 받으니 주의한다.
+\begin{lstlisting}[language=Python]
+rng.exponential(1.0 / lam, n)   # exponential: scale = 1 / lambda
+rng.uniform(a, b, n)            # uniform on [a, b]
+rng.normal(mu, sigma, n)        # normal
+\end{lstlisting}
+
 \subsection{적합이 맞는 범위}
+\label{sec:p1a-range}
 \begin{itemize}
   \item 노선 $1$개에서 약 $60$개까지: 여집합 CDF가 데이터와 겹치고,
         QQ 점이 $y = x$ 위에 놓인다.
@@ -1008,7 +1653,7 @@ $\lambda$는 \term{비율}(Rate)이다. 단위 시간당 사건이 평균 몇 �
 \end{itemize}
 
 % =====================================================================
-\section{HW2 문제 1(b): 영화 평점 데이터}
+\section{HW2 문제 1: 영화 평점 데이터}
 \label{sec:p1b}
 \lecnote{\booksec{10.5} 영화 평점, \booksec{10.2} 모수 추정 (지수분포 MLE 예제).}
 
@@ -1039,9 +1684,9 @@ What is the $\lambda$ if the distribution is exponential?
     \toprule
     데이터 & $\bar x$ & $\hat\lambda = 1/\bar x$ & KS 거리 $D$ \\
     \midrule
-    1(a) 공항 노선 수 & 19.845 & 0.0504 & 0.379 \\
+    공항 노선 수 & 19.845 & 0.0504 & 0.379 \\
     \midrule
-    1(b) 영화 평점     & 6.227  & 0.1606 & 0.490 \\
+    영화 평점     & 6.227  & 0.1606 & 0.490 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -1053,5 +1698,313 @@ What is the $\lambda$ if the distribution is exponential?
   (\texttt{code/p1.py}가 생성). $D = 0.490$.}
   \label{fig:p1b-exp}
 \end{figure}
+
+\subsection{왜 공항은 CCDF, 영화는 PDF로 그렸나}
+\label{sec:ccdf-vs-pdf}
+
+\begin{callout}[질문]
+and why airport has ccdf but movie has pdf? only?
+\end{callout}
+
+\paragraph{먼저 사실 확인.} 영화만 PDF인 것은 아니다. 모형 비교 그림은 두 데이터 모두
+왼쪽 패널 하나 + 오른쪽 QQ plot 하나다(\Cref{tab:panels}, \texttt{code/p1.py}).
+과제는 PDF, CDF, QQ plot 중 하나면 된다고 했으니, 데이터마다 \term{모형 차이가 가장 잘
+보이는} 그림을 고른 것이다.
+
+\begin{table}[H]
+  \centering
+  \caption{\texttt{code/p1.py}가 그리는 패널.}
+  \label{tab:panels}
+  \begin{tabular}{lll}
+    \toprule
+    그림 & 공항 노선 수 & 영화 평점 \\
+    \midrule
+    데이터만 (\texttt{*\_0\_data}) & PDF(값마다 확률) + CCDF, 로그-로그 & PDF(히스토그램) + CDF \\
+    \midrule
+    모형 비교 (\texttt{*\_1} $\sim$ \texttt{*\_4}) & CCDF + QQ plot, 로그 축 & PDF(히스토그램) + QQ plot \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{공항은 왜 CCDF인가.} 꼬리가 길어서 PDF가 꼬리에서 무너진다.
+\begin{itemize}
+  \item 값의 범위가 $1$에서 $915$까지다. 보통 축의 히스토그램은 왼쪽 막대 하나로 뭉친다.
+  \item 로그 축으로 바꿔도 꼬리에는 공항이 거의 없다. 노선 $100$개 이상인 공항은
+        $166$곳이고, 그 $118$가지 값 가운데 $81$가지는 공항이 딱 $1$곳이다
+        (python으로 계산, 2026/09/29). 값마다 확률을 찍으면 꼬리가 같은 높이의 점들로
+        흩어져 모양을 읽을 수 없다.
+  \item CCDF $P(X \ge x)$는 ``$x$ 이상인 공항 전부''를 세므로, 꼬리의 공항들이
+        서로를 받쳐 준다. 구간(Bin)을 정할 필요도 없다.
+  \item 무엇보다 문제의 핵심 가설(멱법칙인가)을 곧바로 시험한다. 멱법칙이면 로그-로그
+        CCDF가 기울기 $-(\alpha-1)$의 직선이다(\Cref{sec:loglog}). 직선인지 휘는지가
+        한눈에 보인다.
+\end{itemize}
+
+\begin{callout}[질문]
+and in figure why did you mark ccdf? other than cdf?
+\end{callout}
+
+\paragraph{왜 CDF가 아니라 CCDF인가.} 둘은 같은 정보다. CCDF $= 1 -$ CDF이므로 하나를
+알면 다른 하나가 정해진다. 차이는 \term{로그 축에서 무엇이 보이느냐}다.
+\begin{itemize}
+  \item CDF는 꼬리에서 $1$에 붙는다. 로그 축에서 $1$ 근처 값들은 모두 $\log 1 = 0$ 근처에
+        몰려 구별되지 않는다.
+  \item CCDF는 꼬리에서 $0$으로 간다. 로그 축은 $0.1$, $0.01$, $0.001$을 같은 간격으로
+        벌려 준다. 꼬리가 크게 보인다.
+\end{itemize}
+공항 데이터로 확인한다(python으로 계산, 2026/09/29).
+\begin{align*}
+  &\text{노선 } 100:\ \text{CDF} = 0.952,\ \log_{10} 0.952 = -0.021;\quad
+     \text{CCDF} \approx 0.048,\ \log_{10} 0.048 = -1.32 && \\
+  &\text{노선 } 400:\ \text{CDF} = 0.996,\ \log_{10} 0.996 = -0.002;\quad
+     \text{CCDF} \approx 0.004,\ \log_{10} 0.004 = -2.40 &&
+\end{align*}
+CDF로는 두 점의 높이 차이가 $0.019$라 한 점처럼 보인다. CCDF로는 $1.08$, 곧 열 배 넘게
+벌어진다. 또 멱법칙의 CCDF $(x/x_{\min})^{-(\alpha-1)}$는 로그-로그 축에서 직선이지만,
+CDF $1 - (x/x_{\min})^{-(\alpha-1)}$는 직선이 아니다. 그래서 꼬리가 긴 데이터에서
+멱법칙을 시험할 때는 CCDF를 쓴다.
+
+KS 거리(\Cref{sec:ks})는 어느 쪽으로 재도 같다.
+$|F_1 - F_2| = |(1 - F_1) - (1 - F_2)|$이기 때문이다. \Cref{fig:ks-uniform}이 CDF를
+보통 축으로 그린 것은 간격을 눈으로 재기 쉬워서다.
+
+\begin{callout}[질문]
+ccdf 좀 더 설명해주고 왜 log를 취해서 하는 지도 설명해줘
+\end{callout}
+
+\paragraph{CCDF 읽기.} CCDF(Complementary CDF, 여누적분포함수)는 ``$x$개 이상인 비율''
+$P(X \ge x)$다. CDF가 ``$x$ 이하''를 아래에서 세면, CCDF는 ``$x$ 이상''을 위에서 센다.
+항상 $1$에서 시작해 오른쪽으로 갈수록 줄고, 마지막 값은 가장 큰 공항 하나의 몫
+$1/3409 \approx 0.0003$이다.
+
+\begin{callout}[질문]
+멱법칙 모형 (x\^{}$-$0.612): 이건 어디에 있어?
+\end{callout}
+
+\paragraph{멱법칙 모형의 CCDF는 어디서 오나.}
+멱법칙의 꼬리 확률 $P(X \ge x) = (x/x_{\min})^{-(\alpha-1)}$(\Cref{sec:pdf-origin})에
+공항의 추정값을 넣은 것이다.
+\begin{align*}
+  P(X \ge x) &= \left(\frac{x}{x_{\min}}\right)^{-(\alpha-1)} && \text{멱법칙의 CCDF}\\
+             &= \left(\frac{x}{1}\right)^{-(1.612-1)} && \text{$x_{\min} = 1$, $\hat\alpha = 1.612$ (\Cref{tab:p1a-alpha-steps})}\\
+             &= x^{-0.612} && \text{지수 정리}
+\end{align*}
+예: $x = 10$이면 $10^{-0.612} = 0.244$, 곧 ``노선 $10$개 이상인 공항이 $24\%$''라고 모형이 말한다.
+
+\begin{table}[H]
+  \centering
+  \caption{공항 데이터의 CCDF와 멱법칙 모형 $x^{-0.612}$의 CCDF (python으로 계산, 2026/09/29).}
+  \label{tab:p1a-ccdf}
+  \begin{tabular}{rrrr}
+    \toprule
+    $x$ (노선 수) & ``$x$개 이상'' 공항 & 데이터 $P(X \ge x)$ & 모형 $x^{-0.612}$ \\
+    \midrule
+    $1$   & $3409$곳 & $1.0$    & $1.0$ \\
+    \midrule
+    $10$  & $959$곳  & $0.28$   & $0.24$ \\
+    \midrule
+    $100$ & $166$곳  & $0.049$  & $0.060$ \\
+    \midrule
+    $500$ & $5$곳    & $0.0015$ & $\mathbf{0.022}$ \\
+    \midrule
+    $915$ & $1$곳 (ATL) & $0.0003$ & $\mathbf{0.015}$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+노선 $100$개까지는 데이터와 모형이 비슷하다. $500$개와 $915$개에서는 모형이 $10$배 넘게
+크다. 모형 그림(\texttt{p1a\_1\_powerlaw})의 CCDF 패널에서 두 선이 벌어지는 곳이다.
+
+\paragraph{왜 로그를 취하나.} 세 가지 이유가 있다.
+\begin{enumerate}
+  \item \term{범위가 넓다.} 가로축은 $1$에서 $915$까지 약 $1000$배, 세로축은 $1$에서
+        $0.0003$까지 약 $3000$배다. 보통 축에서는 $0.05$ 아래의 꼬리 전체(노선 $100$개
+        이상)가 바닥선에 붙고, 공항의 $72\%$(노선 $10$개 미만)가 가로축 왼쪽 $1\%$ 폭에
+        몰린다. 로그 축은 $1, 10, 100, 1000$과 $1, 0.1, 0.01, 0.001$을 같은 간격으로 놓는다.
+  \item \term{멱법칙이 직선이 된다.} $\log P(X \ge x) = -(\alpha-1)\log x$는 $\log x$의
+        일차식이므로 기울기 $-0.612$의 직선이다(\Cref{sec:loglog}). 눈은 ``직선인가, 휘었는가''를
+        곡선끼리의 비교보다 훨씬 잘 판단한다. 공항 데이터는 약 $100$개까지 직선이다가
+        아래로 휜다. ``멱법칙인데 상한이 있다''는 결론이 이 모양에서 나온다.
+  \item \term{비율로 읽힌다.} 로그 축에서 세로 한 칸은 ``$10$배''다. 두 선이 한 칸 벌어져
+        있으면 모형이 그 구간의 공항 수를 $10$배 틀린다는 뜻이다. 보통 축에서는
+        $0.0015$와 $0.022$의 차이가 $0.02$로 작아 보이지만, 실제로는 $15$배 차이다.
+\end{enumerate}
+
+\begin{callout}[질문]
+then we can use cdf with log? \dots\ why log log cdf is not a straight line?
+\end{callout}
+
+\paragraph{세 가지 축 비교.} 같은 공항 데이터와 멱법칙 표본을 세 가지 축으로 그렸다
+(\Cref{fig:cdf-axes}). CDF도 로그 축에 그릴 수 있다. 다만 어느 축에 로그를 씌우느냐가
+중요하다.
+\begin{itemize}
+  \item \term{CDF, 가로축만 로그}: 노선 $1$--$100$개 구간이 펼쳐져 ``몇 \% 가 $x$개
+        이하인가''를 읽기 좋다. 꼬리의 차이는 $1.0$ 근처의 가는 틈으로만 보인다.
+  \item \term{CDF, 로그-로그}: 노선 약 $10$개 이후로 두 선이 맨 위($10^0 = 1$)에 붙는다.
+        데이터가 $915$에서 끝나고 모형이 $10^5$까지 가는 차이가 거의 보이지 않는다.
+  \item \term{CCDF, 로그-로그}: 약 $100$개까지 같은 직선이고, 그 뒤로 데이터만 아래로
+        휜다. 꼬리의 차이가 가장 크게 보인다.
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{../figures/bg_cdf_axes.png}
+  \caption{공항 데이터(파랑)와 멱법칙 표본(주황, $\hat\alpha = 1.612$)을 세 가지 축으로
+    그린 것 (\texttt{00\_background/fig\_cdf\_axes.py}가 생성, 표본은
+    \texttt{p1a\_1\_powerlaw}와 같다). 왼쪽: CDF, 가로축만 로그. 가운데: CDF, 로그-로그.
+    오른쪽: CCDF, 로그-로그.}
+  \label{fig:cdf-axes}
+\end{figure}
+
+\begin{callout}[질문]
+CDF: P(X $\le$ x) = 1 $-$ x\^{}$-$0.612 \dots\ wha tis it 1 - ? P(X <= x) = integral from 0 to x right?
+\end{callout}
+
+\paragraph{CDF는 PDF의 적분이다: ``$1 -$''는 어디서 오나.}
+그렇다. ``$0$부터 $x$까지''라고 해도 결과는 같다. 멱법칙의 PDF는 $x \ge x_{\min}$에서만
+정의되고 그 아래에서는 $0$이므로, 실제로는 $x_{\min}$부터 적분한다.
+\[
+  P(X \le x) = \int_0^x f(t)\,dt = \int_0^{x_{\min}} 0\,dt + \int_{x_{\min}}^x f(t)\,dt
+             = \int_{x_{\min}}^x f(t)\,dt
+\]
+공항 모형($x_{\min} = 1$, $\alpha = 1.612$)에서 PDF는 $f(t) = (\alpha-1)\,t^{-\alpha}$다
+($x_{\min} = 1$이라 앞의 $1/x_{\min}$이 사라진 꼴).
+\begin{align*}
+  P(X \le x) &= \int_1^x (\alpha-1)\,t^{-\alpha}\,dt
+    && \text{PDF를 $1$부터 $x$까지 적분}\\
+             &= (\alpha-1) \left[\frac{t^{-\alpha+1}}{-\alpha+1}\right]_1^x
+    && \text{거듭제곱 적분: $\int t^p\,dt = t^{p+1}/(p+1)$}\\
+             &= -\left[t^{-(\alpha-1)}\right]_1^x
+    && \text{$(\alpha-1)/(-\alpha+1) = -1$}\\
+             &= -x^{-(\alpha-1)} - \left(-1^{-(\alpha-1)}\right)
+    && \text{위 끝 $x$를 넣은 값 빼기 아래 끝 $1$을 넣은 값}\\
+             &= 1 - x^{-(\alpha-1)}
+    && \text{$1$의 몇 제곱이든 $1$}\\
+             &= 1 - x^{-0.612}
+    && \text{$\alpha - 1 = 0.612$}
+\end{align*}
+\term{``$1$''은 아래 끝 $t = 1$을 넣었을 때 나온 $1^{-0.612} = 1$이다.} $x_{\min}$이
+$1$이 아니면 $P(X \le x) = 1 - (x/x_{\min})^{-(\alpha-1)}$이고, 아래 끝을 넣으면
+$(x_{\min}/x_{\min})^{\cdots} = 1$이라 앞의 $1$은 그대로 남는다.
+
+\term{다른 길로 확인.} ``$x$ 이하''와 ``$x$ 이상''을 합치면 전체 $1$이다(연속분포라
+정확히 $x$인 확률은 $0$). 그래서 CDF $= 1 -$ CCDF $= 1 - x^{-0.612}$로 같다.
+\[
+  1 - 10^{-0.612} = 1 - 0.244 = 0.756
+  \qquad \text{($x = 10$: 모형은 $75.6\%$, 실제 데이터는 $73.6\%$)}
+\]
+
+\paragraph{왜 로그-로그 CDF는 직선이 아닌가.} 로그 법칙은 곱과 거듭제곱은 풀어 주지만
+빼기는 풀어 주지 않는다(\Cref{tab:log-rules}).
+\begin{align*}
+  \log \text{CCDF} &= \log x^{-0.612} = -0.612 \log x
+    && \text{$\log x$의 일차식: 직선}\\
+  \log \text{CDF} &= \log\left(1 - x^{-0.612}\right)
+    && \text{``$1 -$'' 때문에 풀리지 않는다: 직선 아님}
+\end{align*}
+두 끝에서 다르게 움직인다(\Cref{tab:log-cdf}). 왼쪽 끝($x \to 1$)에서는 CDF $\to 0$,
+$\log 0 = -\infty$라 절벽처럼 떨어진다. 오른쪽 끝에서는 CDF $\to 1$, $\log 1 = 0$이라
+평평해진다. \Cref{fig:cdf-axes} 가운데 패널의 ``왼쪽 수직, 위쪽 수평''이 이것이다.
+
+\begin{table}[H]
+  \centering
+  \caption{모형 $x^{-0.612}$에서 계산한 로그 CDF와 로그 CCDF (python으로 계산, 2026/09/29).
+    로그 CCDF는 $\log_{10} x$가 $1$ 늘 때마다 정확히 $0.612$씩 준다.}
+  \label{tab:log-cdf}
+  \begin{tabular}{rrrrr}
+    \toprule
+    $x$ & $\log_{10} x$ & CDF & $\log_{10}$ CDF & $\log_{10}$ CCDF \\
+    \midrule
+    $1.01$ & $0.004$ & $0.006$ & $\mathbf{-2.22}$ & $-0.003$ \\
+    \midrule
+    $1.1$  & $0.041$ & $0.057$ & $\mathbf{-1.25}$ & $-0.025$ \\
+    \midrule
+    $2$    & $0.301$ & $0.346$ & $-0.46$ & $-0.184$ \\
+    \midrule
+    $10$   & $1$     & $0.756$ & $-0.12$ & $-0.612$ \\
+    \midrule
+    $100$  & $2$     & $0.940$ & $-0.027$ & $-1.224$ \\
+    \midrule
+    $1000$ & $3$     & $0.985$ & $\mathbf{-0.006}$ & $-1.836$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{callout}[질문]
+so it is better to use 1 - cdf because we can remove 1? and it is equal to P(X > x)?
+\end{callout}
+
+\paragraph{$1 -$ CDF $= P(X > x)$, 그리고 코드는 왜 $P(X \ge x)$인가.}
+$1 -$ CDF $= 1 - (1 - x^{-0.612}) = x^{-0.612}$로 ``$1$''이 지워져 순수한 거듭제곱만
+남는다. 그래서 로그-로그 축에서 직선이다. 이것이 CCDF다. 다만 ``더 좋다''는 목적에 따른다.
+꼬리와 멱법칙 확인에는 CCDF, ``몇 \% 가 $x$ 이하인가''를 읽을 때는 CDF가 직접적이다.
+
+연속분포에서는 $P(X > x) = P(X \ge x)$다. 공항 노선 수는 정수라서 다르다.
+\[
+  P(X \ge x) = P(X > x) + P(X = x)
+\]
+\begin{itemize}
+  \item $x = 1$: $P(X > 1) = 0.79$, $P(X \ge 1) = 1.0$ (노선 $1$개인 공항이 $713$곳).
+  \item $x = 915$(최댓값): $P(X > 915) = 0$, $P(X \ge 915) = 1/3409 \approx 0.0003$.
+\end{itemize}
+코드의 \texttt{ccdf} 함수가 $\ge$를 쓰는 이유는 로그 축이다. $P(X > x)$는 최댓값에서
+$0$이 되고 $\log 0 = -\infty$라 마지막 점이 그림에서 사라진다. $P(X \ge x)$는 $1$에서
+시작해 $1/3409$로 끝나 모든 점이 찍힌다. 멱법칙 문헌(Clauset et al.\ 2009)도 CCDF를
+$P(X \ge x)$로 정의한다.
+
+\begin{callout}[질문]
+and I would like to add why we need to use ccdf with log log scale updated.
+\end{callout}
+
+\paragraph{정리: 왜 로그-로그 CCDF인가.} 이 절의 내용을 한곳에 모은다(\Cref{tab:why-ccdf-loglog}).
+멱법칙인지 판단하는 것이 문제 1의 핵심 질문이고, 그 판단이 가능한 그림이 로그-로그
+CCDF 하나뿐이다.
+
+\begin{table}[H]
+  \centering
+  \caption{공항 데이터를 로그-로그 CCDF로 그리는 이유. 각 줄은 다른 선택이 실패하는 지점이다.}
+  \label{tab:why-ccdf-loglog}
+  \begin{tabular}{p{0.22\linewidth}p{0.36\linewidth}p{0.34\linewidth}}
+    \toprule
+    이유 & 다른 선택에서 생기는 문제 & 로그-로그 CCDF에서는 \\
+    \midrule
+    범위가 넓다 & 보통 축: 공항 $72\%$가 가로축 왼쪽 $1\%$에, 꼬리 전체가 세로 바닥에 붙는다
+      & $1, 10, 100, 1000$과 $1, 0.1, 0.01, 0.001$이 같은 간격이다 \\
+    \midrule
+    멱법칙이 직선이 된다 & CDF $= 1 - x^{-0.612}$: ``$1 -$'' 때문에 로그가 풀리지 않아 휜다(\Cref{tab:log-cdf})
+      & CCDF $= x^{-0.612}$, $\log$ CCDF $= -0.612\log x$: 기울기 $-(\alpha-1)$의 직선 \\
+    \midrule
+    꼬리가 보인다 & 로그-로그 CDF: 꼬리가 $1$에 붙어 $0.952$와 $0.996$이 한 점처럼 보인다
+      & 꼬리가 $0$ 쪽으로 가서 $0.048$과 $0.004$가 한 칸 넘게 벌어진다 \\
+    \midrule
+    비율로 읽힌다 & 보통 축: $0.0015$와 $0.022$의 차이가 $0.02$로 작아 보인다
+      & 세로 한 칸 $= 10$배: $15$배 차이가 그대로 보인다 \\
+    \midrule
+    구간이 필요 없다 & PDF: 꼬리에 공항이 $1$곳뿐인 값이 많아 점이 흩어진다
+      & ``$x$ 이상 전부''를 세어 꼬리가 부드럽다 \\
+    \midrule
+    마지막 점까지 찍힌다 & $P(X > x)$: 최댓값에서 $0$, $\log 0 = -\infty$
+      & $P(X \ge x)$: $1/3409$로 끝난다 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+그래서 판단은 이렇게 한다. 로그-로그 CCDF가 직선이면 멱법칙이고, 기울기가
+$-(\hat\alpha - 1)$이다. 공항 데이터는 약 $100$개까지 기울기 $-0.612$의 직선이다가
+아래로 휜다(\Cref{fig:cdf-axes} 오른쪽). 그래서 결론은 ``상한이 있는 멱법칙''이다.
+
+\paragraph{영화는 왜 PDF인가.} 범위가 좁고 값마다 데이터가 많아서 PDF가 잘 선다.
+\begin{itemize}
+  \item 평점은 $1.9$에서 $8.5$ 사이, $0.1$ 단위로 $61$가지 값뿐이다. 값 하나에 영화가 최대
+        $209$편 있다. 히스토그램 막대가 안정적이다.
+  \item 네 모형을 가르는 것은 \term{모양}이다. 봉우리가 가운데 하나인가(정규), 평평한가
+        (균등), $0$에서 가장 높은가(지수), 왼쪽에 몰렸는가(멱법칙). PDF는 이 모양을
+        그대로 보여 준다.
+  \item 꼬리가 없으므로 CCDF나 로그 축의 장점이 없다. 범위가 $1$에서 $10$ 안이라
+        로그 축은 거의 직선 축과 같다.
+\end{itemize}
+
+\paragraph{정리.} 그림은 ``어느 것이 옳다''가 아니라 ``어느 것에서 모형 차이가 보이나''로
+고른다. 꼬리가 긴 데이터는 CCDF(로그-로그), 좁고 봉우리가 있는 데이터는 PDF가 좋다.
+QQ plot은 둘 다에 붙여 전체 위치를 점검한다.
 
 \end{document}

@@ -52,7 +52,8 @@
 %
 %  STEP 5  모델 vs 데이터 그림 (모델 4개 x 데이터 2개)
 %    - PDF, CDF, QQ plot 중 하나면 된다. 모든 그림에 같은 종류를 쓴다.
-%    - QQ plot: x 축 = 데이터 분위수, y 축 = 샘플 분위수, 그리고 y = x 기준선.
+%    - QQ plot: x 축 = 모형(샘플) 분위수, y 축 = 데이터 분위수, 그리고 y = x 기준선.
+%      (관례: scipy probplot, statsmodels, R qqnorm, 강의 덱 7 슬라이드와 같은 방향)
 %      점이 선 위에 있으면 잘 맞는 것이다. 선에서 벗어난 방향이 뜻하는 바를
 %      직접 해석한다.
 %    - 샘플이 음수이거나 아주 큰 값일 때 (log 축 / 축 범위) 어떻게 처리할지 정한다.
@@ -119,11 +120,11 @@
 
 % 그림 틀. 사용법: \answerfig{p1a_0_data}{캡션}
 % 목록(itemize) 안에서도 쓸 수 있게 float 대신 \captionof 를 쓴다.
-% 그림 파일이 없으면 빌드가 실패한다. 그림을 만든 뒤에 주석을 푼다.
+% 그림은 hw2/code/p1.py, p2.py 가 만든 hw2/figures/ 를 쓴다 (figures_submit 대신).
 \newcommand{\answerfig}[2]{%
   \par\nopagebreak\smallskip % keep the prompt line on the same page as its figure
   {\centering
-   \includegraphics[width=\linewidth]{../figures_submit/#1.png}\par
+   \includegraphics[width=\linewidth]{../figures/#1.png}\par
    \captionof{figure}{#2}\par}
   \smallskip}
 
@@ -154,19 +155,19 @@
   \item[] (These can be CDF, PDF, or QQplot)
   \item Screen shot of the visualization of distribution of data
     % STEP 3
-    % \answerfig{p1a_0_data}{...}
+    \answerfig{p1a_0_data}{Airport routes: PDF and CDF on linear axes (top), PDF and CCDF on log-log axes (bottom).}
   \item Screen shot of the visualization of distribution of data if it was power law
     % STEP 4, 5
-    % \answerfig{p1a_1_powerlaw}{...}
+    \answerfig{p1a_1_powerlaw}{Airport routes vs.\ samples from the fitted power law.}
   \item Screen shot of the visualization of distribution of data if it was exponential
     % STEP 4, 5
-    % \answerfig{p1a_2_exponential}{...}
+    \answerfig{p1a_2_exponential}{Airport routes vs.\ samples from the fitted exponential.}
   \item Screen shot of the visualization of distribution of data if it was uniform
     % STEP 4, 5
-    % \answerfig{p1a_3_uniform}{...}
+    \answerfig{p1a_3_uniform}{Airport routes vs.\ samples from the fitted uniform.}
   \item Screen shot of the visualization of distribution of data if it was normal
     % STEP 4, 5
-    % \answerfig{p1a_4_normal}{...}
+    \answerfig{p1a_4_normal}{Airport routes vs.\ samples from the fitted normal.}
   \item What is the distribution of data based on your observation? Discuss
     % STEP 6
 \end{itemize}
@@ -187,19 +188,19 @@
   \item[] (These can be CDF, PDF, or QQplot)
   \item Screen shot of the visualization of distribution of data
     % STEP 3
-    % \answerfig{p1b_0_data}{...}
+    \answerfig{p1b_0_data}{Movie votes: empirical PDF (histogram) and CDF.}
   \item Screen shot of the visualization of distribution of data if it was power law
     % STEP 4, 5
-    % \answerfig{p1b_1_powerlaw}{...}
+    \answerfig{p1b_1_powerlaw}{Movie votes vs.\ samples from the fitted power law.}
   \item Screen shot of the visualization of distribution of data if it was exponential
     % STEP 4, 5
-    % \answerfig{p1b_2_exponential}{...}
+    \answerfig{p1b_2_exponential}{Movie votes vs.\ samples from the fitted exponential.}
   \item Screen shot of the visualization of distribution of data if it was uniform
     % STEP 4, 5
-    % \answerfig{p1b_3_uniform}{...}
+    \answerfig{p1b_3_uniform}{Movie votes vs.\ samples from the fitted uniform.}
   \item Screen shot of the visualization of distribution of data if it was normal
     % STEP 4, 5
-    % \answerfig{p1b_4_normal}{...}
+    \answerfig{p1b_4_normal}{Movie votes vs.\ samples from the fitted normal.}
   \item What is the distribution of data based on your observation? Discuss
     % STEP 6
 \end{itemize}
@@ -211,13 +212,13 @@
 \begin{itemize}
   \item Screenshot of distribution/histogram of the age
     % STEP 7 (파싱 규칙, 기준일, 남은 개수를 2~3 문장으로), STEP 8
-    % \answerfig{p2_1_age}{...}
+    \answerfig{p2_1_age}{Distribution of age (1 to 99 years).}
   \item Screenshot of distribution/histogram of the first digit of age
     % STEP 8
-    % \answerfig{p2_2_first_digit}{...}
+    \answerfig{p2_2_first_digit}{Distribution of the first digit of age.}
   \item Screenshot of distribution/histogram of the last digit of age
     % STEP 8
-    % \answerfig{p2_3_last_digit}{...}
+    \answerfig{p2_3_last_digit}{Distribution of the last digit of age.}
   \item Discussion (what are those distribution?) Why do you think it is like this?
     % STEP 9
 \end{itemize}

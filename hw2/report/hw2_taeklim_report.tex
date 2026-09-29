@@ -41,7 +41,17 @@
 % Layout follows the professor's answer template (00_doc/04_template_for_answers.pdf):
 % bold headings, "-" items with the prompt text verbatim, answer under each item,
 % one page each for Airport / Movie Rating / Problem 2.
-\renewcommand{\labelitemi}{-}
+% No list indentation anywhere: the label sits at the left margin and every line of an
+% item (prompt, answer, figure) starts there too. Problem 1 items are lettered (a), (b),
+% ... restarting for each data set.
+\usepackage{enumitem}
+\setlist{leftmargin=0pt, itemindent=*, labelsep=0.5em}
+% Problem text (headings, labels, prompts) in one colour so it stands apart from answers.
+\definecolor{prompt}{HTML}{1F4E9A}
+\newcommand{\prompt}[1]{\textcolor{prompt}{#1}}
+\setlist[itemize,1]{label=\prompt{-}}
+\setlist[itemize,2]{label=-}
+\setlist[enumerate,1]{label=\prompt{(\alph*)}}
 
 % One figure inside an item: \answerfig{file}{caption}. \captionof (not a float) so it
 % can sit inside itemize.
@@ -52,6 +62,9 @@
    \captionof{figure}{#2}\par}
   \smallskip}
 
+% Panel-by-panel explanation under a figure, one bold-labelled paragraph per panel.
+\newcommand{\panels}[1]{\par\smallskip{\setlength{\parskip}{3pt}#1}\par\medskip}
+
 % Answer text under an item, set apart from the prompt line.
 \newcommand{\answer}[1]{\par\smallskip{#1}\par\medskip}
 
@@ -61,67 +74,101 @@
 
 \bigskip
 % =====================================================================
-\textbf{Problem 1.}
+\prompt{\textbf{Problem 1.}}
 
 \medskip
-\textbf{Airport data:}
+\prompt{\textbf{Airport data:}}
 
-\begin{itemize}
-  \item What is the $\alpha$ if the distribution is power law?
+\begin{enumerate}
+  \item \prompt{What is the $\alpha$ if the distribution is power law?}
   \answer{$\alpha = 1.612$, with $x_{\min} = 1$ route.
     Maximum-likelihood estimate $\hat\alpha = 1 + n / \sum_i \ln(x_i / x_{\min})$,
-    $x_{\min} = \min_i x_i$, $n = 3409$.}
+    $x_{\min} = \min_i x_i$, $n = 3409$.
+    \begin{align*}
+      &n = 3409 && \text{number of airports}\\
+      &x_{\min} = \min_i x_i = 1 && \text{smallest route count}\\
+      &S = \textstyle\sum_{i=1}^{3409} \ln(x_i / 1) = 5569.43 && \text{sum of log ratios}\\
+      &n / S = 3409 / 5569.43 = 0.6121 && \\
+      &\hat\alpha = 1 + 0.6121 = 1.612 && \text{estimate}
+    \end{align*}}
 
-  \item What is the $\lambda$ if the distribution is exponential?
-  \answer{$\lambda = 0.0504$. MLE $\hat\lambda = 1/\bar x = 1/19.845$.}
+  \item \prompt{What is the $\lambda$ if the distribution is exponential?}
+  \answer{$\lambda = 0.0504$. MLE $\hat\lambda = 1/\bar x = 1/19.845$.
+    \begin{align*}
+      &\textstyle\sum_i x_i = 67652 && \text{total routes}\\
+      &\bar x = 67652 / 3409 = 19.845 && \text{mean}\\
+      &\hat\lambda = 1 / 19.845 = 0.0504 && \text{estimate}
+    \end{align*}}
 
-  \item What is $[a, b]$ if the distribution is uniform?
-  \answer{$[a, b] = [1, 915]$, the minimum and maximum route counts (MLE).}
+  \item \prompt{What is $[a, b]$ if the distribution is uniform?}
+  \answer{$[a, b] = [1, 915]$, the minimum and maximum route counts (MLE).
+    \begin{align*}
+      &\hat a = \min_i x_i = 1 && \text{fewest routes}\\
+      &\hat b = \max_i x_i = 915 && \text{most routes}
+    \end{align*}}
 
-  \item What is $\mu$ and $\sigma$ if the distribution is normal?
+  \item \prompt{What is $\mu$ and $\sigma$ if the distribution is normal?}
   \answer{$\mu = 19.845$, $\sigma = 53.506$ (sample mean and sample standard deviation
-    with $n-1$).}
+    with $n-1$).
+    \begin{align*}
+      &\hat\mu = \bar x = 19.845 && \text{mean, as in the exponential fit}\\
+      &\textstyle\sum_i (x_i - \bar x)^2 = 9{,}756{,}906.22 && \text{sum of squared deviations}\\
+      &9{,}756{,}906.22 / (3409 - 1) = 2862.94 && \text{sample variance}\\
+      &\hat\sigma = \sqrt{2862.94} = 53.506 && \text{standard deviation}
+    \end{align*}}
 
-  \item Screen shot of the visualization of distribution of data
-  \answerfig{p1a_0_data}{Airport routes. Left: share of airports with exactly $k$ routes.
-    Right: share with at least $x$ routes (CCDF). Both are on log-log axes. The median
-    airport has 4 routes and 38\% have only 1 or 2, while the busiest has 915. The mean
-    (19.8) is five times the median and the skewness is 6.0, so a few hubs hold most of
-    the routes.}
+  \prompt{(These can be CDF, PDF, or QQplot)}
 
-  (These can be CDF, PDF, or QQplot)
+  For (e) to (i):
+  \begin{itemize}
+    \item \textbf{Samples.} $n = 3409$ random values drawn from each fitted model (seed 6330).
+    \item \textbf{Colours.} Data in blue, model sample in orange.
+    \item \textbf{$D$.} Two-sample Kolmogorov--Smirnov distance: the largest vertical gap
+          between the two CDFs (0 = identical).
+  \end{itemize}
 
-  For each model below I drew $n = 3409$ random values from the fitted distribution
-  (seed 6330). Left panel: CCDF of the data and of the model sample on log-log axes.
-  Right panel: QQ plot of model-sample quantiles against data quantiles; points on the
-  dashed line $y = x$ mean the model reproduces the data. $D$ is the two-sample
-  Kolmogorov--Smirnov distance (largest gap between the two CDFs; 0 = identical).
+  \item \prompt{Screen shot of the visualization of distribution of data}
+  \answerfig{p1a_0_data}{Airport routes: empirical distribution ($n = 3409$). Top row on linear axes, bottom row on log-log axes.}
+  \panels{%
+    \textbf{PDF, linear (top left).} One tall bar at the left edge: 82\% of airports fall in the first bin (fewer than 20 routes), and the bars beyond 200 are almost flat on the floor.\par
+    \textbf{CDF, linear (top right).} The curve rises almost vertically and reaches 0.92 at 60 routes (dashed line), then stays flat up to the maximum of 915.\par
+    \textbf{PDF, log-log (bottom left).} Share of airports with exactly $k$ routes. The points fall along a roughly straight line from $k = 1$ (21\%) downward. In the tail many values belong to a single airport, so the points flatten into a floor at $1/3409$.\par
+    \textbf{CCDF, log-log (bottom right).} Share of airports with at least $x$ routes. It is close to a straight line up to about 100 routes, then bends down and ends at the busiest airport (915 routes).\par
+    \textbf{Summary.} The median airport has 4 routes and 38\% have only 1 or 2, while the busiest has 915. The mean (19.8) is five times the median and the skewness is 6.0, so a few hubs hold most of the routes.\par}
 
-  \item Screen shot of the visualization of distribution of data if it was power law
-  \answerfig{p1a_1_powerlaw}{Power law ($\alpha = 1.612$, $x_{\min} = 1$). The CCDF
-    follows the data from 1 to about 60 routes, and the QQ points lie on $y = x$ over
-    that range. Above about 100 routes the model keeps going and produces airports with
-    $10^4$ to $10^5$ routes, while the data bends down and stops at 915. $D = 0.209$.}
+  \item \prompt{Screen shot of the visualization of distribution of data if it was power law}
+  \answerfig{p1a_1_powerlaw}{Airport routes vs.\ power law ($\alpha = 1.612$, $x_{\min} = 1$). $D = 0.209$.}
+  \panels{%
+    \textbf{PDF (top left).} The two lines follow the same straight slope up to about 300 routes. Above that the data drops and ends near 1000, while the model continues past $10^5$ (its largest sampled airport has 291{,}593 routes).\par
+    \textbf{CDF (top right).} On linear axes the two curves almost overlap. The difference is hidden in the 1.6\% of the sample that lies beyond 1000 routes.\par
+    \textbf{CCDF (bottom left).} Both follow the same straight line on log-log axes up to about 100 routes. Above that the data bends down and stops at 915; the model stays straight.\par
+    \textbf{QQ plot (bottom right).} The points lie on $y = x$ up to about 60 routes, then run off to the right, below the line: at the 99.5th percentile the model has 5{,}234 routes and the data 358.\par}
 
-  \item Screen shot of the visualization of distribution of data if it was exponential
-  \answerfig{p1a_2_exponential}{Exponential ($\lambda = 0.0504$). The model's sample
-    goes below 1 route, which the data never does, and its tail dies out at about 150
-    routes. The QQ points are too flat: the model gives small airports too many routes
-    and hubs too few. $D = 0.379$.}
+  \item \prompt{Screen shot of the visualization of distribution of data if it was exponential}
+  \answerfig{p1a_2_exponential}{Airport routes vs.\ exponential ($\lambda = 0.0504$). $D = 0.379$.}
+  \panels{%
+    \textbf{PDF (top left).} The model is almost flat for small airports and then falls off sharply after about 50 routes. The data is the opposite: steep at the start and a long, slow tail. 5\% of the sample lies below 1 route, which no airport has.\par
+    \textbf{CDF (top right).} The model reaches 1 by about 160 routes (its largest sampled airport has 159), while the data keeps rising slowly up to 915.\par
+    \textbf{CCDF (bottom left).} The model bends down early and ends near 160 routes; the data goes on to 915. With $\lambda = 0.05$ an airport with 500 routes has probability about $e^{-25}$, yet the data has five such airports.\par
+    \textbf{QQ plot (bottom right).} The points are too steep: below about 40 routes they lie below $y = x$ (the model gives small airports too many routes), and above it they rise above the line (hubs get too few).\par}
 
-  \item Screen shot of the visualization of distribution of data if it was uniform
-  \answerfig{p1a_3_uniform}{Uniform on $[1, 915]$. A typical sampled airport has about
-    460 routes, but 99\% of real airports have fewer than 285. The model's CCDF stays
-    near 1 until the right edge, and the QQ points lie far above $y = x$ for every
-    quantile. $D = 0.857$, the worst of the four.}
+  \item \prompt{Screen shot of the visualization of distribution of data if it was uniform}
+  \answerfig{p1a_3_uniform}{Airport routes vs.\ uniform on $[1, 915]$. $D = 0.857$.}
+  \panels{%
+    \textbf{PDF (top left).} The model is a flat line near $10^{-3}$ across the whole range; the data falls by five orders of magnitude.\par
+    \textbf{CDF (top right).} The model is a straight diagonal from 1 to 915; the data reaches 0.92 by 60 routes. The largest gap between the two, $D = 0.857$, is at 60 routes.\par
+    \textbf{CCDF (bottom left).} The model stays near 1 until the right edge and then drops vertically at 915.\par
+    \textbf{QQ plot (bottom right).} Every point lies far below $y = x$, to the right. A typical sampled airport has about 460 routes, while the real median is 4 and 99\% of real airports have fewer than 285.\par}
 
-  \item Screen shot of the visualization of distribution of data if it was normal
-  \answerfig{p1a_4_normal}{Normal ($\mu = 19.8$, $\sigma = 53.5$). With $\sigma$ almost
-    three times $\mu$, 36\% of the model's mass is below zero, which is impossible for a
-    route count. The log axes can only show the positive part. The model's tail is also
-    thin and ends near 200 routes. $D = 0.358$.}
+  \item \prompt{Screen shot of the visualization of distribution of data if it was normal}
+  \answerfig{p1a_4_normal}{Airport routes vs.\ normal ($\mu = 19.8$, $\sigma = 53.5$). $D = 0.358$.}
+  \panels{%
+    \textbf{PDF (top left).} The model is flat over small airports and then drops steeply after about 100 routes. 35\% of its sample is below zero, which is impossible for a route count; the log axes cannot show that part.\par
+    \textbf{CDF (top right).} The model starts below zero (negative route counts) and is S-shaped around the mean; it reaches 1 near 230 routes while the data goes to 915.\par
+    \textbf{CCDF (bottom left).} Below about 100 routes the model sits above the data, and its tail ends near 230 routes, far short of 915.\par
+    \textbf{QQ plot (bottom right).} The points are too steep, as for the exponential: small airports get too many routes and hubs too few. The tail is thin because a normal decays like $e^{-x^2}$.\par}
 
-  \item What is the distribution of data based on your observation? Discuss
+  \item \prompt{What is the distribution of data based on your observation? Discuss}
   \answer{%
     \begin{center}
     \begin{tabular}{lcccc}
@@ -155,64 +202,90 @@
     down above about 100 routes. The best description is a power law with an upper
     cutoff, which is typical of networks that grow by preferential attachment: new
     routes go mostly to airports that already have many routes.}
-\end{itemize}
+\end{enumerate}
 
 % =====================================================================
 \clearpage
-\textbf{Movie Rating data:}
+\prompt{\textbf{Movie Rating data:}}
 
-\begin{itemize}
-  \item What is the $\alpha$ if the distribution is power law?
+\begin{enumerate}
+  \item \prompt{What is the $\alpha$ if the distribution is power law?}
   \answer{$\alpha = 1.851$, with $x_{\min} = 1.9$ (the lowest average vote). Same MLE
-    as for the airports, $n = 4392$.}
+    as for the airports, $n = 4392$.
+    \begin{align*}
+      &n = 4392 && \text{number of movies}\\
+      &x_{\min} = \min_i x_i = 1.9 && \text{lowest average vote}\\
+      &S = \textstyle\sum_{i=1}^{4392} \ln(x_i / 1.9) = 5163.93 && \text{sum of log ratios}\\
+      &n / S = 4392 / 5163.93 = 0.8505 && \\
+      &\hat\alpha = 1 + 0.8505 = 1.851 && \text{estimate}
+    \end{align*}}
 
-  \item What is the $\lambda$ if the distribution is exponential?
-  \answer{$\lambda = 0.1606$. MLE $\hat\lambda = 1/\bar x = 1/6.227$.}
+  \item \prompt{What is the $\lambda$ if the distribution is exponential?}
+  \answer{$\lambda = 0.1606$. MLE $\hat\lambda = 1/\bar x = 1/6.227$.
+    \begin{align*}
+      &\textstyle\sum_i x_i = 27348.7 && \text{sum of votes}\\
+      &\bar x = 27348.7 / 4392 = 6.227 && \text{mean}\\
+      &\hat\lambda = 1 / 6.227 = 0.1606 && \text{estimate}
+    \end{align*}}
 
-  \item What is $[a, b]$ if the distribution is uniform?
-  \answer{$[a, b] = [1.9, 8.5]$, the minimum and maximum votes (MLE).}
+  \item \prompt{What is $[a, b]$ if the distribution is uniform?}
+  \answer{$[a, b] = [1.9, 8.5]$, the minimum and maximum votes (MLE).
+    \begin{align*}
+      &\hat a = \min_i x_i = 1.9 && \text{lowest vote}\\
+      &\hat b = \max_i x_i = 8.5 && \text{highest vote}
+    \end{align*}}
 
-  \item What is $\mu$ and $\sigma$ if the distribution is normal?
+  \item \prompt{What is $\mu$ and $\sigma$ if the distribution is normal?}
   \answer{$\mu = 6.227$, $\sigma = 0.893$ (sample mean and sample standard deviation
-    with $n-1$).}
+    with $n-1$).
+    \begin{align*}
+      &\hat\mu = \bar x = 6.227 && \text{mean, as in the exponential fit}\\
+      &\textstyle\sum_i (x_i - \bar x)^2 = 3503.28 && \text{sum of squared deviations}\\
+      &3503.28 / (4392 - 1) = 0.7978 && \text{sample variance}\\
+      &\hat\sigma = \sqrt{0.7978} = 0.893 && \text{standard deviation}
+    \end{align*}}
 
-  \item Screen shot of the visualization of distribution of data
-  \answerfig{p1b_0_data}{Movie votes. Left: histogram with one bin per possible vote
-    (votes are rounded to 0.1). Right: empirical CDF. The distribution has one peak and
-    is nearly symmetric around 6.3 (median 6.3, mean 6.23). The left tail is somewhat
-    longer (skewness $-0.48$): a few movies are rated 2 to 4, and none are above 8.5.}
+  \prompt{(These can be CDF, PDF, or QQplot)}
 
-  (These can be CDF, PDF, or QQplot)
+  For (f) to (i):
+  \begin{itemize}
+    \item \textbf{Samples.} $n = 4392$ random values drawn from each fitted model (same seed).
+    \item \textbf{Colours.} Data in blue, model sample in orange.
+    \item \textbf{$D$.} Two-sample Kolmogorov--Smirnov distance: the largest vertical gap
+          between the two CDFs (0 = identical).
+  \end{itemize}
 
-  For each model below I drew $n = 4392$ random values from the fitted distribution.
-  Left panel: PDF (histogram) of the data and of the model sample. Right panel: QQ plot
-  as for the airports. $D$ is the KS distance.
+  \item \prompt{Screen shot of the visualization of distribution of data}
+  \answerfig{p1b_0_data}{Movie votes: empirical distribution ($n = 4392$).}
+  \panels{%
+    \textbf{PDF (left).} Histogram with one bin per possible vote (votes are rounded to 0.1). One peak near 6.3 and a nearly symmetric shape; the left tail is longer (skewness $-0.48$): a few movies are rated 2 to 4, and none are above 8.5.\par
+    \textbf{CDF (right).} An S-shaped curve centred near 6.3 (median 6.3, mean 6.23). The small steps come from the 0.1 rounding.\par}
 
-  \item Screen shot of the visualization of distribution of data if it was power law
-  \answerfig{p1b_1_powerlaw}{Power law ($\alpha = 1.851$, $x_{\min} = 1.9$). The model
-    puts its highest density at the lowest vote, which is where the data has almost
-    nothing, and 13\% of its sample lies above 20, which is not a possible rating. The
-    QQ plot is on log axes because the sample goes up to about 1000. $D = 0.485$.}
+  \item \prompt{Screen shot of the visualization of distribution of data if it was power law}
+  \answerfig{p1b_1_powerlaw}{Movie votes vs.\ power law ($\alpha = 1.851$, $x_{\min} = 1.9$). $D = 0.485$.}
+  \panels{%
+    \textbf{PDF (left).} The model puts its highest density at the lowest vote (1.9), where the data has almost nothing, and then a long tail. 13\% of its sample lies above 20, which is not a possible rating.\par
+    \textbf{QQ plot (right).} Log axes, because the sample goes up to about 1000. At the top votes the points run almost horizontally to the right: the model's high quantiles are hundreds, the data's stop at 8.5.\par}
 
-  \item Screen shot of the visualization of distribution of data if it was exponential
-  \answerfig{p1b_2_exponential}{Exponential ($\lambda = 0.1606$). The model also peaks at
-    zero and has a long right tail (4\% of its sample is above 20). In the QQ plot the
-    points cross $y = x$ at a steep angle, so the model's spread is far larger than the
-    data's. $D = 0.490$.}
+  \item \prompt{Screen shot of the visualization of distribution of data if it was exponential}
+  \answerfig{p1b_2_exponential}{Movie votes vs.\ exponential ($\lambda = 0.1606$). $D = 0.490$.}
+  \panels{%
+    \textbf{PDF (left).} The model peaks at zero and has a long right tail; 4\% of its sample is above 20. The data is a narrow hump between 4 and 8.5.\par
+    \textbf{QQ plot (right).} The points cross $y = x$ at a shallow angle: the model's spread is far larger than the data's, with low quantiles near 0 and high quantiles above 20.\par}
 
-  \item Screen shot of the visualization of distribution of data if it was uniform
-  \answerfig{p1b_3_uniform}{Uniform on $[1.9, 8.5]$. The model is flat, but the data is
-    concentrated between 5 and 7.5. The QQ plot is an S-shape: the model's low quantiles
-    are too low and its high quantiles too high. $D = 0.394$.}
+  \item \prompt{Screen shot of the visualization of distribution of data if it was uniform}
+  \answerfig{p1b_3_uniform}{Movie votes vs.\ uniform on $[1.9, 8.5]$. $D = 0.394$.}
+  \panels{%
+    \textbf{PDF (left).} The model is flat across $[1.9, 8.5]$, but the data is concentrated between 5 and 7.5.\par
+    \textbf{QQ plot (right).} The points lie flat across the middle, above $y = x$ on the left and below it on the right: the model's low quantiles are too low and its high quantiles too high, because it spreads the votes evenly instead of piling them in the middle.\par}
 
-  \item Screen shot of the visualization of distribution of data if it was normal
-  \answerfig{p1b_4_normal}{Normal ($\mu = 6.227$, $\sigma = 0.893$). The sample traces
-    the same bell as the data, and the QQ points lie on $y = x$ from about 4.5 to 7.5.
-    The only departures are at the ends: the data's lowest votes are lower than the
-    model predicts (longer left tail), and the data stops at 8.5 while the model
-    continues. $D = 0.055$, by far the smallest.}
+  \item \prompt{Screen shot of the visualization of distribution of data if it was normal}
+  \answerfig{p1b_4_normal}{Movie votes vs.\ normal ($\mu = 6.227$, $\sigma = 0.893$). $D = 0.055$.}
+  \panels{%
+    \textbf{PDF (left).} The sample traces the same bell as the data, with the peak in the same place.\par
+    \textbf{QQ plot (right).} The points lie on $y = x$ from about 4.5 to 7.5. The only departures are at the ends: the data's lowest votes are lower than the model predicts (longer left tail), and the data stops at 8.5 while the model continues. $D = 0.055$ is by far the smallest.\par}
 
-  \item What is the distribution of data based on your observation? Discuss
+  \item \prompt{What is the distribution of data based on your observation? Discuss}
   \answer{%
     \begin{center}
     \begin{tabular}{lcccc}
@@ -243,14 +316,14 @@
     an \emph{average} of many individual votes. By the central limit theorem an average
     of many independent ratings tends toward a normal distribution, whatever the
     distribution of each single rating.}
-\end{itemize}
+\end{enumerate}
 
 % =====================================================================
 \clearpage
-\textbf{Problem 2.}
+\prompt{\textbf{Problem 2.}}
 
 \begin{itemize}
-  \item Screenshot of distribution/histogram of the age
+  \item \prompt{Screenshot of distribution/histogram of the age}
   \answer{How the ages were computed. The birth dates have the form \texttt{dd-Mon-yy}
     (a few use a 4-digit year). Every 2-digit year is read as 19\textit{yy}: IMDB-WIKI
     was collected in 2015, so a year such as \texttt{20}--\texttt{24} cannot mean
@@ -263,22 +336,25 @@
     minimum of 27 is a result of the 19\textit{yy} rule, since the latest possible birth
     year is 1999 ($2026-1999=27$). Of the rest, 6{,}684 rows had age $>100$ and were
     dropped; none had age $<1$.}
-  \answerfig{p2_1_age}{Age in 2026 ($n = 453{,}905$). One broad peak in the 40s and 50s
-    and a long right tail up to 100; most of the mass is between 36 and 71.}
+  \answerfig{p2_1_age}{Age in 2026 ($n = 453{,}905$).}
+  \panels{%
+    \textbf{Shape.} One broad hump: ages start at 27, rise through the 30s, peak in the 40s and 50s, and fall off in a long right tail up to 100. Most of the mass is between 36 and 71.\par
+    \textbf{Jagged bars.} Neighbouring years differ (for example, 48 and 57 stand out). This is year-to-year noise in how many actors were born in a given year, not a pattern in the ages themselves.\par}
 
-  \item Screenshot of distribution/histogram of the first digit of age
-  \answerfig{p2_2_first_digit}{First digit of age, with the uniform level $1/9$ (dashed)
-    and Benford's law (orange). The shares are 0.2\%, 0.7\%, 7.9\%, 24.5\%, 30.0\%,
-    18.9\%, 9.9\%, 5.4\% and 2.5\% for digits 1 to 9. The data is far from uniform and
-    also far from Benford: it peaks at 5 and 4, where Benford predicts 1 to be the most
-    common.}
+  \item \prompt{Screenshot of distribution/histogram of the first digit of age}
+  \answerfig{p2_2_first_digit}{First digit of age, with the uniform level $1/9$ (dashed) and Benford's law (orange).}
+  \panels{%
+    \textbf{Bars.} The shares are 0.2\%, 0.7\%, 7.9\%, 24.5\%, 30.0\%, 18.9\%, 9.9\%, 5.4\% and 2.5\% for digits 1 to 9. They peak at 5 and 4, the same place as the hump in the age histogram.\par
+    \textbf{Uniform line.} Far from the dashed $1/9 = 0.111$ level: digits 4 to 6 are well above it, digits 1 to 3 and 8 to 9 well below.\par
+    \textbf{Benford curve.} Also far from Benford, which predicts 1 as the most common digit (30.1\%); here 1 is the rarest.\par}
 
-  \item Screenshot of distribution/histogram of the last digit of age
-  \answerfig{p2_3_last_digit}{Last digit of age, with the uniform level $1/10$ (dashed).
-    Every digit has a share between 8.95\% and 11.10\%, within 1.10 percentage points of
-    10\%.}
+  \item \prompt{Screenshot of distribution/histogram of the last digit of age}
+  \answerfig{p2_3_last_digit}{Last digit of age, with the uniform level $1/10$ (dashed).}
+  \panels{%
+    \textbf{Bars.} Every digit has a share between 8.95\% (digit 3) and 11.10\% (digit 7), within 1.10 percentage points of 10\%.\par
+    \textbf{Uniform line.} All ten bars sit close to the dashed 0.100 level, with no digit clearly favoured.\par}
 
-  \item Discussion (what are those distribution?) Why do you think it is like this?
+  \item \prompt{Discussion (what are those distribution?) Why do you think it is like this?}
   \answer{%
     \textbf{The last digit is uniform (approximately); the first digit is not.}
 

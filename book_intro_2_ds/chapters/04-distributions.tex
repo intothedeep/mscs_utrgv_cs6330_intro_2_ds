@@ -61,7 +61,7 @@ PDF를 쓰고, 그 값 자체는 확률이 아니라 \textbf{밀도}다. 확률�
 멱법칙을 먼저 묶고(둘 다 ``꼬리가 얼마나 빨리 줄어드는가''를 다룬다)
 균등분포를 뒤로 옮겼다. 슬라이드 순서를 그대로 따르지 않는다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}l l X@{}}
 \toprule
 분포 & 연속/이산 & 이 장의 절 \\
@@ -143,7 +143,7 @@ PDF를 쓰고, 그 값 자체는 확률이 아니라 \textbf{밀도}다. 확률�
 \Cref{fig:dist-sigma-bands}가 패스트푸드 \texttt{calories}에 맞춘 정규
 곡선 위에 $\pm 1\sigma$, $\pm 2\sigma$ 구간을 표시한다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.85\linewidth]{06_02_normal_sigma_bands.png}
   \caption{패스트푸드 \texttt{calories}에 맞춘 정규 곡선과
   $\pm 1\sigma$($68.27\%$), $\pm 2\sigma$($95.45\%$) 구간. 실제 데이터
@@ -284,7 +284,7 @@ $1-e^{-5/60} = \mathbf{0.0800}$을 계산한 값과 거의 같다(넷째 자리�
 나란히 놓는다. 지수분포의 정확한 값은
 $P(k-1<X<k) = e^{-\lambda(k-1)} - e^{-\lambda k}$로 구한다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}X c c c@{}}
 \toprule
 분(1분 구간) & 기하분포 근사 & 지수분포 정확값 & 차이 \\
@@ -306,7 +306,7 @@ $P(k-1<X<k) = e^{-\lambda(k-1)} - e^{-\lambda k}$로 구한다.
 \Cref{fig:dist-exponential}가 \texttt{sugars} 데이터에 맞춘 지수분포의
 PDF와 CDF를 함께 보여준다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.95\linewidth]{06_04_exponential_fit.png}
   \caption{패스트푸드 \texttt{sugars}에 맞춘 지수분포. 평균
   $13.29\,\text{g}$에서 $\lambda = 1/\text{평균} = 0.0753$을 얻는다.}
@@ -361,7 +361,7 @@ $x_{\min}$은 멱법칙이 시작되는 하한이다.
 인용한다). 멱법칙은 직선으로, 지수분포는 아래로 휘는 곡선으로
 나타난다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.95\linewidth]{06_06_powerlaw_vs_exponential.png}
   \caption{멱법칙(직선)과 지수분포(아래로 휘는 곡선)를 로그-로그 축에서
   비교. 오른쪽 패널은 패스트푸드 \texttt{sugars}의 여집합 CDF로,
@@ -441,7 +441,7 @@ $[0,5]$ 구간에 대입하면
 \Cref{fig:dist-uniform}이 이산 균등분포(주사위)와 연속 균등분포
 $[0,5]$를 함께 보여준다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.95\linewidth]{06_05_uniform_reference.png}
   \caption{이산 균등분포(주사위, 왼쪽)와 연속 균등분포 $[0,5]$(오른쪽).
   이 데이터셋 안에는 균등분포를 따르는 변수가 없어 이론적 참고 그림으로
@@ -540,7 +540,7 @@ $\binom{5}{2}$을 곱한다.
 $1000\,\text{mg}$을 넘는지 여부를 베르누이 시행으로, $n=10$번 뽑았을 때
 고나트륨 항목 개수를 이항분포로 보여준다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.95\linewidth]{06_07_bernoulli_binomial.png}
   \caption{패스트푸드 \texttt{sodium} $>1000\,\text{mg}$ 여부의
   베르누이 PMF($p=0.4524$)와, $n=10$번 뽑았을 때 고나트륨 개수의
@@ -576,7 +576,7 @@ $1000\,\text{mg}$을 넘는지 여부를 베르누이 시행으로, $n=10$번 �
 \Cref{fig:dist-cdf}가 패스트푸드 \texttt{calories}의 경험적 CDF와
 정규분포로 맞춘 CDF를 겹쳐 보여준다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.85\linewidth]{06_03_cdf.png}
   \caption{패스트푸드 \texttt{calories}의 경험적 CDF(계단)와 최대우도로
   맞춘 정규 CDF($\hat\mu=532.49$, $\hat\sigma=249.85$). 두 곡선의 최대
@@ -600,7 +600,7 @@ $1000\,\text{mg}$을 넘는지 여부를 베르누이 시행으로, $n=10$번 �
 \Cref{tab:dist-summary}가 이 장에서 다룬 분포를 모수, 평균, 분산과 함께
 정리한다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}l l X c c c@{}}
 \toprule
 분포(Distribution) & 연속/이산 & 모수 & 평균 & 분산 & 절 \\

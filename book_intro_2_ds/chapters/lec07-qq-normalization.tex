@@ -74,7 +74,7 @@ $i$번째 값에 붙이는 ``이론적 위치''로, 이 장에서는 $p_i = i/(n
 
 \Cref{tab:qq-symbols}가 이 장에서 쓰는 기호를 모은다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}l X@{}}
 \toprule
 기호 & 뜻 \\
@@ -152,7 +152,7 @@ Q-Q), 뒤 절반은 \textbf{변환}(이산화, 정규화, 로그), 마지막은
 
 \Cref{fig:qq-four-pdf}가 영화 평점(\Cref{sec:hw2-movie})에 네 후보를 겹친다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.95\linewidth]{07_01_movie_four_pdfs.png}
   \caption{영화 평점(4392편) 히스토그램(0.1 격자) 위에 네 후보 밀도.
   멱법칙 $\hat\alpha = 1.8505$($x_{\min}=1.9$), 지수 $\hat\lambda = 0.1606$,
@@ -173,7 +173,7 @@ Q-Q), 뒤 절반은 \textbf{변환}(이산화, 정규화, 로그), 마지막은
 이 그림의 $\hat\mu, \hat\sigma$는 \texttt{scipy.stats.norm.fit}이 주는
 최대우도 값($n$으로 나눔)이다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.7\linewidth]{06_01_normal_fit.png}
   \caption{패스트푸드 \texttt{calories} 히스토그램과 최대우도(MLE) 정규
   곡선. 히스토그램은 종 모양에 가까워 보이지만, \Cref{sec:qq-apply}의
@@ -204,7 +204,7 @@ CDF $\hat F$와 후보의 이론 CDF를 같은 축에 겹치면, 가장 크게 �
 세로 거리가 두 곡선이 가장 다른 지점이다. 그 최대 세로 격차가
 \term{콜모고로프-스미르노프 통계량}(KS Statistic) $D$다(\Cref{def:ks-statistic}).
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.95\linewidth]{07_02_movie_four_cdfs.png}
   \caption{영화 평점의 경험적 CDF 계단과 네 후보 CDF. 멱법칙, 지수
   패널은 로그 가로축(슬라이드 4와 같음). 패널마다 한 표본에서 잰 최대
@@ -281,7 +281,7 @@ $\Phi^{-1}(p_i) = p_i$).
 기준선은 $y = 6 + 3.536\,z$다. \Cref{tab:qq-steps}가 각 점의 위치와 기준선
 위의 값을 정리한다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}l X X X X@{}}
 \toprule
 순위 & 값 $x_{(i)}$ & $p_i$ & $\Phi^{-1}(p_i)$ & 기준선 값 $6+3.536z$ \\
@@ -304,7 +304,7 @@ $\Phi^{-1}(p_i) = p_i$).
 
 \Cref{fig:qq-steps}가 같은 절차를 정규와 균등 두 경우로 그린다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.95\linewidth]{07_03_qq_steps.png}
   \caption{Q-Q 플롯 세 단계, 정규(위 줄)와 균등 $[0,1]$(아래 줄, 이론
   분위수는 $p_i$ 그대로). (1) 데이터 점 (2) 이론 분위수 선(가운데가
@@ -359,7 +359,7 @@ Q-Q 플롯을 볼 때는 항상 축 이름부터 읽는다.
 \paragraph{네 가지 모양.} \Cref{tab:qq-shapes}가 Q-Q 점의 휘는 방향과
 히스토그램 모양을 짝짓는다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}l X X@{}}
 \toprule
 모양 & Q-Q 점(가로 이론, 세로 데이터) & 이 책의 다른 자리 \\
@@ -375,8 +375,8 @@ Q-Q 플롯을 볼 때는 항상 축 이름부터 읽는다.
 \label{tab:qq-shapes}
 \end{table}
 
-\begin{figure}[ht]\centering
-  \includegraphics[width=0.95\linewidth]{07_04_qq_shapes.png}
+\begin{figure}[H]\centering
+  \includegraphics[width=0.95\linewidth,height=0.78\textheight,keepaspectratio]{07_04_qq_shapes.png}
   \caption{다섯 모양의 히스토그램과 정규 Q-Q(각 $n=1000$, 시드 6330).
   위에서부터 정규, 오른쪽 치우침(로그정규 표본), 왼쪽 치우침(부호를
   바꾼 표본), 두꺼운 꼬리($t$분포, 자유도 3), 얇은 꼬리(균등분포).
@@ -441,7 +441,7 @@ $(i-1)/(n-1)$을 써서 B의
 밝히는 것}이 요점이다.
 \end{keyidea}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.95\linewidth]{07_05_qq_two_samples.png}
   \caption{왼쪽: A(15개) 세로줄에 B(4개)의 보간 위치를 점선으로 표시.
   오른쪽: 점 $(B, A)$ 네 개와 기준선 $y=x$. \Cref{ex:qq-two-samples}의
@@ -490,7 +490,7 @@ $\hat F^{-1}(0.75) = 6.4$.
 
 \Cref{tab:qq-iris-bins}가 두 방법을 비교한다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}l X X X@{}}
 \toprule
 방법 & 경계 & 폭 & 개수 \\
@@ -604,7 +604,7 @@ $n-1$로 다시 계산하면 $z = (-1.28, -1.20)$이다. \texttt{pandas}의
 
 \Cref{tab:qq-scaling}가 $x_2$의 모든 변환 값을 한곳에 모은다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}l X X@{}}
 \toprule
 방법 & 나이($x_2$) & 소득($x_2$) \\
@@ -623,7 +623,7 @@ z-정규화($n-1$, 책) & $-1.28$ & $-1.20$ \\
 \Cref{fig:qq-scaling}가 원래, 범위, z($n-1$), 로버스트 네 패널을
 산점도로 보여준다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.95\linewidth]{07_07_age_income_scaling.png}
   \caption{나이(가로)와 소득(세로) 10명의 산점도 네 패널. 원래 패널은
   축 비율을 그대로 둬 소득 축이 나이 축을 압도함을 보인다. $x_2$를
@@ -677,7 +677,7 @@ z-정규화($n-1$, 책) & $-1.28$ & $-1.20$ \\
 \Cref{tab:qq-quantile-norm}이 원래, 정렬, 순위별 평균, 되돌린 결과 네
 단계를 보여준다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}l X X X X@{}}
 \toprule
 단계 & 열1 & 열2 & 열3 & 열4 \\
@@ -713,7 +713,7 @@ $(4.5, 1.5, 3.5)$다. $B$의 $1$은 1위라 $1.5$를 받지만, 두 개의 $4$�
 
 \Cref{fig:qq-quantile-norm}이 원래 행렬과 정규화 결과를 나란히 그린다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.9\linewidth]{07_08_quantile_norm.png}
   \caption{왼쪽: 원래 $4\times4$ 행렬, 표본(열)별 점. 오른쪽: 분위수
   정규화 뒤, 네 표본의 값 집합이 $\{2, 3, 4.5, 6\}$으로 같아졌다.
@@ -828,7 +828,7 @@ $\log(1+\text{sugars})$의 왜도는 $0.0146$으로 0에 매우 가깝지만, �
 
 \Cref{fig:qq-log}가 변환 전후의 히스토그램과 Q-Q를 함께 보여준다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.95\linewidth]{07_09_sugars_log.png}
   \caption{\texttt{sugars} 히스토그램과 정규 Q-Q(위), $\log(1+x)$ 변환
   후(아래). 왜도는 $2.7088 \to 0.0146$으로 줄지만, 0인 17개 항목이
@@ -891,7 +891,7 @@ $n$을 잃음), \textbf{대체}(평균, 최빈값, 자리표시자로 채움, $n
 
 \Cref{tab:qq-impute}가 방법별로 정리한다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}l X X X@{}}
 \toprule
 방법 & $n$ & 평균/중앙값 & 표준편차 \\
@@ -920,7 +920,7 @@ $1819.5 \to 1396.4$로 줄고, 가장 큰 값(6000)이 있었다는 사실 자�
 
 \Cref{tab:qq-transforms}가 문제와 변환을 짝짓는다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}l X X X@{}}
 \toprule
 문제 & 쓰는 변환 & 바뀌는 것 & 바뀌지 않는 것 \\
@@ -945,7 +945,7 @@ $1819.5 \to 1396.4$로 줄고, 가장 큰 값(6000)이 있었다는 사실 자�
 
 \Cref{fig:qq-flow}가 이 장의 절차를 한 장으로 정리한다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
 \resizebox{\linewidth}{!}{%
 \begin{tikzpicture}[
   x = 1mm, y = 1mm,
@@ -1000,7 +1000,7 @@ $1819.5 \to 1396.4$로 줄고, 가장 큰 값(6000)이 있었다는 사실 자�
 \Cref{fig:qq-calories}가 \texttt{calories}의 Q-Q와 Shapiro-Wilk p값을
 함께 보여준다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.7\linewidth]{07_10_calories_qq.png}
   \caption{패스트푸드 \texttt{calories}의 정규 Q-Q 플롯. Shapiro-Wilk
   $p = 0.00038 < 0.05$로 정규성을 기각한다.}

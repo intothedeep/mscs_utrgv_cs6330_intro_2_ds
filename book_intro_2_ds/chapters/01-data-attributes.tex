@@ -65,7 +65,7 @@ $\cdot$ 그래프가 전부 조용히 틀린다 --- 계산은 성공하고 숫�
 \term{범주형}(Categorical)을 나누고, 2단계에서 각각을 다시 둘로 나눈다
 (\Cref{fig:attr-flow}).
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[
   qbox/.style    = {draw = bookaccent, fill = bookaccentbg, rounded corners = 2pt,
                     minimum width = 46mm, minimum height = 8mm, align = center,
@@ -199,7 +199,7 @@ $10^\circ\mathrm{C}$ 보다 ``$10^\circ$ 더 덥다''라고는 말할 수 있어
 순으로 누적된다. 위 단계에서 허용된 것은 아래 단계에서도 전부 허용된다
 (\Cref{tab:attr-ops}).
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \caption{속성 유형별로 허용되는 연산과 대표 통계. 아래로 갈수록 허용 범위가
 넓어진다.}
 \label{tab:attr-ops}
@@ -294,7 +294,7 @@ HW1 의 패스트푸드 영양정보 데이터
 둘을 \textbf{함께} 답해야 완전히 분류된다. \Cref{tab:attr-discrete-2x2}가
 이 두 축을 겹쳐 보여준다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \caption{척도(행)와 이산/연속(열)을 겹친 분류. ``없음''은 그 조합이
 존재하지 않는다는 뜻이다.}
 \label{tab:attr-discrete-2x2}
@@ -380,7 +380,7 @@ HW1 의 패스트푸드 영양정보 데이터
 가리키면 행, 속성을 가리키면 열이다. 분야마다 행과 열을 부르는 이름이
 다른데, \Cref{tab:attr-synonyms}가 그 대응을 정리한다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \caption{데이터 행렬의 행과 열을 부르는 여러 이름. 같은 것을 분야마다
 다르게 부른다.}
 \label{tab:attr-synonyms}
@@ -400,7 +400,7 @@ HW1 의 패스트푸드 영양정보 데이터
 \label{ex:attr-name-salary-age}
 \Cref{tab:attr-name-salary-age}는 이름, 급여, 나이 세 열로 된 표다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \caption{이름, 급여, 나이 표.}
 \label{tab:attr-name-salary-age}
 \begin{tabularx}{0.7\linewidth}{@{}l X X@{}}
@@ -468,7 +468,7 @@ Ellen   & 82000 & 44 \\
 때 쓰는 인덱스(축)의 개수다. \term{공간 차원}(Space Dimension)은
 데이터 행렬의 속성 수 $d$, 즉 각 점이 놓인 공간의 차원이다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \caption{프로그래밍의 차원과 데이터 과학의 차원.}
 \label{tab:attr-dimension-two-meanings}
 \begin{tabularx}{\linewidth}{@{}l X@{}}
@@ -496,7 +496,7 @@ Ellen   & 82000 & 44 \\
 Dave(53세, 90000)는 나이만 한 살 다를 뿐이라 그림에서 거의 겹쳐
 보인다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.75\linewidth]{03_01_salary_age_2d.png}
   \caption{급여$\cdot$나이 2차원 산점도(Scatter Plot). 5명이 각각 점
   하나에 대응한다.}
@@ -507,7 +507,7 @@ Dave(53세, 90000)는 나이만 한 살 다를 뿐이라 그림에서 거의 겹
 더하면 \Cref{tab:attr-3d-data}가 된다. 이 표는 이름 없이 급여, 나이,
 근속연수 세 열뿐이다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \caption{급여, 나이, 근속연수 표.}
 \label{tab:attr-3d-data}
 \begin{tabularx}{0.6\linewidth}{@{}X X X@{}}
@@ -532,7 +532,7 @@ Dave(53세, 90000)는 나이만 한 살 다를 뿐이라 그림에서 거의 겹
 이름은 행렬에는 들어가지 않지만, 그림에서 점의 라벨로는 남는다
 (\Cref{fig:attr-3d-scatter}).
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.8\linewidth]{03_02_salary_age_service_3d.png}
   \caption{급여$\cdot$나이$\cdot$근속연수 3차원 산점도. 이름은 점의
   라벨로만 남는다.}
@@ -581,7 +581,7 @@ Dave(53세, 90000)는 나이만 한 살 다를 뿐이라 그림에서 거의 겹
 \Cref{tab:attr-vectors-source}의 다섯 점(나이, 급여)을 화살표로 그리면
 \Cref{fig:attr-vectors}가 된다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \caption{나이, 급여 표(벡터 예).}
 \label{tab:attr-vectors-source}
 \begin{tabularx}{0.5\linewidth}{@{}X X@{}}
@@ -597,7 +597,7 @@ Dave(53세, 90000)는 나이만 한 살 다를 뿐이라 그림에서 거의 겹
 \end{tabularx}
 \end{table}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.75\linewidth]{03_03_vectors_origin.png}
   \caption{원점에서 각 점까지 뻗은 화살표. 점 하나가 벡터 하나다.}
   \label{fig:attr-vectors}
@@ -608,7 +608,7 @@ Dave(53세, 90000)는 나이만 한 살 다를 뿐이라 그림에서 거의 겹
 \texttt{sklearn.datasets.load\_iris()}로 값만 읽는다.
 \Cref{tab:attr-iris-rows}가 그중 10행을 옮긴다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \caption{붓꽃 데이터 10행. $\mathbf{x}_1 \sim \mathbf{x}_8$은 setosa,
 $\mathbf{x}_{149}, \mathbf{x}_{150}$은 virginica다.}
 \label{tab:attr-iris-rows}
@@ -646,7 +646,7 @@ versicolor, virginica)을 담은 명목 범주형(\Cref{sec:attr-categorical})
   &\bar X_2 = 3.0573 && \text{꽃받침 너비 150개의 평균}
 \end{align*}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.75\linewidth]{03_04_iris_points_mean.png}
   \caption{붓꽃 꽃받침 길이$\times$너비 150개 점과 평균 점
   $(5.8433,\ 3.0573)$.}
@@ -668,7 +668,7 @@ versicolor, virginica)을 담은 명목 범주형(\Cref{sec:attr-categorical})
 슬라이드에 실린 원본 사진 두 장은 출처가 밝혀지지 않아 이 책에는
 싣지 않는다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[
   imgbox/.style = {draw=bookaccent, fill=bookaccentbg, rounded corners=2pt,
                     minimum width=20mm, minimum height=20mm, align=center,
@@ -716,7 +716,7 @@ $-0.59517$, $-0.022801$, $0.60046$, 뒤에 45개 더, 모두 50개). 슬라이�
 없으면 0이다. \Cref{fig:attr-network}가 노드 5개짜리 네트워크를
 인접 행렬로 바꾼 예다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[
   netdot/.style = {draw=bookaccent, fill=bookaccentbg, circle,
                     minimum size=7mm, font=\small},

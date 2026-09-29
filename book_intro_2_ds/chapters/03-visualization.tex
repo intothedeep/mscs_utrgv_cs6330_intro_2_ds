@@ -141,7 +141,7 @@ s = pd.Series([3.3, 2.7, 2.2, 1.3, 3.7, 3.1])
 s.quantile(0.25)    # 2.325  <- 위 손계산과 일치
 \end{lstlisting}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=0.85\linewidth]{05_01_quantiles.png}
   \caption{정렬된 값에 위치를 매기고 원하는 지점을 읽는 과정. 곡선의 가로축이
   \Cref{ex:quantile}의 ``위치'', 세로축이 그 위치의 값이다.}
@@ -176,7 +176,7 @@ Representation)이다. 만드는 법은 단순하다.
 강의는 ``구간을 어떻게 나눌 것인가?''를 괄호 안에 던져 놓고 지나간다. 그런데
 이것이 히스토그램의 유일한 자유도이자 가장 큰 함정이다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_02_histogram_bins.png}
   \caption{같은 데이터, 다른 구간 개수. 구간이 너무 적으면 구조가 뭉개지고, 너무
   많으면 표본 잡음(Sampling Noise)이 봉우리처럼 보인다.}
@@ -197,7 +197,7 @@ Representation)이다. 만드는 법은 단순하다.
 히스토그램 여러 개를 같은 축으로 나란히 배치하면 집단 간 차이가 드러난다. 강의는
 서브레딧별 순위 분포를 예로 든다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_03_small_multiples.png}
   \caption{작은 배수(Small Multiples). 축을 공유해야 비교가 성립한다 --- 패널마다
   축 범위가 다르면 눈은 그 차이를 읽지 못한다.}
@@ -227,7 +227,7 @@ Representation)이다. 만드는 법은 단순하다.
 표현하도록, 충분한 수의 구간을 쓴다.''} 두 조건이 서로 반대 방향으로 당기므로
 절충점을 찾아야 한다 --- \Cref{subsec:binning}의 문제가 그대로 이어진다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_04_density_line.png}
   \caption{밀도 곡선(Density Line). 히스토그램의 계단을 매끄럽게 편 것이며,
   여러 분포를 겹쳐 비교할 때 서로를 가리지 않는다는 장점이 있다.}
@@ -246,14 +246,14 @@ Representation)이다. 만드는 법은 단순하다.
   \item[How] 중심(평균)을 점이나 선으로, 퍼짐을 막대로 그린다.
 \end{inbrief}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_05_error_bar.png}
   \caption{집단별 평균 곡선과 퍼짐을 나타내는 막대. 강의의 예는 약물에 저항성인
   환자군과 민감한 환자군의 비교다.}
   \label{fig:errorbar}
 \end{figure}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_06_error_variants.png}
   \caption{에러바의 변형. 왼쪽은 에러 구름(Error Cloud), 오른쪽은 에러바를 얹은
   막대그래프(Bar Plot with Error Bars)다. 담는 정보는 같고 강조점이 다르다.}
@@ -291,14 +291,14 @@ Representation)이다. 만드는 법은 단순하다.
   \item[How] 각 집단의 밀도 곡선을 세로로 세우고 좌우 대칭으로 펼친다.
 \end{inbrief}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_07_violin.png}
   \caption{바이올린 플롯. 폭이 곧 그 값 근처의 밀도이므로, 봉우리가 몇 개인지가
   즉시 보인다. 강의의 예는 보스턴 마라톤 완주 시간의 연도별 분포다.}
   \label{fig:violin}
 \end{figure}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_08_violin_combined.png}
   \caption{결합 바이올린 플롯. 두 집단을 좌우 반쪽씩 맞붙여 같은 축에서 비교한다.
   두 집단을 나란히 두 개 그리는 것보다 시선 이동이 짧다.}
@@ -319,7 +319,7 @@ Representation)이다. 만드는 법은 단순하다.
 강의의 예는 워싱턴 메트로의 정시 운행률이다. 각 행이 한 노선, 각 행의 12개 막대가
 월별 평균이고, 연평균은 굵은 막대로 표시된다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_09_barcode.png}
   \caption{바코드 차트. 점 하나하나가 보이므로 \emph{빈 구간}이 눈에 띈다 ---
   요약통계로는 절대 드러나지 않는 정보다.}
@@ -347,7 +347,7 @@ Representation)이다. 만드는 법은 단순하다.
 박스플롯을 만드는 규칙은 \Cref{subsec:fence}에서 이미 다뤘다. 여기서는 그것을
 \emph{비교}에 쓰는 법을 본다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_11_box_compare.png}
   \caption{박스플롯으로 집단 비교하기. 중앙선의 높이 차이가 중심의 차이를,
   상자의 길이 차이가 퍼짐의 차이를 나타낸다.}
@@ -366,7 +366,7 @@ $\rightarrow$ 버거 591 로 단조 증가한다.
 \subsection{노치 박스플롯}
 \label{subsec:notch}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_12_box_notched.png}
   \caption{노치(Notch)를 넣은 박스플롯. 허리가 잘록한 부분이 중앙값의 신뢰구간을
   나타내며, 두 상자의 노치가 겹치지 않으면 중앙값이 다르다고 볼 근거가 된다.}
@@ -429,7 +429,7 @@ $z = 1.96$ 의 의미는 이렇다. 평균에서 $-1.96$ 부터 $+1.96$ 표준�
 가정 없이, 컴퓨터로 재표집을 반복해서 같은 것을 구한다. 강의의 예는 암컷 생쥐
 12마리의 몸무게다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[
   node distance = 6mm,
   bsbox/.style = {draw = bookrule, fill = booksurface, rounded corners = 2pt,
@@ -456,7 +456,7 @@ $z = 1.96$ 의 의미는 이렇다. 평균에서 $-1.96$ 부터 $+1.96$ 표준�
 \label{fig:bootstrap-flow}
 \end{figure}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_13_bootstrap_ci.png}
   \caption{버거 칼로리의 부트스트랩 신뢰구간. 재표집 10{,}000회의 평균 분포이며,
   2.5 백분위수와 97.5 백분위수가 신뢰구간의 양끝이 된다.}
@@ -479,7 +479,7 @@ $s$ 는 분자에 있기 때문이다.
 \subsection{두 집단을 비교하기}
 \label{subsec:ci-compare}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{05_14_ci_compare.png}
   \caption{신뢰구간으로 두 집단 비교하기. 두 구간이 겹치지 않으므로 두 평균은
   통계적으로 다르다($p < 0.05$).}
@@ -501,7 +501,7 @@ $s$ 는 분자에 있기 때문이다.
 \section{형태 고르기 --- 정리}
 \label{sec:choosing-form}
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \caption{질문과 형태의 대응. 위에서 아래로 갈수록 데이터를 덜 버린다.}
 \label{tab:form-choice}
 \begin{tabularx}{\linewidth}{@{}l l X@{}}

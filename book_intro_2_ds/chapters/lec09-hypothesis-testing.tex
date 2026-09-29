@@ -77,7 +77,7 @@ level"이라는 말을 쓰지 않고 "significance test"만 쓰지만, 이 장�
 
 \Cref{tab:ht-symbols}이 이 장에서 쓰는 기호를 모은다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}l X l@{}}
 \toprule
 기호 & 뜻 & 읽기 \\
@@ -128,7 +128,7 @@ $n$, $X$ & 시행 횟수, 성공 횟수 & \\
 
 \Cref{fig:ht-drug-experiments}가 첫 번째와 세 번째 경우를 나란히 보여준다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{09_01_drug_experiments.png}
   \caption{반복 실험이 가설을 지지하는가(슬라이드 3, 4, 7). 왼쪽: 예비
   실험이 세운 "A가 15시간 빠르다"는 가설을, 방향이 뒤집힌 재실험(35시간)이
@@ -212,7 +212,7 @@ $H_0$: 회복 시간에 차이가 없다, $H_a$: 차이가 있다. 이 대립가
 
 \Cref{tab:ht-wording}은 올바른 결론 문장과 틀린 결론 문장을 나란히 둔다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}X X@{}}
 \toprule
 올바른 표현 & 틀린 표현 \\
@@ -255,7 +255,7 @@ $H_a$ & 이름 & 극단값의 방향 \\
 
 \Cref{fig:ht-tails}가 세 형태의 꼬리를 보여준다.
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[scale=1.0]
   \begin{scope}
     \draw[domain=-3:3,samples=60,smooth,draw=bookink] plot (\x,{exp(-\x*\x/2)});
@@ -387,7 +387,7 @@ $0.0037 < 1\%$ 이므로 \textbf{기각한다}. 결론: "이 강아지들에서 
 잘 나온다는 증거가 있다."
 \end{example}
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}c r r@{}}
 \toprule
 $k$ (수컷 수) & 슬라이드 빈도(1000회 중) & 정확값 $1000\binom{15}{k}/2^{15}$ \\
@@ -409,7 +409,7 @@ $k$ (수컷 수) & 슬라이드 빈도(1000회 중) & 정확값 $1000\binom{15}{
 \label{tab:ht-puppy}
 \end{table}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{09_03_puppy_null.png}
   \caption{$H_0$: $p=0.5$ 아래 수컷 강아지 수의 분포(슬라이드 11). 막대는
   슬라이드의 빈도표, 점은 정확한 $1000\binom{15}{k}/2^{15}$ 다. 관측값
@@ -470,7 +470,7 @@ $\sqrt{400 \cdot 0.1 \cdot 0.9} = 6$ 이다.
 13.5\%(54명)와 14\%(56명) 경계가 만드는 차이를 그림으로 보여준다.
 \end{pitfall}
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}c r r@{}}
 \toprule
 반항적 비율(\%, 묶음) & 슬라이드 빈도(1000회 중) & 위에서부터 누적(꼬리 합) \\
@@ -491,7 +491,7 @@ $[13.5\%,14.5\%)$ 를 묶은 값일 수 있어 경계가 애매하다(\Cref{pit:
 \label{tab:ht-alien}
 \end{table}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{09_04_alien_null.png}
   \caption{$H_0$: $p=0.10$ 아래 반항적 인원수의 분포(슬라이드 12). 슬라이드
   표(막대, 인원수 축으로 환산)와 $\mathrm{Bin}(400,0.1)$ 이론 곡선을 겹쳤다.
@@ -605,7 +605,7 @@ $C = \{20, 28, 34\}$, $D = \{22, 26, 37\}$.
 그 방법인 분산분석(ANOVA)은 \Cref{sec:cd-anova}에서 다룬다.
 \end{example}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{09_02_pooled_vs_group.png}
   \caption{\Cref{ex:ht-distance}의 값(책 자체의 예시, 슬라이드 데이터
   아님). 왼쪽: 합친 평균 하나에서 잰 제곱거리 합 220.83. 오른쪽: C, D
@@ -616,7 +616,7 @@ $C = \{20, 28, 34\}$, $D = \{22, 26, 37\}$.
 
 \Cref{tab:ht-cases}가 이 장에서 다룬 네 사례를 한눈에 정리한다.
 
-\begin{table}[ht]\centering
+\begin{table}[H]\centering
 \begin{tabularx}{\linewidth}{@{}l X X l l l@{}}
 \toprule
 사례 & $H_0$ & $H_a$ & p값 & $\alpha$ & 판정 \\
@@ -647,7 +647,7 @@ $C = \{20, 28, 34\}$, $D = \{22, 26, 37\}$.
   \item[How] 아래 다섯 단계를 순서대로 밟는다.
 \end{inbrief}
 
-\begin{figure}[ht]\centering
+\begin{figure}[H]\centering
 \begin{tikzpicture}[
   node distance = 7mm,
   flowbox/.style = {draw = bookrule, fill = booksurface, rounded corners = 2pt,

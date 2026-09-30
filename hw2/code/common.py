@@ -17,6 +17,7 @@ matplotlib.use("Agg")  # headless: write PNGs only, no GUI backend needed
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib.transforms import blended_transform_factory
 from scipy.stats import ks_2samp
 
 HW_DIR = Path(__file__).resolve().parent.parent
@@ -29,6 +30,10 @@ DATA_COLOR = "#2a78d6"
 MODEL_COLOR = "#eb6834"
 INK = "#52514e"
 GRID = "#e4e3df"
+MEDIAN_COLOR = "#2e8b57"  # reference lines only, not data series
+MEAN_COLOR = "#8e44ad"
+# White box behind a line label so points or curves under it do not hide the text.
+LABEL_BOX = dict(boxstyle="square,pad=0.15", facecolor="white", edgecolor="none", alpha=0.85)
 
 plt.rcParams.update({
     "axes.edgecolor": INK, "axes.labelcolor": INK, "xtick.color": INK, "ytick.color": INK,
@@ -115,28 +120,74 @@ def save(fig: plt.Figure, name: str) -> None:
     plt.close(fig)
 
 
+def label_vlines(ax: plt.Axes, lines: list[tuple[float, str, str, str]], is_log: bool,
+                 at_bottom: bool = False) -> None:
+    """Vertical reference lines labelled on the line itself instead of in a legend.
+
+    On log axes the lines are far apart, so each label runs up its own line. On linear axes
+    4, 19.8 and 60 sit within a few millimetres of each other, so the labels are stacked to
+    the right with a short arrow back to their line.
+    """
+    at_top = blended_transform_factory(ax.transData, ax.transAxes)  # x in data, y in axes
+    for i, (x, color, style, text) in enumerate(lines):
+        ax.axvline(x, color=color, lw=1.5, ls=style)
+        if is_log:
+            y, va = (0.03, "bottom") if at_bottom else (0.97, "top")
+            ax.text(x * 1.08, y, text, transform=at_top, rotation=90, ha="left", va=va,
+                    color=color, fontsize=9, bbox=LABEL_BOX)
+        else:
+            y = 0.6 - 0.13 * i  # mid-height: both linear panels are empty there on the right
+            ax.annotate(text, xy=(x, y), xycoords=at_top, xytext=(x + 120, y),
+                        textcoords=at_top, va="center", color=color, fontsize=9,
+                        bbox=LABEL_BOX, arrowprops=dict(arrowstyle="-", color=color, lw=0.8))
+
+
 def plot_airport_data(x: np.ndarray) -> None:
-    # Top row on linear axes shows how bunched up the data is; the bottom row on log-log
-    # axes spreads that bunch out so the shape and the tail can be read.
-    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(10, 7.2))
-    ax1.hist(x, bins=np.arange(0, x.max() + 20, 20), weights=np.full(len(x), 1 / len(x)),
-             color=DATA_COLOR)
-    ax1.set(xlabel="routes per airport", ylabel="share of airports",
-            title="PDF, linear axes (bin = 20 routes)")
-    ax2.plot(*ecdf(x), color=DATA_COLOR, lw=2)
-    share_60 = float(np.mean(x <= 60))
-    ax2.axvline(60, color=INK, lw=1, ls="--")
-    ax2.text(80, 0.5, f"{share_60:.0%} of airports\nhave ≤ 60 routes", color=INK)
-    ax2.set(xlabel="routes per airport", ylabel="P(X ≤ x)", title="CDF, linear axes")
-    # Routes are integers, so plot P(X = k) per value instead of log bins (which leave gaps).
+    # Rows: PDF, PMF, CDF/CCDF. Left column on linear axes shows how bunched up the data is;
+    # the right column on log-log axes spreads that bunch out so the shape and the tail can
+    # be read. Each row is the same quantity on the two kinds of axes.
+    fig, ((pdf_lin, pdf_log), (pmf_lin, pmf_log), (cdf_lin, ccdf_log)) = plt.subplots(
+        3, 2, figsize=(10, 10.5))
+    n = len(x)
+    pdf_lin.hist(x, bins=np.arange(0, x.max() + 20, 20), weights=np.full(n, 1 / n),
+                 color=DATA_COLOR)
+    pdf_lin.set(xlabel="routes per airport", ylabel="share of airports per bin",
+                title="PDF (histogram), linear axes (bin = 20 routes)")
+    # Log-width bins; three decades in 15 bins leave no empty bin between integers.
+    pdf_log.plot(*log_binned_pdf(x, np.logspace(0, 3, 16)), "o-", ms=4, color=DATA_COLOR)
+    pdf_log.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
+                ylabel="density (log)", title="PDF, log-log (log-width bins)")
+    # Routes are integers, so these are PMFs: one dot per route count k. The left axis counts
+    # airports; the right axis gives the same height as a share, P(X = k).
     values, counts = np.unique(x, return_counts=True)
-    ax3.scatter(values, counts / len(x), s=12, color=DATA_COLOR)
-    ax3.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
-            ylabel="P(X = k) (log)", title="PDF, log-log (probability mass per value)")
-    ax4.plot(*ccdf(x), color=DATA_COLOR, lw=2, label="data")
-    ax4.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
-            ylabel="P(X ≥ x) (log)", title="CCDF, log-log")
-    fig.suptitle(f"Airport routes: empirical distribution (n = {len(x)})")
+    for ax, scale in ((pmf_lin, "linear"), (pmf_log, "log")):
+        ax.scatter(values, counts, s=12, color=DATA_COLOR)
+        ax.set(xscale=scale, yscale=scale, ylabel="number of airports",
+               xlabel="routes per airport" + (" (log)" if scale == "log" else ""),
+               title=f"PMF, {'linear axes' if scale == 'linear' else 'log-log'} "
+                     "(airports with exactly k routes)")
+        share_axis = ax.secondary_yaxis("right", functions=(lambda c: c / n, lambda s: s * n))
+        share_axis.set_ylabel("share P(X = k)")
+    cdf_lin.plot(*ecdf(x), color=DATA_COLOR, lw=2)
+    cdf_lin.set(xlabel="routes per airport", ylabel="P(X ≤ x)", title="CDF, linear axes")
+    ccdf_log.plot(*ccdf(x), color=DATA_COLOR, lw=2)
+    ccdf_log.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
+                 ylabel="P(X ≥ x) (log)", title="CCDF, log-log")
+    # The same reference lines in every panel. Median: half the airports are at or below
+    # it. Mean: pulled far right of the median by a few hubs. x = 60: 92% of airports lie
+    # left of it, and from 61 on a route count belongs to only 1-3 airports (the floor rows
+    # in the log-log PMF).
+    median, mean = float(np.median(x)), float(x.mean())
+    share_60 = float(np.mean(x <= 60))
+    lines = [(median, MEDIAN_COLOR, ":", f"median = {median:g}"),
+             (mean, MEAN_COLOR, "-.", f"mean = {mean:.1f}"),
+             (60.0, INK, "--", f"x = 60 ({share_60:.0%} at or below)")]
+    for ax in (pdf_lin, pmf_lin, cdf_lin):
+        label_vlines(ax, lines, is_log=False)
+    # Log PDF and CCDF run across the top, so their labels go in the empty bottom.
+    for ax in (pdf_log, pmf_log, ccdf_log):
+        label_vlines(ax, lines, is_log=True, at_bottom=ax is not pmf_log)
+    fig.suptitle(f"Airport routes: empirical distribution (n = {n})")
     save(fig, "p1a_0_data")
 
 

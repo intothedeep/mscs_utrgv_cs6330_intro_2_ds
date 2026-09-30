@@ -888,6 +888,24 @@ $\alpha$가 작을수록 꼬리가 두껍고, ``상위 소수가 전체 양의 �
 고르는 일, 곧 모수 값을 데이터로 정하는 일이다. 추정한 값에는 모자를 씌워
 $\hat\lambda$, $\hat\alpha$처럼 쓴다(참값 $\lambda$와 구별).
 
+\begin{callout}[질문]
+why do you use hat? what does that mean?
+\end{callout}
+
+\paragraph{모자(Hat)의 뜻.} 모자(\^{})는 ``데이터로 추정한 값''(Estimate)이라는 표시다.
+``알파 햇''(alpha hat)이라고 읽는다. 모자가 없는 기호는 데이터를 만든 과정 자체의 값,
+곧 우리가 모르는 참값(True Value)이다.
+\begin{itemize}
+  \item $\alpha$: 참값. 하나로 고정되어 있지만 모른다.
+  \item $\hat\alpha$: 가진 표본으로 계산한 값. 공항 데이터에서 $1.612$.
+\end{itemize}
+구별하는 이유는 우리가 가진 것이 세상 전체가 아니라 \term{표본}(Sample) 하나라서다.
+공항 $3409$곳은 2017년 2월 한 시점의 표본이다. 다른 달의 데이터로 같은 공식을 계산하면
+$1.612$가 아니라 $1.60$이나 $1.63$이 나올 수 있다. $\hat\alpha$는 가진 데이터에 따라
+흔들리고, 이 흔들림을 \term{표본 오차}(Sampling Error)라 한다. 모자는 ``이 숫자는 참값이
+아니라 우리 데이터에서 나온 추측''임을 기호로 드러낸다. 같은 구분을 기호로 하는 경우도
+있다. 표본 평균(Sample Mean)은 $\bar x$, 참 평균은 $\mu$다.
+
 \begin{table}[H]
   \centering
   \caption{HW2 문제 1의 네 분포 가족과 모수.}
@@ -1273,6 +1291,83 @@ a, b = x.min(), x.max()
   \text{영화:}\ &[\hat a, \hat b] = [1.9, 8.5]
 \end{align*}
 
+\begin{callout}[질문]
+$[a, b] = [1, 915]$, the minimum and maximum route counts (MLE): explain this?
+\end{callout}
+
+\paragraph{왜 최솟값과 최댓값인가.} 우도(Likelihood)는 모든 점의 밀도를 곱한 값이다.
+데이터 $n$개가 모두 $[a, b]$ 안에 있으면
+\[
+  L(a, b) = \underbrace{\frac{1}{b-a} \times \cdots \times \frac{1}{b-a}}_{n\text{개}}
+          = \left(\frac{1}{b-a}\right)^n
+  \qquad \text{(폭이 좁을수록 커진다)}
+\]
+이고, 하나라도 밖에 있으면 그 점의 밀도가 $0$이라 $L = 0$이다. 그래서 폭을 최대한 좁히되
+모든 점을 담아야 한다. 답은 \term{모든 데이터를 담는 가장 좁은 구간},
+$\hat a = \min_i x_i$, $\hat b = \max_i x_i$다.
+
+\paragraph{예제: 데이터 $\{2, 5, 7\}$.} 후보 구간 셋의 우도를 비교한다(\Cref{tab:uniform-mle}).
+\begin{table}[H]
+  \centering
+  \caption{데이터 $\{2, 5, 7\}$에서 균등분포 후보 구간의 우도 $L = (1/(b-a))^3$.}
+  \label{tab:uniform-mle}
+  \begin{tabular}{lll}
+    \toprule
+    후보 구간 & 모든 점을 담나 & $L$ \\
+    \midrule
+    $[0, 10]$ & 예 & $(1/10)^3 = 0.001$ \\
+    \midrule
+    $\mathbf{[2, 7]}$ & 예 & $(1/5)^3 = \mathbf{0.008}$ (가장 큼) \\
+    \midrule
+    $[3, 7]$ & 아니요 ($2$가 밖) & $0$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+넓힌 구간은 담기는 하지만 밀도가 낮아 우도가 작고, 좁힌 구간은 점을 놓쳐 $0$이 된다.
+공항 데이터에서는 노선 $1$개(713곳)와 $915$개(ATL)가 양 끝이고, 모형의 밀도는
+$1/914$로 모든 노선 수가 똑같이 흔하다고 말한다. 참고로 최솟값과 최댓값은 참 범위보다
+약간 좁게 잡히는 경향이 있어(표본이 참 끝점에 정확히 닿기 어렵다) 편향(Bias)을 고친
+추정량도 있지만, 과제의 기준은 MLE다.
+
+\begin{callout}[질문]
+why did you mention MLE?
+\end{callout}
+
+\paragraph{왜 ``MLE''라고 밝히나.} 같은 질문에도 추정 방법에 따라 답이 달라지기 때문이다.
+균등분포의 $[a, b]$를 구하는 흔한 방법 둘을 비교한다(\Cref{tab:uniform-mom},
+python으로 계산, 2026/09/30).
+\begin{itemize}
+  \item \term{MLE}: 모든 데이터를 담는 가장 좁은 구간, $[\min, \max]$.
+  \item \term{적률법}(Method of Moments): 모형의 평균 $(a+b)/2$와 표준편차
+        $(b-a)/\sqrt{12}$를 데이터의 $\bar x$, $s$에 맞춘다. 풀면 $\bar x \pm \sqrt{3}\,s$다.
+\end{itemize}
+\begin{table}[H]
+  \centering
+  \caption{같은 데이터에 두 추정 방법을 쓴 균등분포 구간.}
+  \label{tab:uniform-mom}
+  \begin{tabular}{lll}
+    \toprule
+    방법 & 공항 노선 수 & 영화 평점 \\
+    \midrule
+    MLE $[\min, \max]$ & $[1, 915]$ & $[1.9, 8.5]$ \\
+    \midrule
+    적률법 $\bar x \pm \sqrt3\,s$ & $[-72.8, 112.5]$ & $[4.68, 7.77]$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+적률법은 이 데이터에서 이상한 답을 낸다. 공항은 음수 노선 수를 구간에 넣으면서도
+노선 $915$개인 ATL을 구간 밖에 둔다. 영화는 $1.9$--$4.68$점과 $7.77$--$8.5$점 영화를
+``나올 수 없다''고 말한다. MLE를 고른 이유는 세 가지다.
+\begin{enumerate}
+  \item 네 모형에 같은 원리를 쓴다. $\hat\alpha$, $\hat\lambda$, $\hat\mu$가 모두 MLE다
+        ($\hat\sigma$만 $n-1$로 나눈다). 한 모형만 다른 방법이면 공정한 비교가 아니다.
+  \item MLE 구간은 정의상 모든 관측값을 담는다. 그래서 모형 표본을 데이터와 겹쳐 그리는
+        비교가 성립한다.
+  \item 강의의 과제 2 장(모수 추정 절)도 MLE로 다룬다.
+\end{enumerate}
+보고서 답의 ``(MLE)''는 답을 계산한 규칙의 이름이다. 그게 없으면 ``다른 방법이면
+다르지 않나''라는 질문이 남는다.
+
 \subsection{(d) 정규분포(Normal): $\hat\mu$, $\hat\sigma$}
 \paragraph{공식.} $\hat\mu = \bar x$, $\hat\sigma = \sqrt{\sum_i (x_i - \bar x)^2 / (n-1)}$.
 HW2 코드는 $n-1$로 나눈다(표본 표준편차(Sample Standard Deviation), \texttt{ddof=1}).
@@ -1365,6 +1460,71 @@ $0.379$, 균등 $0.857$, 정규 $0.358$이다(\Cref{tab:p1-eight}). 가장 작�
 \paragraph{주의 2: $D$는 ``얼마나''만 말한다.} 어디가 왜 다른지는 말하지 않는다.
 멱법칙은 $D$가 가장 작지만, 노선 $100$개 이상의 꼬리에서 어긋난다(\Cref{sec:p1a-range}).
 이것은 그림을 봐야 보인다. 그래서 $D$는 그림과 함께 쓴다.
+
+\begin{callout}[질문]
+D. Two-sample Kolmogorov--Smirnov distance: the largest vertical gap between the two CDFs
+(0 = identical). explain more
+\end{callout}
+
+\paragraph{두 표본(Two-Sample)이란.} One-sample KS는 데이터를 모형의 \term{공식} CDF와
+비교한다. Two-sample KS는 데이터를 \term{다른 표본}과 비교한다. 이 과제는 모형에서 뽑은
+가짜 공항 $3409$곳이 그 다른 표본이다(\texttt{scipy.stats.ks\_2samp}). 두 CDF는 모두 표본
+하나로 만든 계단 모양의 경험적 CDF(Empirical CDF)다.
+
+\paragraph{작은 예: $A = \{1, 2, 3\}$, $B = \{2, 3, 4\}$.} 값마다 두 CDF의 높이를 잰다
+(\Cref{tab:ks-small}). 가장 큰 간격이 $1/3$이므로 $D = 0.333$이다. $D = 1$은 한쪽이
+모두 끝난 뒤에 다른 쪽이 시작하는, 전혀 겹치지 않는 경우다.
+\begin{table}[H]
+  \centering
+  \caption{두 작은 표본의 경험적 CDF와 세로 간격.}
+  \label{tab:ks-small}
+  \begin{tabular}{rrrr}
+    \toprule
+    $x$ & $A$의 CDF & $B$의 CDF & 간격 \\
+    \midrule
+    $1$ & $1/3$ & $0$ & $1/3$ \\
+    \midrule
+    $2$ & $2/3$ & $1/3$ & $1/3$ \\
+    \midrule
+    $3$ & $1$ & $2/3$ & $1/3$ \\
+    \midrule
+    $4$ & $1$ & $1$ & $0$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{공항 데이터에서 $D$가 생긴 곳.} \texttt{ks\_2samp}의 \texttt{statistic\_location}으로
+간격이 가장 큰 $x$를 찾았다(\Cref{tab:ks-where}, python으로 계산, 2026/09/30).
+\begin{table}[H]
+  \centering
+  \caption{공항 데이터와 네 모형 표본 사이 KS 간격이 가장 큰 곳.}
+  \label{tab:ks-where}
+  \begin{tabular}{lrrrrp{0.3\linewidth}}
+    \toprule
+    모형 & $D$ & 위치 $x$ & 데이터 CDF & 모형 CDF & 이유 \\
+    \midrule
+    멱법칙 & $0.209$ & $1$ & $0.209$ & $0.000$ & 정수 데이터 대 연속 모형(아래) \\
+    \midrule
+    지수 & $0.379$ & $6$ & $0.648$ & $0.269$ & 작은 공항이 너무 적다고 예측 \\
+    \midrule
+    균등 & $0.857$ & $52$ & $0.913$ & $0.056$ & 대부분의 공항이 작다는 것을 무시 \\
+    \midrule
+    정규 & $0.358$ & $\approx 1$ & $0.000$ & $0.358$ & 모형 표본의 $36\%$가 음수 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\term{멱법칙의 $D$는 꼬리가 아니라 $x = 1$에서 나온다.} 실제 공항의 $20.9\%$는 노선이
+정확히 $1$개다. 모형은 연속분포라 $1.0$, $1.3$, $2.7$ 같은 값을 내고, ``$1$ 이하''인 표본은
+거의 없다. 정수 데이터를 연속 모형과 비교해서 생긴 간격이다. 꼬리의 어긋남(노선 $100$개
+이상)은 그림에서는 크지만 해당 공항이 적어 $D$에는 작게 반영된다. 주의 2가 말한
+``$D$는 어디가 왜 다른지 말하지 않는다''의 실제 예다. 균등분포의 위치가
+\Cref{fig:ks-uniform}의 $60$과 다른 것은 거기서는 공식 CDF, 여기서는 표본과 비교해서다.
+$D$는 둘 다 $0.857$이다.
+
+\paragraph{왜 p값이 아니라 $D$인가.} \texttt{ks\_2samp}는 검정의 p값(p-value)도 준다.
+이 데이터에서는 네 모형 모두 $10^{-65}$ 이하다. 표본이 수천 개면 아주 작은 차이도
+``통계적으로 다르다''고 나온다. 그래서 ``어느 모형이 더 가까운가''는 $D$의 크기로
+비교한다.
 
 % =====================================================================
 \section{HW2 문제 1: 공항 노선 수 데이터}
@@ -1719,7 +1879,7 @@ and why airport has ccdf but movie has pdf? only?
     \toprule
     그림 & 공항 노선 수 & 영화 평점 \\
     \midrule
-    데이터만 (\texttt{*\_0\_data}) & PDF(값마다 확률) + CCDF, 로그-로그 & PDF(히스토그램) + CDF \\
+    데이터만 (\texttt{*\_0\_data}) & PDF, PMF, CDF(보통 축) + PDF, PMF, CCDF(로그-로그) & PDF(히스토그램) + CDF \\
     \midrule
     모형 비교 (\texttt{*\_1} $\sim$ \texttt{*\_4}) & CCDF + QQ plot, 로그 축 & PDF(히스토그램) + QQ plot \\
     \bottomrule

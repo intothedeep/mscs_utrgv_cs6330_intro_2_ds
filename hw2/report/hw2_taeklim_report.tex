@@ -7,8 +7,8 @@
 %      or: pdflatex hw2_taeklim_report.tex   (run twice for references)
 %
 %  Figure paths are relative to this file: ../figures/*.png
-%  Figures and every number below come from ../code/p1.py and ../code/p2.py
-%  (run from the repo root: uv run python hw2/code/p1.py).
+%  Figures and every number below come from the answer scripts in ../code/, one per
+%  item (run all from the repo root: uv run python hw2/code/run_all.py).
 % =====================================================================
 \documentclass[11pt]{article}
 
@@ -19,21 +19,8 @@
 \usepackage{booktabs}     % \toprule \midrule \bottomrule
 \usepackage{graphicx}
 \usepackage{caption}
-\usepackage{listings}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
-
-\lstset{
-  basicstyle=\ttfamily\footnotesize,
-  breaklines=true,
-  frame=single,
-  rulecolor=\color{gray!40},
-  backgroundcolor=\color{gray!5},
-  showstringspaces=false,
-  columns=fullflexible,
-  literate={α}{{$\alpha$}}1 {λ}{{$\lambda$}}1 {μ}{{$\mu$}}1 {σ}{{$\sigma$}}1
-           {≥}{{$\geq$}}1 {≤}{{$\leq$}}1,
-}
 
 \captionsetup{font=small, labelfont=bf}
 \setlength{\parindent}{0pt}
@@ -143,6 +130,21 @@
     \textbf{CDF (top right).} On linear axes the two curves almost overlap. The difference is hidden in the 1.6\% of the sample that lies beyond 1000 routes.\par
     \textbf{CCDF (bottom left).} Both follow the same straight line on log-log axes up to about 100 routes. Above that the data bends down and stops at 915; the model stays straight.\par
     \textbf{QQ plot (bottom right).} The points lie on $y = x$ up to about 60 routes, then run off to the right, below the line: at the 99.5th percentile the model has 5{,}234 routes and the data 358.\par}
+  \panels{%
+    \textbf{Why the CCDF on log-log axes.} For a power law, the CCDF is the complement
+    of the CDF, and taking the log of both sides turns it into a straight line:
+    \begin{align*}
+      P(X \ge x) &= 1 - P(X < x) = \left(\frac{x}{x_{\min}}\right)^{-(\alpha-1)}
+        && \text{CCDF of the power law}\\
+      \log P(X \ge x) &= -(\alpha-1)\,\log x + (\alpha-1)\,\log x_{\min}
+        && \text{log of both sides}\\
+      \log P(X \ge x) &= -0.612\,\log x
+        && \text{$\alpha = 1.612$, $x_{\min} = 1$}
+    \end{align*}
+    This is linear in $\log x$ with slope $-(\alpha - 1) = -0.612$, so a power law is a
+    straight line on log-log axes and a bend is easy to see. The CDF itself,
+    $1 - x^{-0.612}$, keeps the ``$1 -$'': its log does not simplify, and on log-log axes
+    it is pressed against 1 in exactly the tail where the model and the data differ.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was exponential}
   \answerfig{p1a_2_exponential}{Airport routes vs.\ exponential ($\lambda = 0.0504$). $D = 0.379$.}
@@ -336,6 +338,17 @@
     minimum of 27 is a result of the 19\textit{yy} rule, since the latest possible birth
     year is 1999 ($2026-1999=27$). Of the rest, 6{,}684 rows had age $>100$ and were
     dropped; none had age $<1$.}
+  \answerfig{p2_0_age_all}{All ages in 2026 before the $1 \le \text{age} \le 100$ filter
+    ($n = 460{,}589$). Blue bars are kept, coral bars are removed; log $y$ axis.}
+  \panels{%
+    \textbf{Kept (blue).} Ages 27 to 100, 453{,}905 people. No age is below 27 because the
+    latest birth year is 1999.\par
+    \textbf{Removed (coral).} Ages 101 to 294, 6{,}684 people (1.5\%). Most are 101 to about
+    130; a few isolated bars reach 150, 165 and one at 294 (born 1732). These are not
+    plausible ages for people in a 2015 photo database, so the filter drops them. The 129
+    rows with year \texttt{0000} are not ages at all and are dropped before this plot.\par
+    \textbf{Why log $y$.} The removed years hold only 1.5\% of people; on a linear axis
+    their bars would be invisible next to the peak of about 16{,}000 per year.\par}
   \answerfig{p2_1_age}{Age in 2026 ($n = 453{,}905$).}
   \panels{%
     \textbf{Shape.} One broad hump: ages start at 27, rise through the 30s, peak in the 40s and 50s, and fall off in a long right tail up to 100. Most of the mass is between 36 and 71.\par
@@ -397,16 +410,8 @@
 \bigskip
 \textbf{Tooling.} Python 3 / pandas / numpy / scipy / matplotlib; all estimates computed
 programmatically, none typed by hand; analysis code, figure code and write-up drafted
-with Claude Code. Code: \texttt{hw2/code/p1.py} and \texttt{hw2/code/p2.py}, listed below.
-
-\clearpage
-\textbf{Code}
-
-\medskip
-\textbf{Problem 1:} \texttt{hw2/code/p1.py}
-\lstinputlisting[language=Python]{../code/p1.py}
-
-\textbf{Problem 2:} \texttt{hw2/code/p2.py}
-\lstinputlisting[language=Python]{../code/p2.py}
+with Claude Code. Code: one script per answer in \texttt{hw2/code/} (for example
+\texttt{p1\_airport\_a\_alpha.py}), sharing \texttt{common.py} and \texttt{common\_p2.py};
+\texttt{run\_all.py} runs them all.
 
 \end{document}

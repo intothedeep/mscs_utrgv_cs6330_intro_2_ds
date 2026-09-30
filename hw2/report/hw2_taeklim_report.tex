@@ -115,12 +115,15 @@
   \end{itemize}
 
   \item \prompt{Screen shot of the visualization of distribution of data}
-  \answerfig{p1a_0_data}{Airport routes: empirical distribution ($n = 3409$). Top row on linear axes, bottom row on log-log axes.}
+  \answerfig{p1a_0_data}{Airport routes: empirical distribution ($n = 3409$). Rows: PDF, PMF, CDF/CCDF. Left column on linear axes, right column on log-log axes.}
   \panels{%
-    \textbf{PDF, linear (top left).} One tall bar at the left edge: 82\% of airports fall in the first bin (fewer than 20 routes), and the bars beyond 200 are almost flat on the floor.\par
-    \textbf{CDF, linear (top right).} The curve rises almost vertically and reaches 0.92 at 60 routes (dashed line), then stays flat up to the maximum of 915.\par
-    \textbf{PDF, log-log (bottom left).} Share of airports with exactly $k$ routes. The points fall along a roughly straight line from $k = 1$ (21\%) downward. In the tail many values belong to a single airport, so the points flatten into a floor at $1/3409$.\par
+    \textbf{PDF, linear (top left).} Histogram with 20-route bins; each bar is the share of airports in its bin. One tall bar at the left edge: 82\% of airports have fewer than 20 routes, and the bars beyond 200 are almost flat on the floor.\par
+    \textbf{PDF, log-log (top right).} The same distribution with bins of equal width on the log scale, divided by bin width so it is a density. It falls along a roughly straight line and bends down above about 100 routes.\par
+    \textbf{PMF, linear (middle left).} One dot per route count $k$: the number of airports with exactly $k$ routes (left axis) and the same height as a share $P(X = k)$ (right axis). 713 airports have 1 route (20.9\%), 583 have 2, 363 have 3; above about 30 routes every count is at most 14 airports and lies on the floor.\par
+    \textbf{PMF, log-log (middle right).} The same dots on log axes. Up to about 30 routes they fall on a line of slope about $-1.45$, close to $-\hat\alpha$. Right of the dashed line ($x = 60$) each route count belongs to only 1, 2 or 3 airports, so the dots sit in rows at exactly those counts; that is a counting floor, not the shape of the distribution.\par
+    \textbf{CDF, linear (bottom left).} The curve rises almost vertically and reaches 0.92 at 60 routes, then stays flat up to the maximum of 915.\par
     \textbf{CCDF, log-log (bottom right).} Share of airports with at least $x$ routes. It is close to a straight line up to about 100 routes, then bends down and ends at the busiest airport (915 routes).\par
+    \textbf{Reference lines.} In every panel the green dotted line is the median (4 routes: half the airports have at most 4), the purple dash-dot line is the mean (19.8 routes), and the grey dashed line is $x = 60$ (92\% of airports lie at or left of it). The mean sits five times to the right of the median because a few hubs with hundreds of routes pull it up; on the log-log CCDF only about 18\% of airports reach the mean. On linear axes all three lines are squeezed against the left edge.\par
     \textbf{Summary.} The median airport has 4 routes and 38\% have only 1 or 2, while the busiest has 915. The mean (19.8) is five times the median and the skewness is 6.0, so a few hubs hold most of the routes.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was power law}
@@ -197,6 +200,11 @@
             has probability about $e^{-25}$, yet the data has five airports with more
             than 500.
     \end{itemize}
+    The power law's $D = 0.209$ comes almost entirely from $x = 1$: 20.9\% of airports have
+    exactly one route, while the continuous model puts almost no mass at or below 1. The
+    tail mismatch above 100 routes involves few airports, so it barely moves $D$; the
+    figures show it instead.
+
     The power law is not a perfect fit. $\hat\alpha = 1.61$ is below 2, so the fitted
     model has an infinite mean and its samples contain airports with $10^5$ routes. Real
     airports cannot grow that large: there are only 3409 airports to fly to, and

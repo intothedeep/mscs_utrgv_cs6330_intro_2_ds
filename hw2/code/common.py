@@ -23,8 +23,11 @@ from scipy.stats import ks_2samp
 HW_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = HW_DIR / "00_doc"
 FIG_DIR = HW_DIR / "figures"
-SEED = 6330
+SEED = 20701313  # owner's student ID
 VOTE_VIEW_MAX = 20.0  # x-limit for movie PDFs; ratings live in [1, 10]
+# x-limit for linear-axis airport panels: 98% of airports have at most 200 routes, and the
+# log-log panels beside them show the full tail.
+ROUTE_VIEW_MAX = 200.0
 
 DATA_COLOR = "#2a78d6"
 MODEL_COLOR = "#eb6834"
@@ -114,20 +117,23 @@ def qq_panel(ax: plt.Axes, data: np.ndarray, sample: np.ndarray, log: bool) -> N
     ax.legend(loc="upper left")
 
 
-def save(fig: plt.Figure, name: str) -> None:
-    fig.tight_layout()
+def save(fig: plt.Figure, name: str, top: float = 1.0) -> None:
+    """top < 1 keeps a band free above the panels (for a figure-level legend)."""
+    fig.tight_layout(rect=(0, 0, 1, top))
     fig.savefig(FIG_DIR / f"{name}.png", dpi=160)
     plt.close(fig)
 
 
 def label_vlines(ax: plt.Axes, lines: list[tuple[float, str, str, str]], is_log: bool,
-                 at_bottom: bool = False) -> None:
+                 at_bottom: bool = False, top_label: float = 0.6) -> None:
     """Vertical reference lines labelled on the line itself instead of in a legend.
 
     On log axes the lines are far apart, so each label runs up its own line. On linear axes
-    4, 19.8 and 60 sit within a few millimetres of each other, so the labels are stacked to
-    the right with a short arrow back to their line.
+    the lines sit close together, so the labels are stacked to the right of the rightmost
+    line with a short arrow back to their own line. Call this after setting the x-limits.
     """
+    x_min, x_max = ax.get_xlim()
+    label_x = max(x for x, *_ in lines) + 0.1 * (x_max - x_min)
     at_top = blended_transform_factory(ax.transData, ax.transAxes)  # x in data, y in axes
     for i, (x, color, style, text) in enumerate(lines):
         ax.axvline(x, color=color, lw=1.5, ls=style)
@@ -136,23 +142,23 @@ def label_vlines(ax: plt.Axes, lines: list[tuple[float, str, str, str]], is_log:
             ax.text(x * 1.08, y, text, transform=at_top, rotation=90, ha="left", va=va,
                     color=color, fontsize=9, bbox=LABEL_BOX)
         else:
-            y = 0.6 - 0.13 * i  # mid-height: both linear panels are empty there on the right
-            ax.annotate(text, xy=(x, y), xycoords=at_top, xytext=(x + 120, y),
+            y = top_label - 0.13 * i  # stacked down from top_label (axes fraction)
+            ax.annotate(text, xy=(x, y), xycoords=at_top, xytext=(label_x, y),
                         textcoords=at_top, va="center", color=color, fontsize=9,
                         bbox=LABEL_BOX, arrowprops=dict(arrowstyle="-", color=color, lw=0.8))
 
 
 def plot_airport_data(x: np.ndarray) -> None:
-    # Rows: PDF, PMF, CDF/CCDF. Left column on linear axes shows how bunched up the data is;
-    # the right column on log-log axes spreads that bunch out so the shape and the tail can
-    # be read. Each row is the same quantity on the two kinds of axes.
-    fig, ((pdf_lin, pdf_log), (pmf_lin, pmf_log), (cdf_lin, ccdf_log)) = plt.subplots(
-        3, 2, figsize=(10, 10.5))
+    # Rows: PDF, PMF, CDF, CCDF. Left column on linear axes shows how bunched up the data
+    # is; the right column on log-log axes spreads that bunch out so the shape and the tail
+    # can be read. Each row is the same quantity on the two kinds of axes.
+    fig, ((pdf_lin, pdf_log), (pmf_lin, pmf_log), (cdf_lin, cdf_log), (ccdf_lin, ccdf_log)) = (
+        plt.subplots(4, 2, figsize=(10, 13)))
     n = len(x)
-    pdf_lin.hist(x, bins=np.arange(0, x.max() + 20, 20), weights=np.full(n, 1 / n),
+    pdf_lin.hist(x, bins=np.arange(0, ROUTE_VIEW_MAX + 5, 5), weights=np.full(n, 1 / n),
                  color=DATA_COLOR)
     pdf_lin.set(xlabel="routes per airport", ylabel="share of airports per bin",
-                title="PDF (histogram), linear axes (bin = 20 routes)")
+                title="PDF (histogram), linear axes (bin = 5 routes)")
     # Log-width bins; three decades in 15 bins leave no empty bin between integers.
     pdf_log.plot(*log_binned_pdf(x, np.logspace(0, 3, 16)), "o-", ms=4, color=DATA_COLOR)
     pdf_log.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
@@ -170,6 +176,11 @@ def plot_airport_data(x: np.ndarray) -> None:
         share_axis.set_ylabel("share P(X = k)")
     cdf_lin.plot(*ecdf(x), color=DATA_COLOR, lw=2)
     cdf_lin.set(xlabel="routes per airport", ylabel="P(X ≤ x)", title="CDF, linear axes")
+    cdf_log.plot(*ecdf(x), color=DATA_COLOR, lw=2)
+    cdf_log.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
+                ylabel="P(X ≤ x) (log)", title="CDF, log-log")
+    ccdf_lin.plot(*ccdf(x), color=DATA_COLOR, lw=2)
+    ccdf_lin.set(xlabel="routes per airport", ylabel="P(X ≥ x)", title="CCDF, linear axes")
     ccdf_log.plot(*ccdf(x), color=DATA_COLOR, lw=2)
     ccdf_log.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
                  ylabel="P(X ≥ x) (log)", title="CCDF, log-log")
@@ -182,10 +193,14 @@ def plot_airport_data(x: np.ndarray) -> None:
     lines = [(median, MEDIAN_COLOR, ":", f"median = {median:g}"),
              (mean, MEAN_COLOR, "-.", f"mean = {mean:.1f}"),
              (60.0, INK, "--", f"x = 60 ({share_60:.0%} at or below)")]
-    for ax in (pdf_lin, pmf_lin, cdf_lin):
+    beyond = float(np.mean(x > ROUTE_VIEW_MAX))
+    for ax in (pdf_lin, pmf_lin, cdf_lin, ccdf_lin):
+        ax.set_xlim(0, ROUTE_VIEW_MAX)
+        ax.text(0.98, 0.12, f"{beyond:.1%} of airports have\nmore than {ROUTE_VIEW_MAX:g} routes",
+                transform=ax.transAxes, ha="right", color=INK, fontsize=9)
         label_vlines(ax, lines, is_log=False)
-    # Log PDF and CCDF run across the top, so their labels go in the empty bottom.
-    for ax in (pdf_log, pmf_log, ccdf_log):
+    # Log PDF, CDF and CCDF run across the top, so their labels go in the empty bottom.
+    for ax in (pdf_log, pmf_log, cdf_log, ccdf_log):
         label_vlines(ax, lines, is_log=True, at_bottom=ax is not pmf_log)
     fig.suptitle(f"Airport routes: empirical distribution (n = {n})")
     save(fig, "p1a_0_data")
@@ -200,42 +215,127 @@ def log_binned_pdf(v: np.ndarray, bins: np.ndarray) -> tuple[np.ndarray, np.ndar
     return centers[keep], density[keep]
 
 
+def mark_at_one(ax: plt.Axes, values: list[tuple[float, str]], is_log: bool) -> None:
+    """Dot and value at x = 1 for each curve: (height, colour).
+
+    x = 1 is the smallest route count, where the integer data jump to 20.9% at once while a
+    continuous model starts from 0; the KS gap of the power law sits here.
+    Labels are placed from the highest point down: the first goes above its dot (below it
+    if the dot is at the top of the panel); each next one goes above its own dot if that
+    leaves a line of space under the previous label, otherwise just below.
+    """
+    ax.autoscale_view()  # settle the limits now, so data-to-screen heights are final
+    points_per_pixel = 72 / ax.figure.dpi
+    previous_label = None  # height of the previous label, in points
+    for y, color in sorted(values, reverse=True):
+        if is_log and y <= 0:  # log axes cannot show 0: say so above the line labels
+            ax.text(1.1, 0.55, "0 at x = 1", transform=blended_transform_factory(
+                ax.transData, ax.transAxes), color=color, fontsize=8, bbox=LABEL_BOX)
+            continue
+        at = ax.transData.transform((1.0, y))[1] * points_per_pixel
+        if previous_label is None:
+            dy = -10 if y > 0.9 else 10
+        elif at + 10 <= previous_label - 13:
+            dy = 10
+        else:
+            dy = min(-10, previous_label - 13 - at)
+        previous_label = at + dy
+        ax.plot([1.0], [y], "o", ms=6, color=color, mec="white", zorder=5)
+        ax.annotate(f"{y:.3f} at x = 1", xy=(1.0, y), xytext=(8, dy), textcoords="offset points",
+                    color=color, fontsize=8, va="center", bbox=LABEL_BOX)
+
+
 def plot_airport_model(x: np.ndarray, key: str, label: str, sample: np.ndarray) -> None:
-    fig, ((axp, ax0), (ax1, ax2)) = plt.subplots(2, 2, figsize=(10, 7.2))
-    # PDF on log-log axes with log-width bins: the model sample is continuous, so the
-    # per-value mass used for the data-only figure does not apply here.
-    bins = np.logspace(0, 6, 37)
-    axp.plot(*log_binned_pdf(x, bins), "o-", ms=4, color=DATA_COLOR, label="data")
-    axp.plot(*log_binned_pdf(sample, bins), "o-", ms=4, color=MODEL_COLOR,
-             label="model sample")
-    outside = float(np.mean((sample < bins[0]) | (sample > bins[-1])))
+    # Rows: PDF, CDF, CCDF, QQ. Left column on linear axes, right column on log-log axes.
+    # The linear QQ keeps what the log one drops (model values <= 0, e.g. the normal's
+    # negative route counts); the log QQ spreads out a tail that spans several decades.
+    # Linear distribution panels are cut at ROUTE_VIEW_MAX; the share beyond is printed.
+    fig, axes = plt.subplots(4, 2, figsize=(10, 13))
+    (pdf_lin, pdf_log), (cdf_lin, cdf_log), (ccdf_lin, ccdf_log), (qq_lin, qq_log) = axes
+    x_hi = ROUTE_VIEW_MAX
+    x_lo = min(0.0, float(np.quantile(sample, 0.001)))
+    beyond_data, beyond_model = float(np.mean(x > x_hi)), float(np.mean(sample > x_hi))
+
+    # PDF, linear: density histograms with 20-route bins. Weights (not density=True) keep
+    # each curve normalised to its whole sample even where the axis cuts it off.
+    width = 5.0
+    bins = np.arange(np.floor(x_lo / width) * width, x_hi + width, width)
+    pdf_lin.hist(x, bins=bins, weights=np.full(len(x), 1 / (len(x) * width)),
+                 color=DATA_COLOR, alpha=0.55, label="data")
+    pdf_lin.hist(sample, bins=bins, weights=np.full(len(sample), 1 / (len(sample) * width)),
+                 histtype="step", color=MODEL_COLOR, lw=2, label="model sample")
+    pdf_lin.set(xlabel="routes per airport", ylabel="density",
+                title="PDF, linear axes (bin = 5 routes)")
+    # PDF, log-log: log-width bins; the model sample is continuous, so the per-value mass
+    # used for the data-only figure does not apply here.
+    log_bins = np.logspace(0, 6, 37)
+    pdf_log.plot(*log_binned_pdf(x, log_bins), "o-", ms=4, color=DATA_COLOR, label="data")
+    pdf_log.plot(*log_binned_pdf(sample, log_bins), "o-", ms=4, color=MODEL_COLOR,
+                 label="model sample")
+    outside = float(np.mean((sample < log_bins[0]) | (sample > log_bins[-1])))
     if outside > 0.01:
-        axp.text(0.98, 0.92, f"{outside:.0%} of the sample\nlies outside [1, 1e6]",
-                 transform=axp.transAxes, ha="right", va="top", color=INK)
-    axp.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
-            ylabel="density (log)", title="PDF, log-log (log-width bins)")
-    axp.legend(loc="lower left")
-    # Linear-axis CDF, cut at the data's range; the share of the sample beyond it is stated.
-    ax0.plot(*ecdf(x), color=DATA_COLOR, lw=2, label="data")
-    ax0.plot(*ecdf(sample), color=MODEL_COLOR, lw=2, label="model sample")
-    x_hi = 1.1 * float(x.max())
-    ax0.set_xlim(min(0.0, float(np.quantile(sample, 0.001))), x_hi)
-    beyond = float(np.mean(sample > x_hi))
-    if beyond > 0.001:
-        ax0.text(0.98, 0.35, f"{beyond:.1%} of the sample\nlies beyond this axis",
-                 transform=ax0.transAxes, ha="right", color=INK)
-    ax0.set(xlabel="routes per airport", ylabel="P(X ≤ x)", title="CDF, linear axes")
-    ax0.legend(loc="lower right")
-    ax1.plot(*ccdf(x), color=DATA_COLOR, lw=2, label="data")
-    # CCDF over the FULL sample, then hide x <= 0 (log axis); filtering first would renormalise.
-    xs, ps = ccdf(sample)
-    ax1.plot(xs[xs > 0], ps[xs > 0], color=MODEL_COLOR, lw=2, label="model sample")
-    ax1.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
-            ylabel="P(X ≥ x) (log)", title="CCDF: data vs model sample")
-    ax1.legend(loc="lower left")
-    qq_panel(ax2, x, sample, log=True)
-    fig.suptitle(f"Airport routes vs {label}")
-    save(fig, f"p1a_{key}")
+        pdf_log.text(0.98, 0.92, f"{outside:.0%} of the sample\nlies outside [1, 1e6]",
+                     transform=pdf_log.transAxes, ha="right", va="top", color=INK)
+    pdf_log.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
+                ylabel="density (log)", title="PDF, log-log (log-width bins)")
+
+    # CDF and CCDF over the FULL sample; on log axes only x > 0 is drawn (filtering first
+    # would renormalise).
+    xs, cdf_s = ecdf(sample)
+    _, ccdf_s = ccdf(sample)
+    cdf_lin.plot(*ecdf(x), color=DATA_COLOR, lw=2, label="data")
+    cdf_lin.plot(xs, cdf_s, color=MODEL_COLOR, lw=2, label="model sample")
+    cdf_lin.set(xlabel="routes per airport", ylabel="P(X ≤ x)", title="CDF, linear axes")
+    cdf_log.plot(*ecdf(x), color=DATA_COLOR, lw=2, label="data")
+    cdf_log.plot(xs[xs > 0], cdf_s[xs > 0], color=MODEL_COLOR, lw=2, label="model sample")
+    cdf_log.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
+                ylabel="P(X ≤ x) (log)", title="CDF, log-log")
+    ccdf_lin.plot(*ccdf(x), color=DATA_COLOR, lw=2, label="data")
+    ccdf_lin.plot(xs, ccdf_s, color=MODEL_COLOR, lw=2, label="model sample")
+    ccdf_lin.set(xlabel="routes per airport", ylabel="P(X ≥ x)", title="CCDF, linear axes")
+    ccdf_log.plot(*ccdf(x), color=DATA_COLOR, lw=2, label="data")
+    ccdf_log.plot(xs[xs > 0], ccdf_s[xs > 0], color=MODEL_COLOR, lw=2, label="model sample")
+    ccdf_log.set(xscale="log", yscale="log", xlabel="routes per airport (log)",
+                 ylabel="P(X ≥ x) (log)", title="CCDF, log-log")
+
+    for ax in (pdf_lin, cdf_lin, ccdf_lin):
+        ax.set_xlim(x_lo, x_hi)
+        ax.text(0.98, 0.35, f"beyond {x_hi:g} routes:\ndata {beyond_data:.1%}, "
+                f"model sample {beyond_model:.1%}", transform=ax.transAxes, ha="right",
+                color=INK, fontsize=9)
+    # Data median and mean in every distribution panel. These panels are too crowded for
+    # labels on the lines, so the lines are named once in the shared legend at the top.
+    median, mean = float(np.median(x)), float(x.mean())
+    for ax in (pdf_lin, pdf_log, cdf_lin, cdf_log, ccdf_lin, ccdf_log):
+        median_line = ax.axvline(median, color=MEDIAN_COLOR, lw=1.5, ls=":")
+        mean_line = ax.axvline(mean, color=MEAN_COLOR, lw=1.5, ls="-.")
+    handles, names = pdf_log.get_legend_handles_labels()
+    fig.legend(handles + [median_line, mean_line],
+               names + [f"data median = {median:g}", f"data mean = {mean:.1f}"],
+               loc="upper center", ncol=4, bbox_to_anchor=(0.5, 0.975))
+
+    # Value of each CDF / CCDF at x = 1, data above the model.
+    cdf_at_1 = [(float(np.mean(x <= 1)), DATA_COLOR), (float(np.mean(sample <= 1)), MODEL_COLOR)]
+    ccdf_at_1 = [(float(np.mean(x >= 1)), DATA_COLOR), (float(np.mean(sample >= 1)), MODEL_COLOR)]
+    for ax, values, is_log in ((cdf_lin, cdf_at_1, False), (cdf_log, cdf_at_1, True),
+                               (ccdf_lin, ccdf_at_1, False), (ccdf_log, ccdf_at_1, True)):
+        mark_at_one(ax, values, is_log)
+
+    qq_panel(qq_lin, x, sample, log=False)
+    qq_lin.set_title("QQ plot, linear axes")
+    qq_panel(qq_log, x, sample, log=True)
+    qq_log.set_title("QQ plot, log-log")
+    fig.suptitle(f"Airport routes vs {label}", y=0.995)
+    save(fig, f"p1a_{key}", top=0.955)
+
+
+def mark_center(ax: plt.Axes, x: np.ndarray) -> None:
+    """Data median and mean as vertical lines, named in the panel's legend. For the votes
+    they sit 0.07 apart, so labels on the lines would collide."""
+    ax.axvline(float(np.median(x)), color=MEDIAN_COLOR, lw=1.5, ls=":",
+               label=f"data median = {np.median(x):.2f}")
+    ax.axvline(float(x.mean()), color=MEAN_COLOR, lw=1.5, ls="-.",
+               label=f"data mean = {x.mean():.2f}")
 
 
 def plot_movie_data(x: np.ndarray) -> None:
@@ -245,6 +345,9 @@ def plot_movie_data(x: np.ndarray) -> None:
             title="PDF, histogram (bin = 0.1, one per vote value)")
     ax2.plot(*ecdf(x), color=DATA_COLOR, lw=2)
     ax2.set(xlabel="average vote", ylabel="P(X ≤ x)", title="CDF")
+    for ax in (ax1, ax2):
+        mark_center(ax, x)
+        ax.legend(loc="upper left")  # both panels are empty at low votes
     fig.suptitle(f"Movie votes: empirical distribution (n = {len(x)})")
     save(fig, "p1b_0_data")
 
@@ -264,10 +367,11 @@ def plot_movie_model(x: np.ndarray, key: str, label: str, sample: np.ndarray) ->
              histtype="step", color=MODEL_COLOR, lw=2, label="model sample")
     hidden = float(np.mean((sample < bins[0]) | (sample > bins[-1])))
     if hidden > 0.01:
-        ax1.text(0.98, 0.58, f"{hidden:.0%} of the sample\nlies beyond this axis",
+        ax1.text(0.98, 0.4, f"{hidden:.0%} of the sample\nlies beyond this axis",
                  transform=ax1.transAxes, ha="right", color=INK)
     ax1.set(xlabel="average vote", ylabel="density", title="PDF: data vs model sample")
-    ax1.legend(loc="upper right")
+    mark_center(ax1, x)
+    ax1.legend(loc="best")
     qq_panel(ax2, x, sample, log=hi == VOTE_VIEW_MAX)
     fig.suptitle(f"Movie votes vs {label}")
     save(fig, f"p1b_{key}")

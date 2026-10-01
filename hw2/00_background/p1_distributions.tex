@@ -1210,10 +1210,10 @@ I need airport and movie data for p1-b? \dots\ I need steps to find each and add
     데이터 & (a) 멱법칙 $\hat\alpha$ & (b) 지수 $\hat\lambda$ & (c) 균등 $[\hat a, \hat b]$ & (d) 정규 $\hat\mu$, $\hat\sigma$ \\
     \midrule
     공항 노선 수 & $1.612$ & $0.0504$ & $[1, 915]$ & $19.845$, $53.506$ \\
-    \quad KS $D$ & $\mathbf{0.209}$ & $0.379$ & $0.857$ & $0.358$ \\
+    \quad KS $D$ & $\mathbf{0.209}$ & $0.397$ & $0.856$ & $0.365$ \\
     \midrule
     영화 평점 & $1.851$ & $0.1606$ & $[1.9, 8.5]$ & $6.227$, $0.893$ \\
-    \quad KS $D$ & $0.485$ & $0.490$ & $0.394$ & $\mathbf{0.055}$ \\
+    \quad KS $D$ & $0.490$ & $0.481$ & $0.380$ & $\mathbf{0.048}$ \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -1449,13 +1449,13 @@ what is KS distance?
 \end{figure}
 
 \paragraph{숫자 하나로 비교.} 공항 데이터에서 네 모형의 $D$는 멱법칙 $0.209$, 지수
-$0.379$, 균등 $0.857$, 정규 $0.358$이다(\Cref{tab:p1-eight}). 가장 작은 멱법칙이 가장
+$0.397$, 균등 $0.856$, 정규 $0.365$이다(\Cref{tab:p1-eight}). 가장 작은 멱법칙이 가장
 가깝다.
 
 \paragraph{주의 1: 코드는 공식이 아니라 표본과 비교한다.} HW2 코드는
 \texttt{scipy.stats.ks\_2samp(data, sample)}, 곧 두 표본(Two-Sample) KS를 쓴다. 모형의
 공식 CDF 대신 모형에서 뽑은 표본(\Cref{sec:p1a-sample})의 CDF와 비교한다. 그래서 씨드를
-바꾸면 $D$가 조금 달라진다. 균등분포는 공식 CDF로 계산해도 $0.857$로 같다.
+바꾸면 $D$가 조금 달라진다. 균등분포는 공식 CDF로 $0.857$, 표본으로 $0.856$이다.
 
 \paragraph{주의 2: $D$는 ``얼마나''만 말한다.} 어디가 왜 다른지는 말하지 않는다.
 멱법칙은 $D$가 가장 작지만, 노선 $100$개 이상의 꼬리에서 어긋난다(\Cref{sec:p1a-range}).
@@ -1505,11 +1505,11 @@ D. Two-sample Kolmogorov--Smirnov distance: the largest vertical gap between the
     \midrule
     멱법칙 & $0.209$ & $1$ & $0.209$ & $0.000$ & 정수 데이터 대 연속 모형(아래) \\
     \midrule
-    지수 & $0.379$ & $6$ & $0.648$ & $0.269$ & 작은 공항이 너무 적다고 예측 \\
+    지수 & $0.397$ & $6$ & $0.648$ & $0.251$ & 작은 공항이 너무 적다고 예측 \\
     \midrule
-    균등 & $0.857$ & $52$ & $0.913$ & $0.056$ & 대부분의 공항이 작다는 것을 무시 \\
+    균등 & $0.856$ & $60$ & $0.922$ & $0.065$ & 대부분의 공항이 작다는 것을 무시 \\
     \midrule
-    정규 & $0.358$ & $\approx 1$ & $0.000$ & $0.358$ & 모형 표본의 $36\%$가 음수 \\
+    정규 & $0.365$ & $\approx 1$ & $0.000$ & $0.365$ & 모형 표본의 $36\%$가 음수 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -1522,9 +1522,49 @@ D. Two-sample Kolmogorov--Smirnov distance: the largest vertical gap between the
 $D$는 둘 다 $0.857$이다.
 
 \paragraph{왜 p값이 아니라 $D$인가.} \texttt{ks\_2samp}는 검정의 p값(p-value)도 준다.
-이 데이터에서는 네 모형 모두 $10^{-65}$ 이하다. 표본이 수천 개면 아주 작은 차이도
+공항 데이터에서는 네 모형 모두 약 $10^{-65}$ 이하다. 표본이 수천 개면 아주 작은 차이도
 ``통계적으로 다르다''고 나온다. 그래서 ``어느 모형이 더 가까운가''는 $D$의 크기로
 비교한다.
+
+\begin{callout}[질문]
+they why model sample data does have 0.97? does it have to be 0 or 1?
+\end{callout}
+
+\paragraph{정수 데이터 대 연속 모형.} 모형 표본은 연속분포에서 뽑은 실수다. 정규분포는 소수도
+음수도 내고(공항 표본의 $36\%$가 음수), 멱법칙 표본도 $1.08$, $2.18$처럼 소수다. 실제 노선
+수는 $1$ 이상의 정수다. 그래서 $D$의 일부는 모양이 아니라 이 차이에서만 생긴다. 공항
+정규분포의 간격이 ``$x = 0.98$''에서 가장 큰 것도 그래서다. 데이터 CDF는 $1$ 바로 앞까지
+$0$이고, 모형 표본의 $36.5\%$는 이미 $1$ 아래에 있다. $0.98$은 $1$ 아래 표본 값 가운데
+가장 큰 값일 뿐이다.
+
+확인하려고 모형 표본을 데이터와 같은 단위로 반올림해 $D$를 다시 계산했다(공항은 정수로,
+영화는 평점처럼 $0.1$ 단위로; \Cref{tab:ks-rounded}, python, 씨드 $20701313$, 2026/09/30).
+\begin{table}[H]
+  \centering
+  \caption{모형 표본을 데이터의 단위로 반올림하기 전후의 KS 거리 $D$.}
+  \label{tab:ks-rounded}
+  \begin{tabular}{llllll}
+    \toprule
+    데이터 & & 멱법칙 & 지수 & 균등 & 정규 \\
+    \midrule
+    공항 & 연속 표본 & $0.209$ & $0.397$ & $0.856$ & $0.365$ \\
+         & 정수로 반올림 & $\mathbf{0.056}$ & $0.381$ & $0.855$ & $0.362$ \\
+    \midrule
+    영화 & 연속 표본 & $0.490$ & $0.481$ & $0.380$ & $0.048$ \\
+         & $0.1$로 반올림 & $0.486$ & $0.477$ & $0.375$ & $\mathbf{0.026}$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\begin{itemize}
+  \item 공항 멱법칙의 $D$는 거의 사라진다. 반올림하면 $1$--$1.5$ 사이 표본(약
+        $1 - 1.5^{-0.612} \approx 22\%$)이 모두 $1$이 되어 데이터의 $20.9\%$에 가까워진다.
+        $D = 0.209$는 대부분 ``정수 대 연속''의 차이였다.
+  \item 나머지는 거의 그대로다. 반올림 문제가 아니라 모양이 틀린 것이라서다(정규의 음수,
+        균등의 평평함, 지수의 빠른 꼬리).
+  \item 영화 정규분포는 더 가까워진다($0.048 \to 0.026$).
+  \item 결론은 같고 오히려 더 강해진다. 과제가 연속 분포를 적합하라고 했으므로 보고서의
+        표는 연속 표본 값을 쓴다.
+\end{itemize}
 
 % =====================================================================
 \section{HW2 문제 1: 공항 노선 수 데이터}
@@ -1637,7 +1677,7 @@ pl_sample = x_min * (1.0 - rng.random(n)) ** (-1.0 / (alpha - 1.0))
 \end{lstlisting}
 \texttt{rng.random}은 $[0, 1)$에서 뽑으므로 $u = 0$은 나와도 $u = 1$은 나오지 않는다.
 그래서 $1 - u$는 $0$이 되지 않고, $0$의 음수 제곱(무한대)이 생기지 않는다.
-\texttt{rng}는 씨드(Seed) $6330$으로 고정해서 그림을 다시 만들 수 있게 했다.
+\texttt{rng}는 씨드(Seed) $20701313$(소유자의 학번)으로 고정해서 그림을 다시 만들 수 있게 했다.
 
 \paragraph{예제: 공항 데이터, $\hat\alpha = 1.612$, $x_{\min} = 1$.}
 지수는 $-1/(\hat\alpha - 1) = -1/0.612 = -1.634$다. $u$ 몇 개를 넣어 보고, 실제 데이터의
@@ -1772,6 +1812,115 @@ $\lambda$로 시작해 줄어든다.
   \label{fig:exp-pdf}
 \end{figure}
 
+\subsection{PDF, CDF, 평균과 분산 한눈에}
+\label{sec:exp-summary}
+
+\begin{callout}[질문]
+update this in note. I want to understand exponential distribution
+\end{callout}
+
+\paragraph{PDF: 곡선의 높이.} $x$가 음수인 곳까지 포함해 쓰면 다음과 같다.
+\[
+  f(x) = \begin{cases} \lambda e^{-\lambda x} & x \ge 0 \\ 0 & x < 0 \end{cases}
+\]
+\begin{itemize}
+  \item $\lambda$: 비율(Rate) 모수. 단위 시간당 사건이 평균 몇 번 일어나는가.
+  \item $e \approx 2.718$: 오일러 수(Euler's Number).
+  \item $x$: 연속 변수. 보통 시간이나 거리(``다음 사건까지 얼마나'').
+\end{itemize}
+$x < 0$에서 $0$인 것은 기다리는 시간이 음수일 수 없기 때문이다.
+
+\paragraph{CDF: 곡선 아래 넓이.} CDF $F(x) = P(X \le x)$는 ``$x$ 안에 사건이 일어날
+확률''이고, PDF를 $0$부터 $x$까지 적분한 넓이다.
+\begin{align*}
+  F(x) &= \int_0^x \lambda e^{-\lambda t}\,dt
+    && \text{PDF의 넓이 ($x \ge 0$)}\\
+       &= \left[-e^{-\lambda t}\right]_0^x
+    && \text{$\frac{d}{dt}(-e^{-\lambda t}) = \lambda e^{-\lambda t}$}\\
+       &= -e^{-\lambda x} - (-e^{0})
+    && \text{위 끝 빼기 아래 끝}\\
+       &= 1 - e^{-\lambda x}
+    && \text{$e^0 = 1$}
+\end{align*}
+$x < 0$이면 $F(x) = 0$이다. 꼬리 확률은 $P(X > x) = 1 - F(x) = e^{-\lambda x}$로
+\Cref{eq:exp-ccdf}와 같다. \Cref{fig:exp-pdf-cdf}는 $\lambda = 1.5$일 때 두 함수다.
+PDF는 $x = 0$에서 $\lambda = 1.5$로 가장 높고 $0$으로 줄어들며, CDF는 $0$에서 시작해
+$1$로 다가간다. PDF 아래 색칠한 넓이($0 \le x \le 1$)가 CDF의 $x = 1$ 높이
+$1 - e^{-1.5} = 0.777$과 같다.
+
+% F(x) = 1 - e^{-1.5 x}; F(1) = 0.7769 (python, 2026/09/30)
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[x=1.3cm,y=1.9cm]
+    % PDF
+    \fill[blue!15] (0,0) -- plot[domain=0:1,samples=40] (\x,{1.5*exp(-1.5*\x)}) -- (1,0) -- cycle;
+    \draw[->] (0,0) -- (4.3,0) node[right] {$x$};
+    \draw[->] (0,0) -- (0,1.75) node[above] {PDF $f(x)$};
+    \foreach \t in {0,...,4} \draw (\t,0.03) -- (\t,-0.03) node[below] {\t};
+    \foreach \v in {0.5,1,1.5} \draw (0.04,\v) -- (-0.04,\v) node[left] {\v};
+    \draw[thick,blue] plot[domain=0:4,samples=80] (\x,{1.5*exp(-1.5*\x)});
+    \node[blue!60!black,font=\small] at (0.55,0.3) {$0.777$};
+    % CDF
+    \begin{scope}[xshift=6.3cm]
+      \draw[->] (0,0) -- (4.3,0) node[right] {$x$};
+      \draw[->] (0,0) -- (0,1.75) node[above] {CDF $F(x)$};
+      \foreach \t in {0,...,4} \draw (\t,0.03) -- (\t,-0.03) node[below] {\t};
+      \foreach \v in {0.5,1} \draw (0.04,\v) -- (-0.04,\v) node[left] {\v};
+      \draw[black!30,dashed] (0,1) -- (4.2,1);
+      \draw[thick,red] plot[domain=0:4,samples=80] (\x,{1-exp(-1.5*\x)});
+      \draw[red!70!black,dashed] (1,0) -- (1,0.777) -- (0,0.777);
+      \fill[red!70!black] (1,0.777) circle (1.5pt);
+      \node[red!70!black,font=\small,right] at (1.05,0.62) {$F(1) = 0.777$};
+    \end{scope}
+  \end{tikzpicture}
+  \caption{$\lambda = 1.5$인 지수분포. 왼쪽: PDF $1.5\,e^{-1.5x}$(파란 선)와 $0 \le x \le 1$의
+    넓이(파란 면). 오른쪽: CDF $1 - e^{-1.5x}$(빨간 선). 회색 점선은 높이 $1$이다. 왼쪽 면의
+    넓이와 오른쪽 점 $F(1)$의 높이가 둘 다 $0.777$이다.}
+  \label{fig:exp-pdf-cdf}
+\end{figure}
+
+\paragraph{평균, 분산, 표준편차.} 결과부터 적는다.
+\begin{align*}
+  &E[X] = \mu = 1/\lambda && \text{평균(기댓값)}\\
+  &\mathrm{Var}[X] = \sigma^2 = 1/\lambda^2 && \text{분산}\\
+  &\sigma = 1/\lambda && \text{표준편차: 평균과 같다}
+\end{align*}
+유도는 부분적분(Integration by Parts) $\int u\,dv = uv - \int v\,du$를 쓴다.
+$u = x$, $dv = \lambda e^{-\lambda x}dx$로 두면 $v = -e^{-\lambda x}$다.
+\begin{align*}
+  E[X] &= \int_0^\infty x\,\lambda e^{-\lambda x}\,dx
+    && \text{평균의 정의}\\
+       &= \left[-x e^{-\lambda x}\right]_0^\infty + \int_0^\infty e^{-\lambda x}\,dx
+    && \text{부분적분}\\
+       &= 0 + \frac{1}{\lambda}
+    && \text{$x e^{-\lambda x} \to 0$, $\int_0^\infty e^{-\lambda x}dx = 1/\lambda$}
+\end{align*}
+같은 방법($u = x^2$)으로 $E[X^2] = \frac{2}{\lambda}E[X] = \frac{2}{\lambda^2}$이다. 그래서
+\[
+  \mathrm{Var}[X] = E[X^2] - (E[X])^2 = \frac{2}{\lambda^2} - \frac{1}{\lambda^2} = \frac{1}{\lambda^2}
+  \qquad \text{(\Cref{sec:alpha}과 같은 공식)}
+\]
+
+\paragraph{``평균 = 표준편차''로 데이터를 점검한다.} 지수분포라면 표준편차 ÷ 평균이 정확히
+$1$이다. 이 비율을 변동계수(Coefficient of Variation)라 한다. 두 데이터에서 계산하면
+(\Cref{tab:p1-eight}의 값) 둘 다 $1$과 멀다.
+\begin{align*}
+  &\text{공항:}\ 53.506 / 19.845 = 2.70 && \text{지수분포보다 훨씬 넓게 퍼진다(꼬리가 두껍다)}\\
+  &\text{영화:}\ 0.893 / 6.227 = 0.14 && \text{지수분포보다 훨씬 좁게 몰려 있다}
+\end{align*}
+모수 $\hat\lambda$를 구하기 전에, 숫자 둘만으로 지수분포가 맞지 않을 것을 미리 알 수 있다.
+
+\paragraph{예제: 버스 기다리기.} 버스가 평균 10분에 한 대 온다고 하자. 도착 간격이
+지수분포라면 $\lambda = 1/10 = 0.1$(분당)이다.
+\begin{align*}
+  &P(X \le 5) = 1 - e^{-0.5} = 0.393 && \text{5분 안에 옴 (CDF)}\\
+  &P(X > 20) = e^{-2} = 0.135 && \text{20분 넘게 기다림 (꼬리)}\\
+  &P(X > 20 \mid X > 10) = e^{-1} = 0.368 && \text{10분 기다린 뒤 10분 더}
+\end{align*}
+셋째 줄은 처음부터 10분 넘게 기다릴 확률 $P(X > 10) = e^{-1}$과 같다. 이미 기다린 시간이
+남은 시간에 영향을 주지 않는다. 아래 ``왜 중요한가''의 무기억성(Memoryless Property)이
+이것이다.
+
 \subsection{$\lambda$는 무엇인가}
 $\lambda$는 \term{비율}(Rate)이다. 단위 시간당 사건이 평균 몇 번 일어나는지를 뜻한다.
 \begin{align*}
@@ -1833,7 +1982,7 @@ What is the $\lambda$ if the distribution is exponential?
   \item 지수분포는 $0$에서 가장 높다. 데이터는 약 $6.3$에서 봉우리가 하나인
         거의 대칭 모양이다.
   \item 모형 표본의 4\%가 $20$을 넘는다. 평점으로 가능하지 않은 값이다.
-  \item KS 거리 $D = 0.490$. 정규분포는 $D = 0.055$로 가장 잘 맞는다.
+  \item KS 거리 $D = 0.481$. 정규분포는 $D = 0.048$로 가장 잘 맞는다.
 \end{itemize}
 
 \begin{table}[H]
@@ -1844,9 +1993,9 @@ What is the $\lambda$ if the distribution is exponential?
     \toprule
     데이터 & $\bar x$ & $\hat\lambda = 1/\bar x$ & KS 거리 $D$ \\
     \midrule
-    공항 노선 수 & 19.845 & 0.0504 & 0.379 \\
+    공항 노선 수 & 19.845 & 0.0504 & 0.397 \\
     \midrule
-    영화 평점     & 6.227  & 0.1606 & 0.490 \\
+    영화 평점     & 6.227  & 0.1606 & 0.481 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -1855,7 +2004,7 @@ What is the $\lambda$ if the distribution is exponential?
   \centering
   \includegraphics[width=\linewidth]{../figures/p1b_2_exponential.png}
   \caption{영화 평점에 지수분포($\hat\lambda = 0.1606$)를 적합한 결과
-  (\texttt{code/p1\_movie\_g\_exponential\_plot.py}가 생성). $D = 0.490$.}
+  (\texttt{code/p1\_movie\_g\_exponential\_plot.py}가 생성). $D = 0.481$.}
   \label{fig:p1b-exp}
 \end{figure}
 
@@ -1866,22 +2015,24 @@ What is the $\lambda$ if the distribution is exponential?
 and why airport has ccdf but movie has pdf? only?
 \end{callout}
 
-\paragraph{먼저 사실 확인.} 영화만 PDF인 것은 아니다. 모형 비교 그림은 두 데이터 모두
-왼쪽 패널 하나 + 오른쪽 QQ plot 하나다(\Cref{tab:panels}, \texttt{code/common.py}).
-과제는 PDF, CDF, QQ plot 중 하나면 된다고 했으니, 데이터마다 \term{모형 차이가 가장 잘
-보이는} 그림을 고른 것이다.
+\paragraph{먼저 사실 확인.} 이 질문을 받았을 때 모형 비교 그림은 두 데이터 모두 왼쪽 패널
+하나 + 오른쪽 QQ plot 하나였고, 공항은 CCDF, 영화는 PDF를 왼쪽에 두었다. 과제는 PDF, CDF,
+QQ plot 중 하나면 된다고 했으니, 데이터마다 \term{모형 차이가 가장 잘 보이는} 그림을 고른
+것이다. 지금 공항 그림은 PDF, CDF, CCDF를 모두 보통 축과 로그-로그 축으로 그린다
+(\Cref{tab:panels}, \texttt{code/common.py}). 아래 이유는 그 가운데 어느 패널이 판단에
+가장 쓸모 있는지에 대한 것이다.
 
 \begin{table}[H]
   \centering
   \caption{\texttt{code/common.py}가 그리는 패널.}
   \label{tab:panels}
-  \begin{tabular}{lll}
+  \begin{tabular}{p{0.22\linewidth}p{0.42\linewidth}p{0.26\linewidth}}
     \toprule
     그림 & 공항 노선 수 & 영화 평점 \\
     \midrule
-    데이터만 (\texttt{*\_0\_data}) & PDF, PMF, CDF(보통 축) + PDF, PMF, CCDF(로그-로그) & PDF(히스토그램) + CDF \\
+    데이터만 (\texttt{*\_0\_data}) & PDF, PMF, CDF, CCDF를 보통 축(0--200)과 로그-로그 축으로 & PDF(히스토그램) + CDF \\
     \midrule
-    모형 비교 (\texttt{*\_1} $\sim$ \texttt{*\_4}) & CCDF + QQ plot, 로그 축 & PDF(히스토그램) + QQ plot \\
+    모형 비교 (\texttt{*\_1} $\sim$ \texttt{*\_4}) & PDF, CDF, CCDF를 보통 축(0--200)과 로그-로그 축으로 + QQ plot(로그-로그) & PDF(히스토그램) + QQ plot \\
     \bottomrule
   \end{tabular}
 \end{table}

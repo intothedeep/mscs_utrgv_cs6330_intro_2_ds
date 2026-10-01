@@ -45,7 +45,7 @@
 \newcommand{\answerfig}[2]{%
   \par\nopagebreak\smallskip % keep the prompt line on the same page as its figure
   {\centering
-   \includegraphics[width=\linewidth]{../figures/#1.png}\par
+   \includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{../figures/#1.png}\par
    \captionof{figure}{#2}\par}
   \smallskip}
 
@@ -106,33 +106,62 @@
 
   \prompt{(These can be CDF, PDF, or QQplot)}
 
+  \textbf{Note on the axes.} In every chart on linear axes, the routes-per-airport axis is
+  cut at 200 on purpose: 98\% of airports have at most 200 routes, and on a full 0--915 axis
+  they would be squeezed into the left edge. The whole distribution, including the tail up
+  to 915 routes and the model samples beyond it, is shown in the log-log chart next to each
+  linear one. The share of the data and of each model sample beyond 200 is printed on the
+  linear panels.
+
   For (e) to (i):
   \begin{itemize}
-    \item \textbf{Samples.} $n = 3409$ random values drawn from each fitted model (seed 6330).
+    \item \textbf{Samples.} $n = 3409$ random values drawn from each fitted model with
+          numpy's random generator (seed 20701313; one generator for all eight samples, so every
+          figure can be rebuilt exactly).
+          \begin{itemize}
+            \item Power law: numpy has no power-law sampler, so I used inverse transform
+                  sampling. Draw $u$ uniformly from $[0, 1)$ and set
+                  $x = x_{\min}(1-u)^{-1/(\alpha-1)}$, which solves $u = F(x)$ for the fitted
+                  CDF $F(x) = 1 - (x/x_{\min})^{-(\alpha-1)}$.
+            \item Exponential: \texttt{rng.exponential($1/\lambda$)} (numpy takes the mean
+                  $1/\lambda$, not $\lambda$).
+            \item Uniform: \texttt{rng.uniform($a$, $b$)}. Normal: \texttt{rng.normal($\mu$, $\sigma$)}.
+          \end{itemize}
+          The samples are real numbers, not whole route counts: they contain values such as
+          1.08, and the normal sample contains negative values.
     \item \textbf{Colours.} Data in blue, model sample in orange.
+    \item \textbf{Layout of the airport figures.} Rows PDF, CDF, CCDF and QQ, with linear axes
+          on the left and log-log axes on the right; the data's median and mean
+          are marked in every distribution panel, and each CDF/CCDF shows its value at $x = 1$.
     \item \textbf{$D$.} Two-sample Kolmogorov--Smirnov distance: the largest vertical gap
           between the two CDFs (0 = identical).
   \end{itemize}
 
   \item \prompt{Screen shot of the visualization of distribution of data}
-  \answerfig{p1a_0_data}{Airport routes: empirical distribution ($n = 3409$). Rows: PDF, PMF, CDF/CCDF. Left column on linear axes, right column on log-log axes.}
+  \answerfig{p1a_0_data}{Airport routes: empirical distribution ($n = 3409$). Rows: PDF, PMF, CDF, CCDF. Left column on linear axes, right column on log-log axes.}
   \panels{%
-    \textbf{PDF, linear (top left).} Histogram with 20-route bins; each bar is the share of airports in its bin. One tall bar at the left edge: 82\% of airports have fewer than 20 routes, and the bars beyond 200 are almost flat on the floor.\par
-    \textbf{PDF, log-log (top right).} The same distribution with bins of equal width on the log scale, divided by bin width so it is a density. It falls along a roughly straight line and bends down above about 100 routes.\par
-    \textbf{PMF, linear (middle left).} One dot per route count $k$: the number of airports with exactly $k$ routes (left axis) and the same height as a share $P(X = k)$ (right axis). 713 airports have 1 route (20.9\%), 583 have 2, 363 have 3; above about 30 routes every count is at most 14 airports and lies on the floor.\par
-    \textbf{PMF, log-log (middle right).} The same dots on log axes. Up to about 30 routes they fall on a line of slope about $-1.45$, close to $-\hat\alpha$. Right of the dashed line ($x = 60$) each route count belongs to only 1, 2 or 3 airports, so the dots sit in rows at exactly those counts; that is a counting floor, not the shape of the distribution.\par
-    \textbf{CDF, linear (bottom left).} The curve rises almost vertically and reaches 0.92 at 60 routes, then stays flat up to the maximum of 915.\par
-    \textbf{CCDF, log-log (bottom right).} Share of airports with at least $x$ routes. It is close to a straight line up to about 100 routes, then bends down and ends at the busiest airport (915 routes).\par
+    \textbf{PDF, linear (row 1, left).} Histogram with 5-route bins, shown from 0 to 200 routes (2.0\% of airports have more than 200); each bar is the share of airports in its bin. 56\% of airports fall in the first bin (fewer than 5 routes), 82\% have fewer than 20, and the bars beyond about 60 are almost flat on the floor.\par
+    \textbf{PDF, log-log (row 1, right).} The same distribution with bins of equal width on the log scale, divided by bin width so it is a density. It falls along a roughly straight line and bends down above about 100 routes.\par
+    \textbf{PMF, linear (row 2, left).} One dot per route count $k$: the number of airports with exactly $k$ routes (left axis) and the same height as a share $P(X = k)$ (right axis). 713 airports have 1 route (20.9\%), 583 have 2, 363 have 3; above about 30 routes every count is at most 14 airports and lies on the floor.\par
+    \textbf{PMF, log-log (row 2, right).} The same dots on log axes. Up to about 30 routes they fall on a line of slope about $-1.45$, close to $-\hat\alpha$. Right of the dashed line ($x = 60$) each route count belongs to only 1, 2 or 3 airports, so the dots sit in rows at exactly those counts; that is a counting floor, not the shape of the distribution.\par
+    \textbf{CDF, linear (row 3, left).} The curve rises almost vertically, reaches 0.92 at 60 routes and 0.98 at 200; the last 2\% runs on up to the maximum of 915, off this axis.\par
+    \textbf{CDF, log-log (row 3, right).} The curve starts with a jump to 0.209 at $x = 1$, climbs in steps over the first few route counts, and is pressed against 1 from about 20 routes on, so the tail is hardly visible here; that is why the tail is read from the CCDF.\par
+    \textbf{CCDF, linear (row 4, left).} The share with at least $x$ routes falls from 1 to 0.18 at 20 routes and 0.08 at 60; from there the tail is a thin line just above zero (0.02 at 200).\par
+    \textbf{CCDF, log-log (row 4, right).} Share of airports with at least $x$ routes. It is close to a straight line up to about 100 routes, then bends down and ends at the busiest airport (915 routes).\par
     \textbf{Reference lines.} In every panel the green dotted line is the median (4 routes: half the airports have at most 4), the purple dash-dot line is the mean (19.8 routes), and the grey dashed line is $x = 60$ (92\% of airports lie at or left of it). The mean sits five times to the right of the median because a few hubs with hundreds of routes pull it up; on the log-log CCDF only about 18\% of airports reach the mean. On linear axes all three lines are squeezed against the left edge.\par
     \textbf{Summary.} The median airport has 4 routes and 38\% have only 1 or 2, while the busiest has 915. The mean (19.8) is five times the median and the skewness is 6.0, so a few hubs hold most of the routes.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was power law}
   \answerfig{p1a_1_powerlaw}{Airport routes vs.\ power law ($\alpha = 1.612$, $x_{\min} = 1$). $D = 0.209$.}
   \panels{%
-    \textbf{PDF (top left).} The two lines follow the same straight slope up to about 300 routes. Above that the data drops and ends near 1000, while the model continues past $10^5$ (its largest sampled airport has 291{,}593 routes).\par
-    \textbf{CDF (top right).} On linear axes the two curves almost overlap. The difference is hidden in the 1.6\% of the sample that lies beyond 1000 routes.\par
-    \textbf{CCDF (bottom left).} Both follow the same straight line on log-log axes up to about 100 routes. Above that the data bends down and stops at 915; the model stays straight.\par
-    \textbf{QQ plot (bottom right).} The points lie on $y = x$ up to about 60 routes, then run off to the right, below the line: at the 99.5th percentile the model has 5{,}234 routes and the data 358.\par}
+    \textbf{PDF, linear (row 1, left).} Linear panels show 0 to 200 routes. The first 5-route bins are almost the same height for data and model; beyond 200 routes lie 2.0\% of the data and 3.5\% of the model sample.\par
+    \textbf{PDF, log-log (row 1, right).} The two lines follow the same straight slope up to about 300 routes. Above that the data drops and ends near 1000, while the model continues past $10^5$ (its largest sampled airport has 342{,}563 routes).\par
+    \textbf{CDF, linear (row 2, left).} The curves almost overlap up to 200 routes. At $x = 1$ the data is at 0.209 (20.9\% of airports have one route) and the model at 0.000: a continuous model puts no mass on exactly one route.\par
+    \textbf{CDF, log-log (row 2, right).} The log $x$-axis spreads out $x = 1, 2, 3$, so it shows where the largest gap is: at $x = 1$, data 0.209 against model 0. $D$ itself is measured on the ordinary probability scale, $0.209 - 0 = 0.209$ (see (j)); from about 3 routes on the curves coincide.\par
+    \textbf{CCDF, linear (row 3, left).} The curves look identical; on linear axes the tail difference is squeezed against zero. Both start at 1.000 at $x = 1$.\par
+    \textbf{CCDF, log-log (row 3, right).} Both follow the same straight line up to about 100 routes. Above that the data bends down and stops at 915; the model stays straight.\par
+    \textbf{QQ, linear (row 4, left).} The axis is stretched to the model's 99.5th percentile (2{,}534 routes), so almost every point is crowded into the bottom-left corner; only the model's few giant airports stand out.\par
+    \textbf{QQ, log-log (row 4, right).} The points lie on $y = x$ up to about 60 routes, then run off to the right, below the line: at the 99.5th percentile the model has 2{,}534 routes and the data 358.\par}
   \panels{%
     \textbf{Why the CCDF on log-log axes.} For a power law, the CCDF is the complement
     of the CDF, and taking the log of both sides turns it into a straight line:
@@ -150,28 +179,40 @@
     it is pressed against 1 in exactly the tail where the model and the data differ.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was exponential}
-  \answerfig{p1a_2_exponential}{Airport routes vs.\ exponential ($\lambda = 0.0504$). $D = 0.379$.}
+  \answerfig{p1a_2_exponential}{Airport routes vs.\ exponential ($\lambda = 0.0504$). $D = 0.397$.}
   \panels{%
-    \textbf{PDF (top left).} The model is almost flat for small airports and then falls off sharply after about 50 routes. The data is the opposite: steep at the start and a long, slow tail. 5\% of the sample lies below 1 route, which no airport has.\par
-    \textbf{CDF (top right).} The model reaches 1 by about 160 routes (its largest sampled airport has 159), while the data keeps rising slowly up to 915.\par
-    \textbf{CCDF (bottom left).} The model bends down early and ends near 160 routes; the data goes on to 915. With $\lambda = 0.05$ an airport with 500 routes has probability about $e^{-25}$, yet the data has five such airports.\par
-    \textbf{QQ plot (bottom right).} The points are too steep: below about 40 routes they lie below $y = x$ (the model gives small airports too many routes), and above it they rise above the line (hubs get too few).\par}
+    \textbf{PDF, linear (row 1, left).} The model's first bin is lower than the data's and it puts more airports between 20 and 100 routes.\par
+    \textbf{PDF, log-log (row 1, right).} The model is almost flat for small airports and falls off sharply after about 50 routes; the data is steep at the start and has a long, slow tail. 6\% of the sample lies below 1 route, which no airport has.\par
+    \textbf{CDF, linear (row 2, left).} The model reaches 1 by about 190 routes (its largest sampled airport has 191), while the data is only at 0.98 at 200 and keeps rising to 915.\par
+    \textbf{CDF, log-log (row 2, right).} At $x = 1$ the data is at 0.209 and the model at 0.056: the model spreads 5.6\% of airports below one route and rises smoothly instead of jumping at 1.\par
+    \textbf{CCDF, linear (row 3, left).} The model falls more slowly than the data at first, then reaches zero near 190 routes. At $x = 1$: data 1.000, model 0.944.\par
+    \textbf{CCDF, log-log (row 3, right).} The model bends down early and ends near 190 routes; the data goes on to 915. With $\lambda = 0.05$ an airport with 500 routes has probability about $e^{-25}$, yet the data has five such airports.\par
+    \textbf{QQ, linear (row 4, left).} The points follow $y = x$ only at the start and then shoot up: at the 99.5th percentile the data has 358 routes and the model about 100.\par
+    \textbf{QQ, log-log (row 4, right).} The points are too steep: below about 40 routes they lie below $y = x$ (the model gives small airports too many routes), and above it they rise above the line (hubs get too few).\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was uniform}
-  \answerfig{p1a_3_uniform}{Airport routes vs.\ uniform on $[1, 915]$. $D = 0.857$.}
+  \answerfig{p1a_3_uniform}{Airport routes vs.\ uniform on $[1, 915]$. $D = 0.856$.}
   \panels{%
-    \textbf{PDF (top left).} The model is a flat line near $10^{-3}$ across the whole range; the data falls by five orders of magnitude.\par
-    \textbf{CDF (top right).} The model is a straight diagonal from 1 to 915; the data reaches 0.92 by 60 routes. The largest gap between the two, $D = 0.857$, is at 60 routes.\par
-    \textbf{CCDF (bottom left).} The model stays near 1 until the right edge and then drops vertically at 915.\par
-    \textbf{QQ plot (bottom right).} Every point lies far below $y = x$, to the right. A typical sampled airport has about 460 routes, while the real median is 4 and 99\% of real airports have fewer than 285.\par}
+    \textbf{PDF, linear (row 1, left).} The model is a flat line at about $1/914$; the data's first 5-route bin is about 100 times higher. 78\% of the model sample lies beyond 200 routes, against 2.0\% of the data.\par
+    \textbf{PDF, log-log (row 1, right).} The model stays flat near $10^{-3}$ across the whole range; the data falls by five orders of magnitude.\par
+    \textbf{CDF, linear (row 2, left).} The model rises in a straight line and is only at about 0.20 at 200 routes; the data reaches 0.92 by 60 routes. The largest gap between the two, $D = 0.856$, is right there, at 60 routes.\par
+    \textbf{CDF, log-log (row 2, right).} At $x = 1$ the data is at 0.209 and the model at 0 (the model has no mass at exactly 1); the model stays below 0.1 until about 90 routes.\par
+    \textbf{CCDF, linear (row 3, left).} The model falls in a straight line and is still at about 0.80 at 200 routes, while the data collapses at the left edge. Both are 1.000 at $x = 1$.\par
+    \textbf{CCDF, log-log (row 3, right).} The model stays near 1 until the right edge and then drops vertically at 915.\par
+    \textbf{QQ, linear (row 4, left).} The points run flat along the bottom: while the model's quantiles climb to about 900 routes, the data's stay near 0 to 20 and rise only at the very end.\par
+    \textbf{QQ, log-log (row 4, right).} Every point lies far below $y = x$, to the right. A typical sampled airport has about 470 routes, while the real median is 4 and 99\% of real airports have fewer than 285.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was normal}
-  \answerfig{p1a_4_normal}{Airport routes vs.\ normal ($\mu = 19.8$, $\sigma = 53.5$). $D = 0.358$.}
+  \answerfig{p1a_4_normal}{Airport routes vs.\ normal ($\mu = 19.8$, $\sigma = 53.5$). $D = 0.365$.}
   \panels{%
-    \textbf{PDF (top left).} The model is flat over small airports and then drops steeply after about 100 routes. 35\% of its sample is below zero, which is impossible for a route count; the log axes cannot show that part.\par
-    \textbf{CDF (top right).} The model starts below zero (negative route counts) and is S-shaped around the mean; it reaches 1 near 230 routes while the data goes to 915.\par
-    \textbf{CCDF (bottom left).} Below about 100 routes the model sits above the data, and its tail ends near 230 routes, far short of 915.\par
-    \textbf{QQ plot (bottom right).} The points are too steep, as for the exponential: small airports get too many routes and hubs too few. The tail is thin because a normal decays like $e^{-x^2}$.\par}
+    \textbf{PDF, linear (row 1, left).} The model is a symmetric bell around 20 routes that spreads into negative route counts (down to about $-136$ at its 0.1st percentile), while the data is one spike at the left edge.\par
+    \textbf{PDF, log-log (row 1, right).} The model is flat over small airports and then drops steeply after about 100 routes. 37\% of its sample is below 1 route, most of it negative, which the log axes cannot show.\par
+    \textbf{CDF, linear (row 2, left).} The model starts at negative route counts, is at 0.365 at $x = 1$ against the data's 0.209, and is almost at 1 by 200 routes (its largest sampled airport has 237) while the data goes on to 915.\par
+    \textbf{CDF, log-log (row 2, right).} The model is flat at about 0.37 from the left edge to about 10 routes: that plateau is the 37\% of the sample below 1 route.\par
+    \textbf{CCDF, linear (row 3, left).} An S-shaped model curve crossing the data near zero; at $x = 1$ the model is at 0.635 against the data's 1.000, and it is almost zero by 200 routes.\par
+    \textbf{CCDF, log-log (row 3, right).} Below about 100 routes the model sits above the data, and its tail ends near 230 routes, far short of 915.\par
+    \textbf{QQ, linear (row 4, left).} The model's low quantiles are negative (down to about $-118$) while the data's stay at 1 to 3 routes; the points cross $y = x$ near 100 and then shoot up. The log-log panel cannot show these negative quantiles.\par
+    \textbf{QQ, log-log (row 4, right).} The points are too steep, as for the exponential: small airports get too many routes and hubs too few. The tail is thin because a normal decays like $e^{-x^2}$.\par}
 
   \item \prompt{What is the distribution of data based on your observation? Discuss}
   \answer{%
@@ -180,10 +221,32 @@
       \toprule
       & power law & exponential & uniform & normal \\
       \midrule
-      KS distance $D$ (data vs model sample) & \textbf{0.209} & 0.379 & 0.857 & 0.358 \\
+      KS distance $D$ (data vs model sample) & \textbf{0.209} & 0.397 & 0.856 & 0.365 \\
+      \midrule
+      where the gap is largest, $x$ & 1 & 6 & 60 & 0.98 \\
+      \midrule
+      data CDF $F_{\text{data}}(x)$ there & 0.209 & 0.648 & 0.922 & 0.000 \\
+      \midrule
+      model-sample CDF $F_{\text{model}}(x)$ there & 0.000 & 0.251 & 0.065 & 0.365 \\
       \bottomrule
     \end{tabular}
     \end{center}
+
+    \textbf{How $D$ is computed.} \texttt{scipy.stats.ks\_2samp} does not use the figures. It
+    builds the two empirical CDFs from the raw values and, at every $x$, measures the gap on
+    the ordinary probability scale; $D$ is the largest gap:
+    \[
+      D = \max_x \bigl|F_{\text{data}}(x) - F_{\text{model}}(x)\bigr| .
+    \]
+    The axes of a chart do not change $D$. A log axis only helps to see where the gap is
+    (for example $x = 1$ is spread out on a log $x$-axis); gap sizes must not be read off a
+    log $y$-axis, which stretches small values and cannot show 0.
+    For the power law, $D = 0.209 - 0.000 = 0.209$ at $x = 1$: 20.9\% of airports have
+    exactly one route, while the continuous model puts no mass there. The tail mismatch
+    above 100 routes involves few airports, so it barely moves $D$; the figures show it
+    instead. For the normal, the gap
+    sits just below 1, where 36.5\% of the model sample already lies (most of it at negative
+    route counts) and no airport does.
 
     \textbf{The airport data follows a power law, with a cutoff in the far tail.}
     It is the only one of the four models whose CCDF is a straight line on log-log
@@ -200,11 +263,6 @@
             has probability about $e^{-25}$, yet the data has five airports with more
             than 500.
     \end{itemize}
-    The power law's $D = 0.209$ comes almost entirely from $x = 1$: 20.9\% of airports have
-    exactly one route, while the continuous model puts almost no mass at or below 1. The
-    tail mismatch above 100 routes involves few airports, so it barely moves $D$; the
-    figures show it instead.
-
     The power law is not a perfect fit. $\hat\alpha = 1.61$ is below 2, so the fitted
     model has an infinite mean and its samples contain airports with $10^5$ routes. Real
     airports cannot grow that large: there are only 3409 airports to fly to, and
@@ -257,9 +315,18 @@
 
   \prompt{(These can be CDF, PDF, or QQplot)}
 
+  \textbf{Note on the axes.} Average votes lie between 1.9 and 8.5, so every chart uses
+  linear axes. In the model charts (f) to (i) the vote axis is cut at 20 on purpose: the
+  power-law and exponential samples run to values that are not possible ratings (the power law's
+  99.5th percentile is about 900), and a wider axis would flatten the data's peak. The share of each model
+  sample beyond the axis is printed on the panel, and those QQ plots use log axes so the
+  whole sample is visible.
+
   For (f) to (i):
   \begin{itemize}
-    \item \textbf{Samples.} $n = 4392$ random values drawn from each fitted model (same seed).
+    \item \textbf{Samples.} $n = 4392$ random values drawn from each fitted model in the same
+          way as for the airports (same generator, continuing after the airport samples).
+          The samples are not rounded to 0.1 like the votes.
     \item \textbf{Colours.} Data in blue, model sample in orange.
     \item \textbf{$D$.} Two-sample Kolmogorov--Smirnov distance: the largest vertical gap
           between the two CDFs (0 = identical).
@@ -269,31 +336,32 @@
   \answerfig{p1b_0_data}{Movie votes: empirical distribution ($n = 4392$).}
   \panels{%
     \textbf{PDF (left).} Histogram with one bin per possible vote (votes are rounded to 0.1). One peak near 6.3 and a nearly symmetric shape; the left tail is longer (skewness $-0.48$): a few movies are rated 2 to 4, and none are above 8.5.\par
-    \textbf{CDF (right).} An S-shaped curve centred near 6.3 (median 6.3, mean 6.23). The small steps come from the 0.1 rounding.\par}
+    \textbf{CDF (right).} An S-shaped curve centred near 6.3 (median 6.3, mean 6.23). The small steps come from the 0.1 rounding.\par
+    \textbf{Reference lines.} In both panels (and in the PDF panel of (f) to (i)) the green dotted line is the data median (6.30) and the purple dash-dot line the data mean (6.23). The mean sits just left of the median, as expected for a slightly left-skewed sample: a few very low ratings pull the mean down.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was power law}
-  \answerfig{p1b_1_powerlaw}{Movie votes vs.\ power law ($\alpha = 1.851$, $x_{\min} = 1.9$). $D = 0.485$.}
+  \answerfig{p1b_1_powerlaw}{Movie votes vs.\ power law ($\alpha = 1.851$, $x_{\min} = 1.9$). $D = 0.490$.}
   \panels{%
-    \textbf{PDF (left).} The model puts its highest density at the lowest vote (1.9), where the data has almost nothing, and then a long tail. 13\% of its sample lies above 20, which is not a possible rating.\par
-    \textbf{QQ plot (right).} Log axes, because the sample goes up to about 1000. At the top votes the points run almost horizontally to the right: the model's high quantiles are hundreds, the data's stop at 8.5.\par}
+    \textbf{PDF (left).} The model puts its highest density at the lowest vote (1.9), where the data has almost nothing, and then a long tail. 14\% of its sample lies above 20, which is not a possible rating.\par
+    \textbf{QQ plot (right).} Log axes, because the sample's 99.5th percentile is about 900. At the top votes the points run almost horizontally to the right: the model's high quantiles are hundreds, the data's stop at 8.5.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was exponential}
-  \answerfig{p1b_2_exponential}{Movie votes vs.\ exponential ($\lambda = 0.1606$). $D = 0.490$.}
+  \answerfig{p1b_2_exponential}{Movie votes vs.\ exponential ($\lambda = 0.1606$). $D = 0.481$.}
   \panels{%
     \textbf{PDF (left).} The model peaks at zero and has a long right tail; 4\% of its sample is above 20. The data is a narrow hump between 4 and 8.5.\par
     \textbf{QQ plot (right).} The points cross $y = x$ at a shallow angle: the model's spread is far larger than the data's, with low quantiles near 0 and high quantiles above 20.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was uniform}
-  \answerfig{p1b_3_uniform}{Movie votes vs.\ uniform on $[1.9, 8.5]$. $D = 0.394$.}
+  \answerfig{p1b_3_uniform}{Movie votes vs.\ uniform on $[1.9, 8.5]$. $D = 0.380$.}
   \panels{%
     \textbf{PDF (left).} The model is flat across $[1.9, 8.5]$, but the data is concentrated between 5 and 7.5.\par
     \textbf{QQ plot (right).} The points lie flat across the middle, above $y = x$ on the left and below it on the right: the model's low quantiles are too low and its high quantiles too high, because it spreads the votes evenly instead of piling them in the middle.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was normal}
-  \answerfig{p1b_4_normal}{Movie votes vs.\ normal ($\mu = 6.227$, $\sigma = 0.893$). $D = 0.055$.}
+  \answerfig{p1b_4_normal}{Movie votes vs.\ normal ($\mu = 6.227$, $\sigma = 0.893$). $D = 0.048$.}
   \panels{%
     \textbf{PDF (left).} The sample traces the same bell as the data, with the peak in the same place.\par
-    \textbf{QQ plot (right).} The points lie on $y = x$ from about 4.5 to 7.5. The only departures are at the ends: the data's lowest votes are lower than the model predicts (longer left tail), and the data stops at 8.5 while the model continues. $D = 0.055$ is by far the smallest.\par}
+    \textbf{QQ plot (right).} The points lie on $y = x$ from about 4.5 to 7.5. The only departures are at the ends: the data's lowest votes are lower than the model predicts (longer left tail), and the data stops at 8.5 while the model continues. $D = 0.048$ is by far the smallest.\par}
 
   \item \prompt{What is the distribution of data based on your observation? Discuss}
   \answer{%
@@ -302,16 +370,35 @@
       \toprule
       & power law & exponential & uniform & normal \\
       \midrule
-      KS distance $D$ (data vs model sample) & 0.485 & 0.490 & 0.394 & \textbf{0.055} \\
+      KS distance $D$ (data vs model sample) & 0.490 & 0.481 & 0.380 & \textbf{0.048} \\
+      \midrule
+      where the gap is largest, $x$ & 4.7 & 4.7 & 5.2 & 6.3 \\
+      \midrule
+      data CDF $F_{\text{data}}(x)$ there & 0.047 & 0.047 & 0.107 & 0.489 \\
+      \midrule
+      model-sample CDF $F_{\text{model}}(x)$ there & 0.538 & 0.528 & 0.488 & 0.536 \\
       \bottomrule
     \end{tabular}
     \end{center}
+
+    \textbf{How $D$ is computed.} \texttt{scipy.stats.ks\_2samp} does not use the figures. It
+    builds the two empirical CDFs from the raw values and, at every $x$, measures the gap on
+    the ordinary probability scale; $D$ is the largest gap:
+    \[
+      D = \max_x \bigl|F_{\text{data}}(x) - F_{\text{model}}(x)\bigr| .
+    \]
+    The axes of a chart do not change $D$. A log axis only helps to see where the gap is
+    (for example $x = 1$ is spread out on a log $x$-axis); gap sizes must not be read off a
+    log $y$-axis, which stretches small values and cannot show 0.
+    For the power law, at a vote of 4.7 only 4.7\% of movies are at or below it, but 53.8\%
+    of the model sample is; for the normal the largest gap is only $0.536 - 0.489 = 0.048$,
+    at 6.3.
 
     \textbf{The movie votes follow a normal distribution, approximately.}
     The data has one peak near the middle of its range and is close to symmetric. The
     normal model predicts 68.3\% of movies within $\pm1\sigma$ and 95.4\% within
     $\pm2\sigma$; the data has 70.1\% and 95.6\%. In the QQ plot the points lie on the
-    identity line through the bulk of the data, and the KS distance is about one seventh
+    identity line through the bulk of the data, and the KS distance is about one eighth
     of the next-best model's.
 
     The other three models fail for structural reasons. The power law and the

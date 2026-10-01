@@ -66,7 +66,7 @@ Movie rating data (20)
 - [ ] Plot distribution of smallest digit = last digit (5): Figure 14 — `p2_c_last_digit_plot.py`
 - [ ] Plot distribution of largest digit = first digit (5): Figure 13 — `p2_b_first_digit_plot.py`
 - [ ] Discussion (15): which digit is uniform, is it expected, what the other one follows
-      and why (not Benford) — `p2_d_discussion.py`
+      and why — `p2_d_discussion.py`
 
 ## Before submitting
 

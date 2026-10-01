@@ -339,21 +339,35 @@ def mark_center(ax: plt.Axes, x: np.ndarray) -> None:
 
 
 def plot_movie_data(x: np.ndarray) -> None:
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 3.8))
-    ax1.hist(x, bins=np.arange(1.85, 8.65, 0.1), density=True, color=DATA_COLOR)
-    ax1.set(xlabel="average vote", ylabel="density",
-            title="PDF, histogram (bin = 0.1, one per vote value)")
-    ax2.plot(*ecdf(x), color=DATA_COLOR, lw=2)
-    ax2.set(xlabel="average vote", ylabel="P(X ≤ x)", title="CDF")
-    for ax in (ax1, ax2):
+    # Votes lie in [1.9, 8.5] on a 0.1 grid, so every panel uses linear axes. A vote is an
+    # average of many ratings, a continuous quantity that is only recorded to 0.1, so there
+    # is no PMF panel: it would show the rounding, and with 0.1 bins the PDF already holds
+    # the same information.
+    n = len(x)
+    fig, ((hist, pdf), (cdf, ccdf_ax)) = plt.subplots(2, 2, figsize=(10, 7.6))
+    # Bin edges halfway between 0.1 grid points, so no vote sits on an edge.
+    hist.hist(x, bins=np.arange(1.75, 8.75, 0.5), color=DATA_COLOR, edgecolor="white")
+    hist.set(xlabel="average vote", ylabel="number of movies",
+             title="Histogram (bin = 0.5 vote, counts)")
+    pdf.hist(x, bins=np.arange(1.85, 8.65, 0.1), density=True, color=DATA_COLOR)
+    pdf.set(xlabel="average vote", ylabel="density",
+            title="PDF (bin = 0.1, one per vote value)")
+    cdf.plot(*ecdf(x), color=DATA_COLOR, lw=2)
+    cdf.set(xlabel="average vote", ylabel="P(X ≤ x)", title="CDF")
+    ccdf_ax.plot(*ccdf(x), color=DATA_COLOR, lw=2)
+    ccdf_ax.set(xlabel="average vote", ylabel="P(X ≥ x)", title="CCDF")
+    for ax in (hist, pdf, cdf, ccdf_ax):
         mark_center(ax, x)
-        ax.legend(loc="upper left")  # both panels are empty at low votes
-    fig.suptitle(f"Movie votes: empirical distribution (n = {len(x)})")
-    save(fig, "p1b_0_data")
+    fig.legend(*hist.get_legend_handles_labels(), loc="upper center", ncol=2,
+               bbox_to_anchor=(0.5, 0.965))
+    fig.suptitle(f"Movie votes: empirical distribution (n = {n})", y=0.995)
+    save(fig, "p1b_0_data", top=0.94)
 
 
 def plot_movie_model(x: np.ndarray, key: str, label: str, sample: np.ndarray) -> None:
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 3.8))
+    # PDF and CDF on top, QQ plot and box plot below. The CDF marks the KS gap D where it
+    # occurs; the box plot compares centre and spread and shows ratings outside [1, 10].
+    fig, ((ax1, ax_cdf), (ax2, ax_box)) = plt.subplots(2, 2, figsize=(10, 7.6))
     # A power-law sample reaches the thousands; clip the PDF view and say how much is hidden.
     lo = min(x.min(), np.quantile(sample, 0.001))
     hi = min(max(x.max(), np.quantile(sample, 0.999)), VOTE_VIEW_MAX)
@@ -372,7 +386,35 @@ def plot_movie_model(x: np.ndarray, key: str, label: str, sample: np.ndarray) ->
     ax1.set(xlabel="average vote", ylabel="density", title="PDF: data vs model sample")
     mark_center(ax1, x)
     ax1.legend(loc="best")
+    # CDF over the same view; D is measured on these two curves (ordinary probability scale).
+    ax_cdf.plot(*ecdf(x), color=DATA_COLOR, lw=2, label="data")
+    ax_cdf.plot(*ecdf(sample), color=MODEL_COLOR, lw=2, label="model sample")
+    ks = ks_2samp(x, sample)
+    at = float(ks.statistic_location)
+    f_data, f_model = float(np.mean(x <= at)), float(np.mean(sample <= at))
+    ax_cdf.annotate("", xy=(at, f_model), xytext=(at, f_data),
+                    arrowprops=dict(arrowstyle="<->", color=INK, lw=1.5))
+    ax_cdf.text(at + 0.15, (f_data + f_model) / 2, f"D = {ks.statistic:.3f}\nat {at:.2f}",
+                color=INK, va="center", bbox=LABEL_BOX)
+    ax_cdf.set_xlim(ax1.get_xlim())
+    ax_cdf.set(xlabel="average vote", ylabel="P(X ≤ x)", title="CDF: data vs model sample")
+    ax_cdf.legend(loc="lower right")
     qq_panel(ax2, x, sample, log=hi == VOTE_VIEW_MAX)
+    # Box plot: median line, quartile box, whiskers at 1.5 IQR; outliers hidden to keep the
+    # power-law sample's thousands from flattening the boxes. Dashed lines mark 1 and 10.
+    boxes = ax_box.boxplot([x, sample], vert=False, showfliers=False, widths=0.5,
+                           patch_artist=True, tick_labels=["data", "model\nsample"])
+    for patch, color in zip(boxes["boxes"], (DATA_COLOR, MODEL_COLOR)):
+        patch.set(facecolor=color, alpha=0.55)
+    for line in boxes["medians"]:
+        line.set(color=INK, lw=2)
+    for edge in (1, 10):
+        ax_box.axvline(edge, color=INK, ls="--", lw=1)
+    ax_box.set_xlim(ax1.get_xlim()[0], max(11.0, ax1.get_xlim()[1]))
+    outside = float(np.mean((sample < 1) | (sample > 10)))
+    ax_box.text(0.98, 0.5, f"{outside:.0%} of the sample\nis outside [1, 10]",
+                transform=ax_box.transAxes, ha="right", va="center", color=INK, bbox=LABEL_BOX)
+    ax_box.set(xlabel="average vote", title="Box plot (dashed: possible ratings 1 to 10)")
     fig.suptitle(f"Movie votes vs {label}")
     save(fig, f"p1b_{key}")
 

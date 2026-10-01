@@ -46,11 +46,8 @@
   \par\nopagebreak\smallskip % keep the prompt line on the same page as its figure
   {\centering
    \includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{../figures/#1.png}\par
-   \captionof{figure}{#2}\par}
+   \captionof{figure}{#2}\label{fig:#1}\par}
   \smallskip}
-
-% Panel-by-panel explanation under a figure, one bold-labelled paragraph per panel.
-\newcommand{\panels}[1]{\par\smallskip{\setlength{\parskip}{3pt}#1}\par\medskip}
 
 % Answer text under an item, set apart from the prompt line.
 \newcommand{\answer}[1]{\par\smallskip{#1}\par\medskip}
@@ -58,6 +55,37 @@
 \begin{document}
 
 \hfill Taek Lim \quad CS 6330 Homework 2: Data and Distributions
+
+\bigskip
+\textbf{Tooling.} Python 3 / pandas / numpy / scipy / matplotlib; all estimates computed
+programmatically, none typed by hand; analysis code, figure code and write-up drafted
+with Claude Code.
+
+\medskip
+\textbf{How to read the charts.} Each kind of panel answers one question.
+\begin{center}
+\small
+\begin{tabular}{p{0.2\linewidth}p{0.72\linewidth}}
+  \toprule
+  Chart & Question it answers \\
+  \midrule
+  Histogram / PDF & What is the shape: where is the peak, how long is the tail? \\
+  \midrule
+  PMF (airports) & How many airports have exactly $k$ routes? (Route counts are whole numbers.) \\
+  \midrule
+  CDF & What share lies at or below $x$? Where is the largest gap $D$ between data and model? \\
+  \midrule
+  CCDF & What share lies at or above $x$? On log-log axes a power law is a straight line. \\
+  \midrule
+  QQ plot & Does each quantile of the model match the data's? Points on $y = x$ mean yes. \\
+  \midrule
+  Box plot (movies) & Are the centre, spread and range the same? Are there impossible ratings
+    outside 1 to 10? \\
+  \bottomrule
+\end{tabular}
+\end{center}
+Linear axes show where most values are; log-log axes spread out values that span several
+orders of magnitude.
 
 \bigskip
 % =====================================================================
@@ -104,6 +132,8 @@
       &\hat\sigma = \sqrt{2862.94} = 53.506 && \text{standard deviation}
     \end{align*}}
 
+  % Start the chart part of the airport answers on a fresh page.
+  \clearpage
   \prompt{(These can be CDF, PDF, or QQplot)}
 
   \textbf{Note on the axes.} In every chart on linear axes, the routes-per-airport axis is
@@ -139,80 +169,18 @@
 
   \item \prompt{Screen shot of the visualization of distribution of data}
   \answerfig{p1a_0_data}{Airport routes: empirical distribution ($n = 3409$). Rows: PDF, PMF, CDF, CCDF. Left column on linear axes, right column on log-log axes.}
-  \panels{%
-    \textbf{PDF, linear (row 1, left).} Histogram with 5-route bins, shown from 0 to 200 routes (2.0\% of airports have more than 200); each bar is the share of airports in its bin. 56\% of airports fall in the first bin (fewer than 5 routes), 82\% have fewer than 20, and the bars beyond about 60 are almost flat on the floor.\par
-    \textbf{PDF, log-log (row 1, right).} The same distribution with bins of equal width on the log scale, divided by bin width so it is a density. It falls along a roughly straight line and bends down above about 100 routes.\par
-    \textbf{PMF, linear (row 2, left).} One dot per route count $k$: the number of airports with exactly $k$ routes (left axis) and the same height as a share $P(X = k)$ (right axis). 713 airports have 1 route (20.9\%), 583 have 2, 363 have 3; above about 30 routes every count is at most 14 airports and lies on the floor.\par
-    \textbf{PMF, log-log (row 2, right).} The same dots on log axes. Up to about 30 routes they fall on a line of slope about $-1.45$, close to $-\hat\alpha$. Right of the dashed line ($x = 60$) each route count belongs to only 1, 2 or 3 airports, so the dots sit in rows at exactly those counts; that is a counting floor, not the shape of the distribution.\par
-    \textbf{CDF, linear (row 3, left).} The curve rises almost vertically, reaches 0.92 at 60 routes and 0.98 at 200; the last 2\% runs on up to the maximum of 915, off this axis.\par
-    \textbf{CDF, log-log (row 3, right).} The curve starts with a jump to 0.209 at $x = 1$, climbs in steps over the first few route counts, and is pressed against 1 from about 20 routes on, so the tail is hardly visible here; that is why the tail is read from the CCDF.\par
-    \textbf{CCDF, linear (row 4, left).} The share with at least $x$ routes falls from 1 to 0.18 at 20 routes and 0.08 at 60; from there the tail is a thin line just above zero (0.02 at 200).\par
-    \textbf{CCDF, log-log (row 4, right).} Share of airports with at least $x$ routes. It is close to a straight line up to about 100 routes, then bends down and ends at the busiest airport (915 routes).\par
-    \textbf{Reference lines.} In every panel the green dotted line is the median (4 routes: half the airports have at most 4), the purple dash-dot line is the mean (19.8 routes), and the grey dashed line is $x = 60$ (92\% of airports lie at or left of it). The mean sits five times to the right of the median because a few hubs with hundreds of routes pull it up; on the log-log CCDF only about 18\% of airports reach the mean. On linear axes all three lines are squeezed against the left edge.\par
-    \textbf{Summary.} The median airport has 4 routes and 38\% have only 1 or 2, while the busiest has 915. The mean (19.8) is five times the median and the skewness is 6.0, so a few hubs hold most of the routes.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was power law}
   \answerfig{p1a_1_powerlaw}{Airport routes vs.\ power law ($\alpha = 1.612$, $x_{\min} = 1$). $D = 0.209$.}
-  \panels{%
-    \textbf{PDF, linear (row 1, left).} Linear panels show 0 to 200 routes. The first 5-route bins are almost the same height for data and model; beyond 200 routes lie 2.0\% of the data and 3.5\% of the model sample.\par
-    \textbf{PDF, log-log (row 1, right).} The two lines follow the same straight slope up to about 300 routes. Above that the data drops and ends near 1000, while the model continues past $10^5$ (its largest sampled airport has 342{,}563 routes).\par
-    \textbf{CDF, linear (row 2, left).} The curves almost overlap up to 200 routes. At $x = 1$ the data is at 0.209 (20.9\% of airports have one route) and the model at 0.000: a continuous model puts no mass on exactly one route.\par
-    \textbf{CDF, log-log (row 2, right).} The log $x$-axis spreads out $x = 1, 2, 3$, so it shows where the largest gap is: at $x = 1$, data 0.209 against model 0. $D$ itself is measured on the ordinary probability scale, $0.209 - 0 = 0.209$ (see (j)); from about 3 routes on the curves coincide.\par
-    \textbf{CCDF, linear (row 3, left).} The curves look identical; on linear axes the tail difference is squeezed against zero. Both start at 1.000 at $x = 1$.\par
-    \textbf{CCDF, log-log (row 3, right).} Both follow the same straight line up to about 100 routes. Above that the data bends down and stops at 915; the model stays straight.\par
-    \textbf{QQ, linear (row 4, left).} The axis is stretched to the model's 99.5th percentile (2{,}534 routes), so almost every point is crowded into the bottom-left corner; only the model's few giant airports stand out.\par
-    \textbf{QQ, log-log (row 4, right).} The points lie on $y = x$ up to about 60 routes, then run off to the right, below the line: at the 99.5th percentile the model has 2{,}534 routes and the data 358.\par}
-  \panels{%
-    \textbf{Why the CCDF on log-log axes.} For a power law, the CCDF is the complement
-    of the CDF, and taking the log of both sides turns it into a straight line:
-    \begin{align*}
-      P(X \ge x) &= 1 - P(X < x) = \left(\frac{x}{x_{\min}}\right)^{-(\alpha-1)}
-        && \text{CCDF of the power law}\\
-      \log P(X \ge x) &= -(\alpha-1)\,\log x + (\alpha-1)\,\log x_{\min}
-        && \text{log of both sides}\\
-      \log P(X \ge x) &= -0.612\,\log x
-        && \text{$\alpha = 1.612$, $x_{\min} = 1$}
-    \end{align*}
-    This is linear in $\log x$ with slope $-(\alpha - 1) = -0.612$, so a power law is a
-    straight line on log-log axes and a bend is easy to see. The CDF itself,
-    $1 - x^{-0.612}$, keeps the ``$1 -$'': its log does not simplify, and on log-log axes
-    it is pressed against 1 in exactly the tail where the model and the data differ.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was exponential}
   \answerfig{p1a_2_exponential}{Airport routes vs.\ exponential ($\lambda = 0.0504$). $D = 0.397$.}
-  \panels{%
-    \textbf{PDF, linear (row 1, left).} The model's first bin is lower than the data's and it puts more airports between 20 and 100 routes.\par
-    \textbf{PDF, log-log (row 1, right).} The model is almost flat for small airports and falls off sharply after about 50 routes; the data is steep at the start and has a long, slow tail. 6\% of the sample lies below 1 route, which no airport has.\par
-    \textbf{CDF, linear (row 2, left).} The model reaches 1 by about 190 routes (its largest sampled airport has 191), while the data is only at 0.98 at 200 and keeps rising to 915.\par
-    \textbf{CDF, log-log (row 2, right).} At $x = 1$ the data is at 0.209 and the model at 0.056: the model spreads 5.6\% of airports below one route and rises smoothly instead of jumping at 1.\par
-    \textbf{CCDF, linear (row 3, left).} The model falls more slowly than the data at first, then reaches zero near 190 routes. At $x = 1$: data 1.000, model 0.944.\par
-    \textbf{CCDF, log-log (row 3, right).} The model bends down early and ends near 190 routes; the data goes on to 915. With $\lambda = 0.05$ an airport with 500 routes has probability about $e^{-25}$, yet the data has five such airports.\par
-    \textbf{QQ, linear (row 4, left).} The points follow $y = x$ only at the start and then shoot up: at the 99.5th percentile the data has 358 routes and the model about 100.\par
-    \textbf{QQ, log-log (row 4, right).} The points are too steep: below about 40 routes they lie below $y = x$ (the model gives small airports too many routes), and above it they rise above the line (hubs get too few).\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was uniform}
   \answerfig{p1a_3_uniform}{Airport routes vs.\ uniform on $[1, 915]$. $D = 0.856$.}
-  \panels{%
-    \textbf{PDF, linear (row 1, left).} The model is a flat line at about $1/914$; the data's first 5-route bin is about 100 times higher. 78\% of the model sample lies beyond 200 routes, against 2.0\% of the data.\par
-    \textbf{PDF, log-log (row 1, right).} The model stays flat near $10^{-3}$ across the whole range; the data falls by five orders of magnitude.\par
-    \textbf{CDF, linear (row 2, left).} The model rises in a straight line and is only at about 0.20 at 200 routes; the data reaches 0.92 by 60 routes. The largest gap between the two, $D = 0.856$, is right there, at 60 routes.\par
-    \textbf{CDF, log-log (row 2, right).} At $x = 1$ the data is at 0.209 and the model at 0 (the model has no mass at exactly 1); the model stays below 0.1 until about 90 routes.\par
-    \textbf{CCDF, linear (row 3, left).} The model falls in a straight line and is still at about 0.80 at 200 routes, while the data collapses at the left edge. Both are 1.000 at $x = 1$.\par
-    \textbf{CCDF, log-log (row 3, right).} The model stays near 1 until the right edge and then drops vertically at 915.\par
-    \textbf{QQ, linear (row 4, left).} The points run flat along the bottom: while the model's quantiles climb to about 900 routes, the data's stay near 0 to 20 and rise only at the very end.\par
-    \textbf{QQ, log-log (row 4, right).} Every point lies far below $y = x$, to the right. A typical sampled airport has about 470 routes, while the real median is 4 and 99\% of real airports have fewer than 285.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was normal}
   \answerfig{p1a_4_normal}{Airport routes vs.\ normal ($\mu = 19.8$, $\sigma = 53.5$). $D = 0.365$.}
-  \panels{%
-    \textbf{PDF, linear (row 1, left).} The model is a symmetric bell around 20 routes that spreads into negative route counts (down to about $-136$ at its 0.1st percentile), while the data is one spike at the left edge.\par
-    \textbf{PDF, log-log (row 1, right).} The model is flat over small airports and then drops steeply after about 100 routes. 37\% of its sample is below 1 route, most of it negative, which the log axes cannot show.\par
-    \textbf{CDF, linear (row 2, left).} The model starts at negative route counts, is at 0.365 at $x = 1$ against the data's 0.209, and is almost at 1 by 200 routes (its largest sampled airport has 237) while the data goes on to 915.\par
-    \textbf{CDF, log-log (row 2, right).} The model is flat at about 0.37 from the left edge to about 10 routes: that plateau is the 37\% of the sample below 1 route.\par
-    \textbf{CCDF, linear (row 3, left).} An S-shaped model curve crossing the data near zero; at $x = 1$ the model is at 0.635 against the data's 1.000, and it is almost zero by 200 routes.\par
-    \textbf{CCDF, log-log (row 3, right).} Below about 100 routes the model sits above the data, and its tail ends near 230 routes, far short of 915.\par
-    \textbf{QQ, linear (row 4, left).} The model's low quantiles are negative (down to about $-118$) while the data's stay at 1 to 3 routes; the points cross $y = x$ near 100 and then shoot up. The log-log panel cannot show these negative quantiles.\par
-    \textbf{QQ, log-log (row 4, right).} The points are too steep, as for the exponential: small airports get too many routes and hubs too few. The tail is thin because a normal decays like $e^{-x^2}$.\par}
 
   \item \prompt{What is the distribution of data based on your observation? Discuss}
   \answer{%
@@ -232,44 +200,45 @@
     \end{tabular}
     \end{center}
 
-    \textbf{How $D$ is computed.} \texttt{scipy.stats.ks\_2samp} does not use the figures. It
-    builds the two empirical CDFs from the raw values and, at every $x$, measures the gap on
-    the ordinary probability scale; $D$ is the largest gap:
+    \textbf{How $D$ is computed.} $D$ is the two-sample Kolmogorov--Smirnov distance from
+    \texttt{scipy.stats.ks\_2samp}, computed on the raw values: the largest vertical gap
+    between the data's CDF and the model sample's CDF (0 = identical, 1 = no overlap),
     \[
       D = \max_x \bigl|F_{\text{data}}(x) - F_{\text{model}}(x)\bigr| .
     \]
-    The axes of a chart do not change $D$. A log axis only helps to see where the gap is
-    (for example $x = 1$ is spread out on a log $x$-axis); gap sizes must not be read off a
-    log $y$-axis, which stretches small values and cannot show 0.
-    For the power law, $D = 0.209 - 0.000 = 0.209$ at $x = 1$: 20.9\% of airports have
-    exactly one route, while the continuous model puts no mass there. The tail mismatch
-    above 100 routes involves few airports, so it barely moves $D$; the figures show it
-    instead. For the normal, the gap
-    sits just below 1, where 36.5\% of the model sample already lies (most of it at negative
-    route counts) and no airport does.
 
-    \textbf{The airport data follows a power law, with a cutoff in the far tail.}
-    It is the only one of the four models whose CCDF is a straight line on log-log
-    axes. The data's CCDF is close to straight for more than two decades (1 to about
-    100 routes), and the power-law sample matches it there. The other three models fail
-    for structural reasons, not because a parameter is slightly off:
+    \textbf{Conclusion: the airport data follows a power law.}
+
+    \textbf{Why the power law fits} (Figure~\ref{fig:p1a_1_powerlaw}):
     \begin{itemize}
-      \item \textbf{Uniform} says every route count from 1 to 915 is equally likely,
-            but most airports are tiny.
-      \item \textbf{Normal} is symmetric and allows negative counts, while the data is
-            bounded below at 1 and skewed to the right (skewness 6.0).
-      \item \textbf{Exponential} has the right shape (many small, few large), but its
-            tail falls off too fast. With $\lambda = 0.05$, an airport with 500 routes
-            has probability about $e^{-25}$, yet the data has five airports with more
-            than 500.
+      \item \textbf{Lowest $D$:} 0.209, against 0.365 to 0.856 for the other three models.
+      \item \textbf{PDF shape:} the data and the model sample match on both kinds of axes.
+            On linear axes the bars have almost the same heights; on log-log axes both follow
+            the same straight line up to about 300 routes.
+      \item \textbf{QQ plot (log-log):} the points lie on $y = x$ up to about 60 routes.
+      \item \textbf{Skewness:} the data is strongly right-skewed (6.0), and only the power
+            law is that skewed. Over the data's range (up to 915 routes) its sample has 6.8;
+            the exponential's has 2.0, the uniform's and the normal's 0. (With its giant
+            sampled airports included the power-law sample reaches 47.5: for
+            $\hat\alpha < 4$ the model's skewness is infinite.)
+      \item \textbf{80/20:} the top 20\% of airports hold 83.8\% of all routes, close to the
+            80/20 rule that power laws are known for. The power-law sample gives 87.1\% over
+            the data's range; the exponential gives 51.9\%, the normal 41.9\% (positive
+            values only) and the uniform 35.6\%. This is the same fact as the skewness seen
+            from another side: a few hubs with hundreds of routes carry most of the total,
+            which is also why the mean (19.8) is five times the median (4).
     \end{itemize}
-    The power law is not a perfect fit. $\hat\alpha = 1.61$ is below 2, so the fitted
-    model has an infinite mean and its samples contain airports with $10^5$ routes. Real
-    airports cannot grow that large: there are only 3409 airports to fly to, and
-    runways, gates and slots limit the busiest hubs. That is why the data's CCDF bends
-    down above about 100 routes. The best description is a power law with an upper
-    cutoff, which is typical of networks that grow by preferential attachment: new
-    routes go mostly to airports that already have many routes.}
+
+    \textbf{Why the others fail:} their QQ plot shape is different; the points leave
+    $y = x$ almost from the start.
+    \begin{itemize}
+      \item \textbf{Exponential} (Figure~\ref{fig:p1a_2_exponential}, $D = 0.397$): too
+            steep, below the line for small airports and above it for hubs.
+      \item \textbf{Uniform} (Figure~\ref{fig:p1a_3_uniform}, $D = 0.856$): every point far
+            below the line.
+      \item \textbf{Normal} (Figure~\ref{fig:p1a_4_normal}, $D = 0.365$): too steep, with
+            negative model quantiles that no airport has.
+    \end{itemize}}
 \end{enumerate}
 
 % =====================================================================
@@ -313,14 +282,19 @@
       &\hat\sigma = \sqrt{0.7978} = 0.893 && \text{standard deviation}
     \end{align*}}
 
+  % Start the chart part of the movie answers on a fresh page.
+  \clearpage
   \prompt{(These can be CDF, PDF, or QQplot)}
 
-  \textbf{Note on the axes.} Average votes lie between 1.9 and 8.5, so every chart uses
-  linear axes. In the model charts (f) to (i) the vote axis is cut at 20 on purpose: the
-  power-law and exponential samples run to values that are not possible ratings (the power law's
-  99.5th percentile is about 900), and a wider axis would flatten the data's peak. The share of each model
-  sample beyond the axis is printed on the panel, and those QQ plots use log axes so the
-  whole sample is visible.
+  \textbf{Note on the axes.}
+  \begin{itemize}
+    \item All movie charts use linear axes; average votes lie between 1.9 and 8.5.
+    \item In (f) to (i) the vote axis is cut at 20 on purpose, so the data's peak stays
+          visible. The power-law and exponential samples go far beyond any possible rating
+          (the power law's 99.5th percentile is about 900).
+    \item Each panel prints the share of the model sample beyond the axis.
+    \item For those two models the QQ plot uses log axes, so the whole sample is shown.
+  \end{itemize}
 
   For (f) to (i):
   \begin{itemize}
@@ -328,40 +302,27 @@
           way as for the airports (same generator, continuing after the airport samples).
           The samples are not rounded to 0.1 like the votes.
     \item \textbf{Colours.} Data in blue, model sample in orange.
+    \item \textbf{Layout of the movie figures.} PDF and CDF on top, QQ plot and box plot
+          below. The CDF marks where the largest gap $D$ occurs; the box plot shows median,
+          quartiles and whiskers, with dashed lines at the possible ratings 1 and 10.
     \item \textbf{$D$.} Two-sample Kolmogorov--Smirnov distance: the largest vertical gap
           between the two CDFs (0 = identical).
   \end{itemize}
 
   \item \prompt{Screen shot of the visualization of distribution of data}
-  \answerfig{p1b_0_data}{Movie votes: empirical distribution ($n = 4392$).}
-  \panels{%
-    \textbf{PDF (left).} Histogram with one bin per possible vote (votes are rounded to 0.1). One peak near 6.3 and a nearly symmetric shape; the left tail is longer (skewness $-0.48$): a few movies are rated 2 to 4, and none are above 8.5.\par
-    \textbf{CDF (right).} An S-shaped curve centred near 6.3 (median 6.3, mean 6.23). The small steps come from the 0.1 rounding.\par
-    \textbf{Reference lines.} In both panels (and in the PDF panel of (f) to (i)) the green dotted line is the data median (6.30) and the purple dash-dot line the data mean (6.23). The mean sits just left of the median, as expected for a slightly left-skewed sample: a few very low ratings pull the mean down.\par}
+  \answerfig{p1b_0_data}{Movie votes: empirical distribution ($n = 4392$). Histogram (counts), PDF, CDF and CCDF, all on linear axes.}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was power law}
   \answerfig{p1b_1_powerlaw}{Movie votes vs.\ power law ($\alpha = 1.851$, $x_{\min} = 1.9$). $D = 0.490$.}
-  \panels{%
-    \textbf{PDF (left).} The model puts its highest density at the lowest vote (1.9), where the data has almost nothing, and then a long tail. 14\% of its sample lies above 20, which is not a possible rating.\par
-    \textbf{QQ plot (right).} Log axes, because the sample's 99.5th percentile is about 900. At the top votes the points run almost horizontally to the right: the model's high quantiles are hundreds, the data's stop at 8.5.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was exponential}
   \answerfig{p1b_2_exponential}{Movie votes vs.\ exponential ($\lambda = 0.1606$). $D = 0.481$.}
-  \panels{%
-    \textbf{PDF (left).} The model peaks at zero and has a long right tail; 4\% of its sample is above 20. The data is a narrow hump between 4 and 8.5.\par
-    \textbf{QQ plot (right).} The points cross $y = x$ at a shallow angle: the model's spread is far larger than the data's, with low quantiles near 0 and high quantiles above 20.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was uniform}
   \answerfig{p1b_3_uniform}{Movie votes vs.\ uniform on $[1.9, 8.5]$. $D = 0.380$.}
-  \panels{%
-    \textbf{PDF (left).} The model is flat across $[1.9, 8.5]$, but the data is concentrated between 5 and 7.5.\par
-    \textbf{QQ plot (right).} The points lie flat across the middle, above $y = x$ on the left and below it on the right: the model's low quantiles are too low and its high quantiles too high, because it spreads the votes evenly instead of piling them in the middle.\par}
 
   \item \prompt{Screen shot of the visualization of distribution of data if it was normal}
   \answerfig{p1b_4_normal}{Movie votes vs.\ normal ($\mu = 6.227$, $\sigma = 0.893$). $D = 0.048$.}
-  \panels{%
-    \textbf{PDF (left).} The sample traces the same bell as the data, with the peak in the same place.\par
-    \textbf{QQ plot (right).} The points lie on $y = x$ from about 4.5 to 7.5. The only departures are at the ends: the data's lowest votes are lower than the model predicts (longer left tail), and the data stops at 8.5 while the model continues. $D = 0.048$ is by far the smallest.\par}
 
   \item \prompt{What is the distribution of data based on your observation? Discuss}
   \answer{%
@@ -381,38 +342,35 @@
     \end{tabular}
     \end{center}
 
-    \textbf{How $D$ is computed.} \texttt{scipy.stats.ks\_2samp} does not use the figures. It
-    builds the two empirical CDFs from the raw values and, at every $x$, measures the gap on
-    the ordinary probability scale; $D$ is the largest gap:
+    \textbf{How $D$ is computed.} $D$ is the two-sample Kolmogorov--Smirnov distance from
+    \texttt{scipy.stats.ks\_2samp}, computed on the raw values: the largest vertical gap
+    between the data's CDF and the model sample's CDF (0 = identical, 1 = no overlap),
     \[
       D = \max_x \bigl|F_{\text{data}}(x) - F_{\text{model}}(x)\bigr| .
     \]
-    The axes of a chart do not change $D$. A log axis only helps to see where the gap is
-    (for example $x = 1$ is spread out on a log $x$-axis); gap sizes must not be read off a
-    log $y$-axis, which stretches small values and cannot show 0.
-    For the power law, at a vote of 4.7 only 4.7\% of movies are at or below it, but 53.8\%
-    of the model sample is; for the normal the largest gap is only $0.536 - 0.489 = 0.048$,
-    at 6.3.
 
-    \textbf{The movie votes follow a normal distribution, approximately.}
-    The data has one peak near the middle of its range and is close to symmetric. The
-    normal model predicts 68.3\% of movies within $\pm1\sigma$ and 95.4\% within
-    $\pm2\sigma$; the data has 70.1\% and 95.6\%. In the QQ plot the points lie on the
-    identity line through the bulk of the data, and the KS distance is about one eighth
-    of the next-best model's.
+    \textbf{Conclusion: the movie votes follow a normal distribution, approximately.}
 
-    The other three models fail for structural reasons. The power law and the
-    exponential are both monotonically decreasing: their most likely value is the
-    smallest one, so they predict mostly terrible movies and a long tail of ratings
-    above 10. The uniform model ignores the peak altogether.
+    \textbf{Why the normal fits} (Figure~\ref{fig:p1b_4_normal}):
+    \begin{itemize}
+      \item \textbf{Smallest gap:} $D = 0.048$, about one eighth of the next-best model (0.380).
+      \item \textbf{Same shape:} the sample traces the data's single bell, with the peak in
+            the same place near 6.3.
+      \item \textbf{QQ on the line:} the points lie on $y = x$ from about 4.5 to 7.5.
+      \item \textbf{Same spread:} 70.1\% of movies are within $\pm1\sigma$ and 95.6\% within
+            $\pm2\sigma$; the normal predicts 68.3\% and 95.4\%. The box plots nearly coincide.
+      \item \textbf{Expected:} each vote is an average of many ratings, and by the central
+            limit theorem such averages tend toward a normal distribution.
+    \end{itemize}
 
-    The fit is good but not exact, for two reasons. First, the data is bounded to
-    $[1, 10]$ and slightly left-skewed: bad movies can drop further below the average
-    than good movies can rise above it. Second, votes are rounded to one decimal, which
-    gives the QQ plot its small steps. A normal shape is expected because each value is
-    an \emph{average} of many individual votes. By the central limit theorem an average
-    of many independent ratings tends toward a normal distribution, whatever the
-    distribution of each single rating.}
+    \textbf{Why the others fail:} their PDF shape is totally different from the data's
+    single bell.
+    \begin{itemize}
+      \item \textbf{Power law} (Figure~\ref{fig:p1b_1_powerlaw}, $D = 0.490$): falls from the
+            lowest vote.
+      \item \textbf{Exponential} (Figure~\ref{fig:p1b_2_exponential}, $D = 0.481$): falls from 0.
+      \item \textbf{Uniform} (Figure~\ref{fig:p1b_3_uniform}, $D = 0.380$): flat, no peak.
+    \end{itemize}}
 \end{enumerate}
 
 % =====================================================================
@@ -421,92 +379,63 @@
 
 \begin{itemize}
   \item \prompt{Screenshot of distribution/histogram of the age}
-  \answer{How the ages were computed. The birth dates have the form \texttt{dd-Mon-yy}
-    (a few use a 4-digit year). Every 2-digit year is read as 19\textit{yy}: IMDB-WIKI
-    was collected in 2015, so a year such as \texttt{20}--\texttt{24} cannot mean
-    2020--2024, and the counts per year decrease smoothly from the 1920s down to
-    \texttt{00}, with no break that would mark a switch to the 2000s. The 129 rows with
-    year \texttt{0000} (a missing-value placeholder) were dropped. Per the professor's
-    instruction (2026-09-23), age is now the year difference \textbf{2026 minus birth
-    year} (month/day ignored), kept only if $1 \le$ age $\le 100$. Keeping that range
-    leaves \textbf{453{,}905} people (mean 56.87, median 55, range 27 to 100). The
-    minimum of 27 is a result of the 19\textit{yy} rule, since the latest possible birth
-    year is 1999 ($2026-1999=27$). Of the rest, 6{,}684 rows had age $>100$ and were
-    dropped; none had age $<1$.}
-  \answerfig{p2_0_age_all}{All ages in 2026 before the $1 \le \text{age} \le 100$ filter
-    ($n = 460{,}589$). Blue bars are kept, coral bars are removed; log $y$ axis.}
-  \panels{%
-    \textbf{Kept (blue).} Ages 27 to 100, 453{,}905 people. No age is below 27 because the
-    latest birth year is 1999.\par
-    \textbf{Removed (coral).} Ages 101 to 294, 6{,}684 people (1.5\%). Most are 101 to about
-    130; a few isolated bars reach 150, 165 and one at 294 (born 1732). These are not
-    plausible ages for people in a 2015 photo database, so the filter drops them. The 129
-    rows with year \texttt{0000} are not ages at all and are dropped before this plot.\par
-    \textbf{Why log $y$.} The removed years hold only 1.5\% of people; on a linear axis
-    their bars would be invisible next to the peak of about 16{,}000 per year.\par}
-  \answerfig{p2_1_age}{Age in 2026 ($n = 453{,}905$).}
-  \panels{%
-    \textbf{Shape.} One broad hump: ages start at 27, rise through the 30s, peak in the 40s and 50s, and fall off in a long right tail up to 100. Most of the mass is between 36 and 71.\par
-    \textbf{Jagged bars.} Neighbouring years differ (for example, 48 and 57 stand out). This is year-to-year noise in how many actors were born in a given year, not a pattern in the ages themselves.\par}
+  \answer{\textbf{How the ages were computed.}
+    \begin{itemize}
+      \item \textbf{Date format:} \texttt{dd-Mon-yy}. 277 rows use a 4-digit year instead:
+            129 are the placeholder \texttt{0000} (dropped, see below) and 148 are real
+            years from 1732 to 1899, which are kept as written. All 148 give ages of 127 or
+            more, so the age filter removes them later.
+      \item \textbf{Century:} every 2-digit year is read as 19\textit{yy}. IMDB-WIKI was
+            collected in 2015, and the counts per year fall smoothly down to \texttt{00}
+            with no jump into the 2000s.
+      \item \textbf{Missing dates:} 129 rows have year \texttt{0000} (the year is unknown),
+            so no age can be computed and they are dropped.
+      \item \textbf{Age:} 2026 minus birth year, month and day ignored (professor's
+            instruction, 2026-09-23).
+      \item \textbf{Filter:} keep $1 \le \text{age} \le 99$, as the assignment asks. 7{,}500
+            rows are over 99 and dropped; none are under 1.
+      \item \textbf{Result:} \textbf{453{,}089} people; mean 56.79, median 55, range 27 to
+            99. The minimum is 27 because the latest birth year is 1999
+            ($2026 - 1999 = 27$).
+    \end{itemize}}
+  \answerfig{p2_0_age_all}{All ages in 2026 before the $1 \le \text{age} \le 99$ filter
+    ($n = 460{,}589$). Blue bars are kept, coral bars are removed; log $y$ axis. Median 55 (green dotted), mean 57.65 (purple dash-dot).}
+  \answerfig{p2_1_age}{Age in 2026 ($n = 453{,}089$). Median 55 (green dotted), mean 56.79 (purple dash-dot).}
 
   \item \prompt{Screenshot of distribution/histogram of the first digit of age}
-  \answerfig{p2_2_first_digit}{First digit of age, with the uniform level $1/9$ (dashed) and Benford's law (orange).}
-  \panels{%
-    \textbf{Bars.} The shares are 0.2\%, 0.7\%, 7.9\%, 24.5\%, 30.0\%, 18.9\%, 9.9\%, 5.4\% and 2.5\% for digits 1 to 9. They peak at 5 and 4, the same place as the hump in the age histogram.\par
-    \textbf{Uniform line.} Far from the dashed $1/9 = 0.111$ level: digits 4 to 6 are well above it, digits 1 to 3 and 8 to 9 well below.\par
-    \textbf{Benford curve.} Also far from Benford, which predicts 1 as the most common digit (30.1\%); here 1 is the rarest.\par}
+  \answerfig{p2_2_first_digit}{First digit of age, with the uniform level $1/9$ (grey dashed) and a normal fitted to the digits (green dashed, $\mu = 5.22$, $\sigma = 1.43$). Median 5 (green dotted), mean 5.22 (purple dash-dot), mode 5 (gold); the shaded band is mean $\pm$ $\sigma$ ($\sigma = 1.43$, variance 2.05).}
 
   \item \prompt{Screenshot of distribution/histogram of the last digit of age}
-  \answerfig{p2_3_last_digit}{Last digit of age, with the uniform level $1/10$ (dashed).}
-  \panels{%
-    \textbf{Bars.} Every digit has a share between 8.95\% (digit 3) and 11.10\% (digit 7), within 1.10 percentage points of 10\%.\par
-    \textbf{Uniform line.} All ten bars sit close to the dashed 0.100 level, with no digit clearly favoured.\par}
+  \answerfig{p2_3_last_digit}{Last digit of age, with the uniform level $1/10$ (dashed). Median 5 (green dotted), mean 4.55 (purple dash-dot), mode 7 (gold); the shaded band is mean $\pm$ $\sigma$ ($\sigma = 2.87$, variance 8.24).}
 
   \item \prompt{Discussion (what are those distribution?) Why do you think it is like this?}
   \answer{%
-    \textbf{The last digit is uniform (approximately); the first digit is not.}
+    \textbf{The first digit is approximately normal; the last digit is approximately uniform.}
 
-    \textbf{Last digit.} This is expected. The last digit of an age is its value modulo
-    10. Every block of ten ages (20--29, 30--39, \dots) contains each last digit exactly
-    once. The age distribution changes slowly compared with a step of one year, so within
-    any block of ten the ten ages have roughly equal counts, and summing over the blocks
-    gives each last digit about 10\%. The remaining deviations of up to $\pm1.1$ points
-    come from year-to-year noise in how many actors were born in a given year (the jagged
-    bars in the age histogram), not from any preference for particular digits.
+    \textbf{First digit: approximately normal}, because:
+    \begin{enumerate}[label=\arabic*.]
+      \item It is bell-shaped, with one peak at 5 that falls off on both sides.
+      \item The mean (5.22), median (5) and mode (5) are all in the middle and almost equal.
+      \item A normal fitted to the digits ($\mu = 5.22$, $\sigma = 1.43$) follows the bars
+            within 5.3 points (Figure~\ref{fig:p2_2_first_digit}).
+      \item For ages 30 to 99 the first digit is the decade of age, and age itself has one
+            hump (Figure~\ref{fig:p2_1_age}).
+      \item It is not exactly normal: it is slightly right-skewed ($+0.53$), digit 2 is small
+            because ages are measured in 2026, so the youngest actor (born 1999) is already 27,
+            and digit 1 never appears because no age is between 10 and 19.
+    \end{enumerate}
 
-    \medskip
-    \textbf{First digit.} This is also expected, once the two boundary decades are
-    accounted for separately. For ages 30 to 99, the first digit \emph{is} the decade of
-    life, and grouping by decade reproduces the shape of the age distribution: it peaks
-    at 5 (the 50s, 30.0\%) and 4 (the 40s, 24.5\%), matching the median of 55. Digit 2 is
-    small (0.7\%) not because few actors are in their 20s, but because the $1 \le
-    \text{age} \le 100$ rule only keeps ages 27 to 29 in that decade, three values out of
-    ten, a boundary effect of the reference year rather than a property of the data.
-    Digit 1 is smaller still (0.2\%): no age from 10 to 19 survives the rule (the
-    youngest possible age is 27), so the entire digit-1 count comes from the 816 people
-    with age exactly 100 ($816 / 453{,}905 = 0.18\%$, matching the observed share). For
-    the first digit to be uniform, every decade would need the same number of actors,
-    which working actors clearly are not, and the two extreme digits are further skewed
-    by where the $[1, 100]$ window happens to cut.
-
-    \medskip
-    \textbf{It is not Benford's law either.} Benford's law (first digit $d$ with
-    probability $\log_{10}(1 + 1/d)$, so 1 is the most common at 30.1\%) applies to data
-    that spans several orders of magnitude, such as populations, prices or the airport
-    route counts in Problem~1, where the log of the value is spread out roughly evenly.
-    Age spans less than one order of magnitude (27 to 100) and is concentrated around
-    55, so its first digit shows where that one hump sits, not Benford's pattern. In short,
-    the last digit is uniform because it throws away where the value is and keeps only
-    its position within a block of ten. The first digit keeps exactly that information,
-    so its distribution follows the shape of the age distribution.}
+    \textbf{Last digit: approximately uniform}, because:
+    \begin{enumerate}[label=\arabic*.]
+      \item The bars are flat, with every digit within $10\% \pm 1.2$ points
+            (Figure~\ref{fig:p2_3_last_digit}).
+      \item The mean (4.55) and variance (8.24) match a uniform on 0--9 (4.5 and
+            $(10^2 - 1)/12 = 8.25$).
+      \item The last digit is the age modulo 10, so every block of ten ages contains each digit
+            once, and age counts change slowly within a block.
+      \item The small gaps are year-to-year noise in births (Figure~\ref{fig:p2_1_age}), not a
+            preference for any digit.
+    \end{enumerate}}
 \end{itemize}
-
-% =====================================================================
-\bigskip
-\textbf{Tooling.} Python 3 / pandas / numpy / scipy / matplotlib; all estimates computed
-programmatically, none typed by hand; analysis code, figure code and write-up drafted
-with Claude Code. Code: one script per answer in \texttt{hw2/code/} (for example
-\texttt{p1\_airport\_a\_alpha.py}), sharing \texttt{common.py} and \texttt{common\_p2.py};
-\texttt{run\_all.py} runs them all.
 
 \end{document}

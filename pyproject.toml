@@ -8,6 +8,7 @@ dependencies = [
     "pandas>=3.0.5",
     "scikit-learn>=1.9.1",
     "scipy>=1.18.1",
+    "wordcloud>=1.9.6",
 ]
 
 [dependency-groups]

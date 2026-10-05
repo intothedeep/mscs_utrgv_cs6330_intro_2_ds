@@ -16,19 +16,18 @@ import matplotlib
 matplotlib.use("Agg")  # headless: write PNGs only
 import matplotlib.pyplot as plt
 import pandas as pd
-from common import DATA_DIR, FIG_DIR, INK, SEED, VIDEOS, count_terms
+from common import DATA_DIR, FIG_DIR, INK, SEED, VERSIONS, VIDEOS, count_terms
 from wordcloud import WordCloud
 
 # Video titles can hold Hangul (e.g. BTS (방탄소년단)); AppleGothic is the macOS fallback.
 plt.rcParams["font.family"] = ["DejaVu Sans", "AppleGothic"]
 
-__all__ = ["VERSIONS", "load_comments", "make_cloud"]
+__all__ = ["load_comments", "make_cloud"]
 
 MAX_WORDS = 150
 # The non-English and mixed clouds hold Hangul, kana, Thai and Cyrillic; the wordcloud
 # default font draws Latin only. Arabic draws unjoined (no text shaping).
 CLOUD_FONT = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
-VERSIONS = {"en": "English", "non_en": "non-English", "mixed": "mixed (all languages)"}
 
 
 def load_comments(label: str, version: str) -> list[str]:

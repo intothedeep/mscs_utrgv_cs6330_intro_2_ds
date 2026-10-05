@@ -4,12 +4,14 @@ Step 1 (R: get_stats, get_video_details, get_comment_threads, write.csv).
 For each video in common.VIDEOS: fetch statistics and details, then top-level comments
 page by page, by relevance and then newest first (COMMENT_ORDERS), until MAX_COMMENTS of
 them are English or MAX_PAGES pages are used.
-Writes hw3/data/videos.csv (one row per video), hw3/data/comments_<label>_all.csv (every
+Writes hw3/data/videos.csv (one row per video, with a fetched_at timestamp), hw3/data/comments_<label>_all.csv (every
 fetched comment with its detected language) and hw3/data/comments_<label>.csv (English
 only, the input of p2), and prints the first rows, the R script's View().
 
 Run: uv run python hw3/code/p1_collect.py
 """
+
+from datetime import UTC, datetime
 
 import pandas as pd
 from common import (
@@ -41,6 +43,8 @@ def fetch_video(video_id: str, key: str) -> dict[str, str | int]:
         "like_count": int(stats.get("likeCount", 0)),
         # Missing when comments are turned off; the assignment needs them open.
         "comment_count": int(stats.get("commentCount", 0)),
+        # Stats change daily, so the report needs the read date (UTC, ISO 8601).
+        "fetched_at": datetime.now(UTC).isoformat(timespec="seconds"),
     }
 
 

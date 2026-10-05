@@ -1,0 +1,7 @@
+label,order,english,non_english_with_lang,no_lang,total
+video_a,relevance,660,413,176,1249
+video_a,time,340,289,87,716
+video_a,total,1000,702,263,1965
+video_b,relevance,579,424,105,1108
+video_b,time,421,434,164,1019
+video_b,total,1000,858,269,2127

@@ -260,3 +260,7 @@ Q9. `[CLARIFICATION REQUIRED] The checklist item "Own YouTube API credentials us
 - Q7, Q8: name only on page 1. No code appendix: the report links the GitHub repo.
 - Comment CSVs are now in `.gitignore` (M4 closed).
 - Still open: Q1, Q5, Q6, Q9.
+- Q1: no PLAN.md for hw3; `grading_checklist.md` holds the goal (owner, 2026-10-05).
+- Q5: stats are "as of 2026-10-04". p1 saves `fetched_at` from the next run on; no re-collection.
+- Q6: T6 shows both shares: fetched / total and English kept / total.
+- Q9: S1 says the key is a YouTube Data API v3 key from the owner's own Google Cloud project; the key value never appears.

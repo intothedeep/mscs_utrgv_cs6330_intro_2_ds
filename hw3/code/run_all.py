@@ -1,5 +1,5 @@
 """
-Run the three HW3 steps in order.
+Run the four HW3 steps in order.
 
 Run from the repo root:  uv run python hw3/code/run_all.py
 """
@@ -8,7 +8,7 @@ import runpy
 from pathlib import Path
 
 CODE_DIR = Path(__file__).resolve().parent
-SCRIPTS = ("p1_collect.py", "p2_wordcloud.py", "p3_compare.py")
+SCRIPTS = ("p1_collect.py", "p2_wordcloud.py", "p3_compare.py", "p4_report_tables.py")
 
 if __name__ == "__main__":
     for name in SCRIPTS:

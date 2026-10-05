@@ -5,7 +5,8 @@ Python: YouTube Data API v3 over plain REST, tm-style term cleaning, and the plo
 
 Steps:   p1_collect.py   stats, details, comments  -> hw3/data/
          p2_wordcloud.py term counts, word clouds  -> hw3/data/, hw3/figures/
-         p3_compare.py   side-by-side numbers for the discussion
+         p3_compare.py   side-by-side numbers for the discussion -> hw3/data/compare_*.csv
+         p4_report_tables.py  saved CSVs -> LaTeX table bodies in hw3/report/tables/
 Run all: uv run python hw3/code/run_all.py
 
 The API key is read from hw3/.env (YOUTUBE_DATA_API_KEY=...), which .gitignore excludes.
@@ -34,6 +35,7 @@ __all__ = [
     "MAX_COMMENTS",
     "MAX_PAGES",
     "SEED",
+    "VERSIONS",
     "VIDEOS",
     "api_get",
     "clean_terms",
@@ -59,6 +61,9 @@ VIDEOS: dict[str, str] = {
 # 100 per page, 1 quota unit per page. MAX_COMMENTS counts English comments only (tm's
 # stopwords are English, so other languages would flood the cloud with their function words).
 # MAX_PAGES caps a run at 50 units per video when few comments are English.
+# Comment versions of one video: terms-file and cloud key -> display name.
+VERSIONS = {"en": "English", "non_en": "non-English", "mixed": "mixed (all languages)"}
+
 MAX_COMMENTS = 1000
 MAX_PAGES = 50
 # Relevance paging ends after ~1,100-1,250 comments (~600 English), so collection then

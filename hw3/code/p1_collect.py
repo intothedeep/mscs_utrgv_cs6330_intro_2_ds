@@ -1,15 +1,27 @@
 """
 Step 1 (R: get_stats, get_video_details, get_comment_threads, write.csv).
 
-For each video in common.VIDEOS: fetch statistics and details, then up to MAX_COMMENTS
-top-level comments. Writes hw3/data/videos.csv (one row per video) and
-hw3/data/comments_<label>.csv, and prints the first rows, the R script's View().
+For each video in common.VIDEOS: fetch statistics and details, then top-level comments
+page by page, by relevance and then newest first (COMMENT_ORDERS), until MAX_COMMENTS of
+them are English or MAX_PAGES pages are used.
+Writes hw3/data/videos.csv (one row per video), hw3/data/comments_<label>_all.csv (every
+fetched comment with its detected language) and hw3/data/comments_<label>.csv (English
+only, the input of p2), and prints the first rows, the R script's View().
 
 Run: uv run python hw3/code/p1_collect.py
 """
 
 import pandas as pd
-from common import COMMENT_ORDER, DATA_DIR, MAX_COMMENTS, VIDEOS, api_get, load_api_key
+from common import (
+    COMMENT_ORDERS,
+    DATA_DIR,
+    MAX_COMMENTS,
+    MAX_PAGES,
+    VIDEOS,
+    api_get,
+    detect_language,
+    load_api_key,
+)
 
 __all__ = ["fetch_comments", "fetch_video"]
 
@@ -33,27 +45,44 @@ def fetch_video(video_id: str, key: str) -> dict[str, str | int]:
 
 
 def fetch_comments(video_id: str, key: str) -> pd.DataFrame:
-    """Top-level comments, 100 per page, until MAX_COMMENTS or the last page."""
+    """Top-level comments with `order` and `lang` columns, 100 per page, through each of
+    COMMENT_ORDERS in turn until MAX_COMMENTS English comments or MAX_PAGES pages in total.
+    A comment seen under an earlier order is skipped (same comment ID). Rows after the
+    MAX_COMMENTS-th English one are not kept."""
     rows: list[dict[str, str | int]] = []
-    params: dict[str, str | int] = {
-        "part": "snippet", "videoId": video_id, "maxResults": 100,
-        "order": COMMENT_ORDER, "textFormat": "plainText",
-    }
-    while len(rows) < MAX_COMMENTS:
-        page = api_get("commentThreads", params, key)
-        for item in page["items"]:
-            top = item["snippet"]["topLevelComment"]["snippet"]
-            rows.append({
-                "author": top.get("authorDisplayName", ""),
-                "published_at": top["publishedAt"],
-                "like_count": top.get("likeCount", 0),
-                "reply_count": item["snippet"].get("totalReplyCount", 0),
-                "text_original": top["textOriginal"],
-            })
-        if "nextPageToken" not in page:
-            break
-        params["pageToken"] = page["nextPageToken"]
-    return pd.DataFrame(rows[:MAX_COMMENTS])
+    seen: set[str] = set()
+    n_english = n_pages = 0
+    for order in COMMENT_ORDERS:
+        params: dict[str, str | int] = {
+            "part": "snippet", "videoId": video_id, "maxResults": 100,
+            "order": order, "textFormat": "plainText",
+        }
+        while n_pages < MAX_PAGES:
+            page = api_get("commentThreads", params, key)
+            n_pages += 1
+            for item in page["items"]:
+                if item["id"] in seen:
+                    continue
+                seen.add(item["id"])
+                top = item["snippet"]["topLevelComment"]["snippet"]
+                lang = detect_language(top["textOriginal"])
+                n_english += lang == "en"
+                rows.append({
+                    "comment_id": item["id"],
+                    "order": order,
+                    "author": top.get("authorDisplayName", ""),
+                    "published_at": top["publishedAt"],
+                    "like_count": top.get("likeCount", 0),
+                    "reply_count": item["snippet"].get("totalReplyCount", 0),
+                    "lang": lang,
+                    "text_original": top["textOriginal"],
+                })
+                if n_english == MAX_COMMENTS:
+                    return pd.DataFrame(rows)
+            if "nextPageToken" not in page:
+                break
+            params["pageToken"] = page["nextPageToken"]
+    return pd.DataFrame(rows)
 
 
 if __name__ == "__main__":
@@ -64,13 +93,18 @@ if __name__ == "__main__":
     videos = []
     for label, video_id in VIDEOS.items():
         video = {"label": label, **fetch_video(video_id, key)}
-        comments = fetch_comments(video_id, key)
+        fetched = fetch_comments(video_id, key)
+        comments = fetched[fetched["lang"] == "en"]
+        video["comments_fetched"] = len(fetched)
         video["comments_collected"] = len(comments)
+        fetched.to_csv(DATA_DIR / f"comments_{label}_all.csv", index=False)
         comments.to_csv(DATA_DIR / f"comments_{label}.csv", index=False)
         videos.append(video)
         print(f"\n== {label}: {video['title']} ({video['channel']})")
         print(f"views {video['view_count']:,}  likes {video['like_count']:,}  "
-              f"comments {video['comment_count']:,}  collected {len(comments):,} "
-              f"(top-level, order={COMMENT_ORDER})")
+              f"comments {video['comment_count']:,}  fetched {len(fetched):,}  "
+              f"English {len(comments):,} (top-level)")
+        print("English by order:", comments["order"].value_counts().to_dict())
+        print("languages:", fetched["lang"].replace("", "none").value_counts().head(8).to_dict())
         print(comments.head().to_string(max_colwidth=60))
     pd.DataFrame(videos).to_csv(DATA_DIR / "videos.csv", index=False)

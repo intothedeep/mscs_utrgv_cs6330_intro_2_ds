@@ -8,32 +8,37 @@ Steps:   p1_collect.py   stats, details, comments  -> hw3/data/
          p3_compare.py   side-by-side numbers for the discussion
 Run all: uv run python hw3/code/run_all.py
 
-The API key is read from hw3/.env (YOUTUBE_API_KEY=...), which .gitignore excludes.
+The API key is read from hw3/.env (YOUTUBE_DATA_API_KEY=...), which .gitignore excludes.
 Reading public comments needs only an API key, not OAuth.
 """
 
 import json
 import os
 import re
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
 from collections import Counter
 from pathlib import Path
 
+from lingua import Language, LanguageDetectorBuilder
+
 __all__ = [
-    "COMMENT_ORDER",
+    "COMMENT_ORDERS",
     "DATA_DIR",
     "FIG_DIR",
     "GRID",
     "HW_DIR",
     "INK",
     "MAX_COMMENTS",
+    "MAX_PAGES",
     "SEED",
     "VIDEOS",
     "api_get",
     "clean_terms",
     "count_terms",
+    "detect_language",
     "load_api_key",
 ]
 
@@ -47,18 +52,24 @@ SEED = 20701313  # owner's student ID, same as hw2
 # successful first comment page) and note the date here: "verified via videos.list on ____".
 VIDEOS: dict[str, str] = {
     "video_a": "gdZLi9oWNZg",  # owner's pick, 2026-10-03 (search "bts")
-    "video_b": "Cr8K88UcO0s",  # owner's pick, 2026-10-03 (search "bad bunny")
+    "video_b": "2S24-y0Ij3Y",  # owner's pick, 2026-10-04 (search "blackpink"), replaces Bad Bunny
 }
 
 # commentThreads.list returns top-level comments only (as tuber's get_comment_threads does),
-# 100 per page, 1 quota unit per page. The cap keeps a run at 10 units per video.
+# 100 per page, 1 quota unit per page. MAX_COMMENTS counts English comments only (tm's
+# stopwords are English, so other languages would flood the cloud with their function words).
+# MAX_PAGES caps a run at 50 units per video when few comments are English.
 MAX_COMMENTS = 1000
-COMMENT_ORDER = "relevance"  # API option: "relevance" or "time"
+MAX_PAGES = 50
+# Relevance paging ends after ~1,100-1,250 comments (~600 English), so collection then
+# continues newest-first until MAX_COMMENTS English (owner, 2026-10-04). Each row keeps its order.
+COMMENT_ORDERS = ("relevance", "time")
 
 INK = "#52514e"
 GRID = "#e4e3df"
 
 API_ROOT = "https://www.googleapis.com/youtube/v3/"
+RETRIES = 3
 
 # tm::stopwords("english"), the list DocumentTermMatrix(stopwords=TRUE) removes.
 TM_STOPWORDS = frozenset(
@@ -244,41 +255,74 @@ MIN_WORD_LENGTH = 3  # tm's default wordLengths = c(3, Inf)
 
 
 def load_api_key() -> str:
-    """YOUTUBE_API_KEY from the environment, else from hw3/.env. Never printed."""
-    key = os.environ.get("YOUTUBE_API_KEY", "")
+    """YOUTUBE_DATA_API_KEY from the environment, else from hw3/.env. Never printed."""
+    key = os.environ.get("YOUTUBE_DATA_API_KEY", "")
     env_file = HW_DIR / ".env"
     if not key and env_file.exists():
         for line in env_file.read_text().splitlines():
             name, _, value = line.partition("=")
-            if name.strip() == "YOUTUBE_API_KEY":
+            if name.strip() == "YOUTUBE_DATA_API_KEY":
                 key = value.strip().strip('"').strip("'")
     if not key:
-        raise SystemExit("No API key: put YOUTUBE_API_KEY=... in hw3/.env (see the HW3 notes).")
+        raise SystemExit("No API key: put YOUTUBE_DATA_API_KEY=... in hw3/.env (see the HW3 notes).")
     return key
 
 
 def api_get(resource: str, params: dict[str, str | int], key: str) -> dict:
-    """GET one YouTube Data API v3 resource. Fails fast with the API's own error reason."""
+    """GET one YouTube Data API v3 resource. Fails fast with the API's own error reason,
+    after RETRIES tries for the API's transient errors (processingFailure, HTTP 5xx)."""
     query = urllib.parse.urlencode({**params, "key": key})
-    try:
-        with urllib.request.urlopen(f"{API_ROOT}{resource}?{query}", timeout=30) as resp:
-            return json.load(resp)
-    except urllib.error.HTTPError as err:
-        body = json.loads(err.read() or b"{}").get("error", {})
-        reasons = [e.get("reason", "") for e in body.get("errors", [])]
-        # The key is in the URL, so report the reason only, never the request.
-        raise SystemExit(f"{resource}: HTTP {err.code} {reasons} {body.get('message', '')}")
+    for attempt in range(1, RETRIES + 1):
+        try:
+            with urllib.request.urlopen(f"{API_ROOT}{resource}?{query}", timeout=30) as resp:
+                return json.load(resp)
+        except urllib.error.HTTPError as err:
+            body = json.loads(err.read() or b"{}").get("error", {})
+            reasons = [e.get("reason", "") for e in body.get("errors", [])]
+            is_transient = err.code >= 500 or "processingFailure" in reasons
+            if is_transient and attempt < RETRIES:
+                time.sleep(2 * attempt)
+                continue
+            # The key is in the URL, so report the reason only, never the request.
+            raise SystemExit(f"{resource}: HTTP {err.code} {reasons} {body.get('message', '')}")
+    raise AssertionError("unreachable")
+
+
+# ---------------------------------------------------------------- language detection
+
+_URL_OR_MENTION = re.compile(r"https?://\S+|@\S+")
+# Candidate languages for K-pop comment sections. With all 75 languages, short English
+# comments ("2026 anyone?", "Lets go") were labelled Sotho or Tswana (first run, 2026-10-04).
+LANGUAGES = (
+    Language.ENGLISH, Language.SPANISH, Language.PORTUGUESE, Language.FRENCH,
+    Language.GERMAN, Language.ITALIAN, Language.INDONESIAN, Language.MALAY,
+    Language.TAGALOG, Language.VIETNAMESE, Language.THAI, Language.TURKISH,
+    Language.RUSSIAN, Language.ARABIC, Language.HINDI, Language.KOREAN,
+    Language.JAPANESE, Language.CHINESE, Language.POLISH, Language.DUTCH,
+)
+_detector = None  # built on first use, so importing common stays cheap for p2/p3
+
+
+def detect_language(text: str) -> str:
+    """ISO 639-1 code of one comment's language, or "" when there are no words to judge
+    (emoji-only, links only). URLs and @mentions are removed first: they are not language."""
+    global _detector
+    if _detector is None:
+        _detector = LanguageDetectorBuilder.from_languages(*LANGUAGES).build()
+    language = _detector.detect_language_of(_URL_OR_MENTION.sub(" ", text))
+    return language.iso_code_639_1.name.lower() if language else ""
 
 
 # ---------------------------------------------------------------- term cleaning (pure)
 
-# Keep ASCII letters, apostrophes and spaces. This drops punctuation and numbers (as tm does)
-# and also emoji and non-Latin script, which tm keeps but the word cloud font cannot draw.
-_NON_WORD = re.compile(r"[^a-z' ]+")
+# Keep letters of any script, apostrophes and spaces. This drops punctuation and numbers
+# (as tm does) and emoji, which tm keeps but no word cloud font draws. Non-Latin words stay
+# (as in tm) so the non-English and mixed clouds have them.
+_NON_WORD = re.compile(r"(?:[^\w' ]|[\d_])+")
 
 
 def clean_terms(text: str) -> list[str]:
-    """One comment -> its terms: lowercase, strip punctuation/numbers/non-Latin, drop
+    """One comment -> its terms: lowercase, strip punctuation/numbers/emoji, drop
     English stopwords, then words shorter than 3 letters. No stemming (the R script loads
     SnowballC but never calls it)."""
     words = _NON_WORD.sub(" ", text.lower().replace("’", "'")).split()

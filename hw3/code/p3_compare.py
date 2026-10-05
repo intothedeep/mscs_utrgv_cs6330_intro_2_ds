@@ -7,15 +7,17 @@ Run: uv run python hw3/code/p3_compare.py   (after p2_wordcloud.py)
 
 import pandas as pd
 from common import DATA_DIR, VIDEOS
+from p2_wordcloud import VERSIONS
 
 __all__ = ["top_terms"]
 
 TOP_N = 30
 
 
-def top_terms(label: str, n: int = TOP_N) -> list[str]:
-    """The n most frequent terms of one video."""
-    return pd.read_csv(DATA_DIR / f"terms_{label}.csv", keep_default_na=False)["term"].head(n).tolist()
+def top_terms(label: str, version: str, n: int = TOP_N) -> list[str]:
+    """The n most frequent terms of one video in one comment version."""
+    terms = pd.read_csv(DATA_DIR / f"terms_{label}_{version}.csv", keep_default_na=False)
+    return terms["term"].head(n).tolist()
 
 
 if __name__ == "__main__":
@@ -26,7 +28,9 @@ if __name__ == "__main__":
     print(videos.drop(columns=["video_id"]).T.to_string())
 
     label_a, label_b = VIDEOS
-    a, b = top_terms(label_a), top_terms(label_b)
-    print(f"\nTop {TOP_N} terms in both: {', '.join(t for t in a if t in b)}")
-    print(f"Only in {label_a}: {', '.join(t for t in a if t not in b)}")
-    print(f"Only in {label_b}: {', '.join(t for t in b if t not in a)}")
+    for version, name in VERSIONS.items():
+        a, b = top_terms(label_a, version), top_terms(label_b, version)
+        print(f"\n## {name}")
+        print(f"Top {TOP_N} terms in both: {', '.join(t for t in a if t in b)}")
+        print(f"Only in {label_a}: {', '.join(t for t in a if t not in b)}")
+        print(f"Only in {label_b}: {', '.join(t for t in b if t not in a)}")

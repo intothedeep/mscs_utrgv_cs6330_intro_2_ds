@@ -92,3 +92,6 @@ hw*/report/*.log
 
 # Office lock files (`~$name.xlsx` appears while the workbook is open).
 ~$*
+
+# hw3: YouTube comment CSVs hold other users' handles; never committed (owner, 2026-10-04).
+hw3/data/comments_*.csv

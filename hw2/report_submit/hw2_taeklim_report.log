@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.9.6)  28 SEP 2026 21:20
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.9.6)  30 SEP 2026 23:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -11,14 +11,14 @@ Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/base/size11.clo
 File: size11.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
 )
-\c@part=\count273
-\c@section=\count274
-\c@subsection=\count275
-\c@subsubsection=\count276
-\c@paragraph=\count277
-\c@subparagraph=\count278
-\c@figure=\count279
-\c@table=\count280
+\c@part=\count276
+\c@section=\count277
+\c@subsection=\count278
+\c@subsubsection=\count279
+\c@paragraph=\count280
+\c@subparagraph=\count281
+\c@figure=\count282
+\c@table=\count283
 \abovecaptionskip=\skip49
 \belowcaptionskip=\skip50
 \bibindent=\dimen150
@@ -36,9 +36,9 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 (/usr/local/texlive/2026basic/texmf-dist/tex/generic/iftex/iftex.sty
 Package: iftex 2024/12/12 v1.0g TeX engine tests
 ))
-\Gm@cnth=\count281
-\Gm@cntv=\count282
-\c@Gm@tempcnt=\count283
+\Gm@cnth=\count284
+\Gm@cntv=\count285
+\c@Gm@tempcnt=\count286
 \Gm@bindingoffset=\dimen151
 \Gm@wd@mp=\dimen152
 \Gm@odd@mp=\dimen153
@@ -51,21 +51,13 @@ Package: iftex 2024/12/12 v1.0g TeX engine tests
 )
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/base/fontenc.sty
 Package: fontenc 2025/07/18 v2.1d Standard LaTeX package
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 11
-6.
-
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/lm/t1lmr.fd
-File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-))
+)
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/base/inputenc.sty
 Package: inputenc 2024/02/08 v1.3d Input encoding file
 \inpenc@prehook=\toks19
 \inpenc@posthook=\toks20
-
-
-Package inputenc Warning: inputenc package ignored with utf8 based engines.
-
-) (/usr/local/texlive/2026basic/texmf-dist/tex/latex/amsmath/amsmath.sty
+)
+(/usr/local/texlive/2026basic/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2026/05/19 v2.18d AMS math features
 \@mathmargin=\skip51
 
@@ -85,14 +77,14 @@ Package: amsbsy 1999/11/29 v1.2d Bold Symbols
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 2022/04/08 v2.04 operator names
 )
-\inf@bad=\count284
+\inf@bad=\count287
 LaTeX Info: Redefining \frac on input line 233.
-\uproot@=\count285
-\leftroot@=\count286
+\uproot@=\count288
+\leftroot@=\count289
 LaTeX Info: Redefining \overline on input line 398.
 LaTeX Info: Redefining \colon on input line 409.
-\classnum@=\count287
-\DOTSCASE@=\count288
+\classnum@=\count290
+\DOTSCASE@=\count291
 LaTeX Info: Redefining \ldots on input line 495.
 LaTeX Info: Redefining \dots on input line 498.
 LaTeX Info: Redefining \cdots on input line 619.
@@ -105,20 +97,20 @@ LaTeX Info: Redefining \Bigg on input line 724.
 \big@size=\dimen161
 LaTeX Font Info:    Redeclaring font encoding OML on input line 742.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 743.
-\macc@depth=\count289
+\macc@depth=\count292
 LaTeX Info: Redefining \bmod on input line 904.
 LaTeX Info: Redefining \pmod on input line 909.
 LaTeX Info: Redefining \smash on input line 939.
 LaTeX Info: Redefining \relbar on input line 969.
 LaTeX Info: Redefining \Relbar on input line 970.
-\c@MaxMatrixCols=\count290
+\c@MaxMatrixCols=\count293
 \dotsspace@=\muskip17
-\c@parentequation=\count291
-\dspbrk@lvl=\count292
+\c@parentequation=\count294
+\dspbrk@lvl=\count295
 \tag@help=\toks22
-\row@=\count293
-\column@=\count294
-\maxfields@=\count295
+\row@=\count296
+\column@=\count297
+\maxfields@=\count298
 \andhelp@=\toks23
 \eqnshift@=\dimen162
 \alignsep@=\dimen163
@@ -145,10 +137,10 @@ Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
-Package graphics Info: Driver file: xetex.def on input line 106.
+Package graphics Info: Driver file: pdftex.def on input line 106.
 
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/graphics-def/xetex.def
-File: xetex.def 2025/11/01 v5.0p Graphics/color driver for xetex
+(/usr/local/texlive/2026basic/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen168
 \Gin@req@width=\dimen169
@@ -168,21 +160,21 @@ Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
 \caption@hangindent=\dimen177
 Package caption Info: Standard document class detected.
 )
-\c@caption@flags=\count296
-\c@continuedfloat=\count297
+\c@caption@flags=\count299
+\c@continuedfloat=\count300
 )
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/listings.sty
-\lst@mode=\count298
+\lst@mode=\count301
 \lst@gtempboxa=\box55
 \lst@token=\toks26
-\lst@length=\count299
+\lst@length=\count302
 \lst@currlwidth=\dimen178
-\lst@column=\count300
-\lst@pos=\count301
+\lst@column=\count303
+\lst@pos=\count304
 \lst@lostspace=\dimen179
 \lst@width=\dimen180
-\lst@newlines=\count302
-\lst@lineno=\count303
+\lst@newlines=\count305
+\lst@lineno=\count306
 \lst@maxwidth=\dimen181
 
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstpatch.sty
@@ -190,8 +182,8 @@ File: lstpatch.sty 2025/11/14 1.11b (Carsten Heinz)
 )
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2025/11/14 1.11b (Carsten Heinz)
-\c@lstnumber=\count304
-\lst@skipnumbers=\count305
+\c@lstnumber=\count307
+\lst@skipnumbers=\count308
 \lst@framebox=\box56
 )
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/listings/listings.cfg
@@ -205,10 +197,11 @@ Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/graphics-cfg/color.cfg
 File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
-Package xcolor Info: Driver file: xetex.def on input line 274.
+Package xcolor Info: Driver file: pdftex.def on input line 274.
 
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/graphics/mathcolor.ltx)
 Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1349.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1353.
 Package xcolor Info: Model `RGB' extended on input line 1365.
 Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1367.
 Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1368.
@@ -242,7 +235,7 @@ Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
 )
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
-Package pdftexcmds Info: \pdfdraftmode not found.
+Package pdftexcmds Info: \pdfdraftmode found.
 )) (/usr/local/texlive/2026basic/texmf-dist/tex/latex/hycolor/hycolor.sty
 Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
 )
@@ -259,30 +252,34 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/kvoptions/kvoptions.sty
 Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
 ))
-\c@section@level=\count306
+\c@section@level=\count309
 )
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/etoolbox/etoolbox.sty
 Package: etoolbox 2025/10/02 v2.5m e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count307
+\etb@tempcnta=\count310
 )
 (/usr/local/texlive/2026basic/texmf-dist/tex/generic/stringenc/stringenc.sty
 Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
 )
 )
 \@linkdim=\dimen182
-\Hy@linkcounter=\count308
-\Hy@pagecounter=\count309
+\Hy@linkcounter=\count311
+\Hy@pagecounter=\count312
 
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2026-06-17 v7.01r Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
 )
 (/usr/local/texlive/2026basic/texmf-dist/tex/generic/intcalc/intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
-\Hy@SavedSpaceFactor=\count310
+\Hy@SavedSpaceFactor=\count313
 
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/hyperref/puenc.def
 File: puenc.def 2026-06-17 v7.01r Hyperref: PDF Unicode definition (HO)
+Now handling font encoding PU ...
+... no UTF-8 mapping file for font encoding PU
 )
 Package hyperref Info: Hyper figures OFF on input line 4199.
 Package hyperref Info: Link nesting OFF on input line 4204.
@@ -291,7 +288,7 @@ Package hyperref Info: Plain pages OFF on input line 4214.
 Package hyperref Info: Backreferencing OFF on input line 4219.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4466.
-\c@Hy@tempcnt=\count311
+\c@Hy@tempcnt=\count314
 
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip18
@@ -307,7 +304,7 @@ Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
-\Fld@menulength=\count312
+\Fld@menulength=\count315
 \Field@Width=\dimen184
 \Fld@charsize=\dimen185
 Package hyperref Info: Hyper figures OFF on input line 6091.
@@ -317,18 +314,15 @@ Package hyperref Info: backreferencing OFF on input line 6106.
 Package hyperref Info: Link coloring OFF on input line 6111.
 Package hyperref Info: Link coloring with OCG OFF on input line 6116.
 Package hyperref Info: PDF/A mode OFF on input line 6121.
-\Hy@abspage=\count313
-\c@Item=\count314
-\c@Hfootnote=\count315
+\Hy@abspage=\count316
+\c@Item=\count317
+\c@Hfootnote=\count318
 )
-Package hyperref Info: Driver (autodetected): hxetex.
- (/usr/local/texlive/2026basic/texmf-dist/tex/latex/hyperref/hxetex.def
-File: hxetex.def 2026-06-17 v7.01r Hyperref driver for XeTeX
-\pdfm@box=\box57
-\c@Hy@AnnotLevel=\count316
-\HyField@AnnotCount=\count317
-\Fld@listcount=\count318
-\c@bookmark@seq@number=\count319
+Package hyperref Info: Driver (autodetected): hpdftex.
+ (/usr/local/texlive/2026basic/texmf-dist/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2026-06-17 v7.01r Hyperref driver for pdfTeX
+\Fld@listcount=\count319
+\c@bookmark@seq@number=\count320
 
 (/usr/local/texlive/2026basic/texmf-dist/tex/latex/rerunfilecheck/rerunfilechec
 k.sty
@@ -343,39 +337,36 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip54
 )
-(/usr/local/texlive/2026basic/texmf-dist/tex/latex/l3kernel/l3backend-xetex.def
-File: l3backend-xetex.def 2026-08-10 L3 backend support: XeTeX
-\g__graphics_track_int=\count320
-\g__pdfannot_backend_int=\count321
-\g__pdfannot_backend_link_int=\count322
+(/usr/local/texlive/2026basic/texmf-dist/tex/latex/l3kernel/l3backend-pdftex.de
+f
+File: l3backend-pdftex.def 2026-08-10 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count321
 ) (./hw2_taeklim_report.aux)
 \openout1 = `hw2_taeklim_report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 133.
-LaTeX Font Info:    ... okay on input line 133.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 132.
+LaTeX Font Info:    ... okay on input line 132.
 
 *geometry* driver: auto-detecting
-*geometry* detected driver: xetex
+*geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
-* driver: xetex
+* driver: pdftex
 * paper: letterpaper
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
@@ -406,24 +397,204 @@ LaTeX Font Info:    ... okay on input line 133.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
+(/usr/local/texlive/2026basic/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count322
+\scratchdimen=\dimen186
+\scratchbox=\box57
+\nofMPsegments=\count323
+\nofMParguments=\count324
+\everyMPshowfont=\toks27
+\MPscratchCnt=\count325
+\MPscratchDim=\dimen187
+\MPnumerator=\count326
+\makeMPintoPDFobject=\count327
+\everyMPtoPDFconversion=\toks28
+)
+(/usr/local/texlive/2026basic/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.s
+ty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(/usr/local/texlive/2026basic/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
-\c@lstlisting=\count323
-Package hyperref Info: Link coloring OFF on input line 133.
-(./hw2_taeklim_report.out) (./hw2_taeklim_report.out)
+\c@lstlisting=\count328
+Package hyperref Info: Link coloring OFF on input line 132.
+ (./hw2_taeklim_report.out) (./hw2_taeklim_report.out)
 \@outlinefile=\write3
 \openout3 = `hw2_taeklim_report.out'.
 
- [1
+<../figures/p1a_0_data.png, id=4, 722.7pt x 939.51pt>
+File: ../figures/p1a_0_data.png Graphic file (type png)
+<use ../figures/p1a_0_data.png>
+Package pdftex.def Info: ../figures/p1a_0_data.png  used on input line 156.
+(pdftex.def)             Requested size: 478.51494pt x 622.07118pt.
 
-] [2
 
-] [3
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 156.
+See the caption package documentation for explanation.
 
-]
-(./hw2_taeklim_report.aux)
+[1
+
+{/Users/tio/Library/texlive/2026basic/texmf-var/fonts/map/pdftex/updmap/pdftex.
+map}]
+<../figures/p1a_1_powerlaw.png, id=15, 722.7pt x 939.51pt>
+File: ../figures/p1a_1_powerlaw.png Graphic file (type png)
+<use ../figures/p1a_1_powerlaw.png>
+Package pdftex.def Info: ../figures/p1a_1_powerlaw.png  used on input line 159.
+
+(pdftex.def)             Requested size: 478.51494pt x 622.07118pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 159.
+See the caption package documentation for explanation.
+
+[2 <../figures/p1a_0_data.png>]
+<../figures/p1a_2_exponential.png, id=24, 722.7pt x 939.51pt>
+File: ../figures/p1a_2_exponential.png Graphic file (type png)
+<use ../figures/p1a_2_exponential.png>
+Package pdftex.def Info: ../figures/p1a_2_exponential.png  used on input line 1
+62.
+(pdftex.def)             Requested size: 478.51494pt x 622.07118pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 162.
+See the caption package documentation for explanation.
+
+[3 <../figures/p1a_1_powerlaw.png>]
+<../figures/p1a_3_uniform.png, id=31, 722.7pt x 939.51pt>
+File: ../figures/p1a_3_uniform.png Graphic file (type png)
+<use ../figures/p1a_3_uniform.png>
+Package pdftex.def Info: ../figures/p1a_3_uniform.png  used on input line 165.
+(pdftex.def)             Requested size: 478.51494pt x 622.07118pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 165.
+See the caption package documentation for explanation.
+
+[4 <../figures/p1a_2_exponential.png>]
+<../figures/p1a_4_normal.png, id=38, 722.7pt x 939.51pt>
+File: ../figures/p1a_4_normal.png Graphic file (type png)
+<use ../figures/p1a_4_normal.png>
+Package pdftex.def Info: ../figures/p1a_4_normal.png  used on input line 168.
+(pdftex.def)             Requested size: 478.51494pt x 622.07118pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 168.
+See the caption package documentation for explanation.
+
+[5 <../figures/p1a_3_uniform.png>] [6 <../figures/p1a_4_normal.png>]
+<../figures/p1b_0_data.png, id=51, 722.7pt x 549.252pt>
+File: ../figures/p1b_0_data.png Graphic file (type png)
+<use ../figures/p1b_0_data.png>
+Package pdftex.def Info: ../figures/p1b_0_data.png  used on input line 189.
+(pdftex.def)             Requested size: 478.51494pt x 363.67238pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 189.
+See the caption package documentation for explanation.
+
+<../figures/p1b_1_powerlaw.png, id=52, 722.7pt x 549.252pt>
+File: ../figures/p1b_1_powerlaw.png Graphic file (type png)
+<use ../figures/p1b_1_powerlaw.png>
+Package pdftex.def Info: ../figures/p1b_1_powerlaw.png  used on input line 192.
+
+(pdftex.def)             Requested size: 478.51494pt x 363.67238pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 192.
+See the caption package documentation for explanation.
+
+[7
+
+ <../figures/p1b_0_data.png>]
+<../figures/p1b_2_exponential.png, id=60, 722.7pt x 549.252pt>
+File: ../figures/p1b_2_exponential.png Graphic file (type png)
+<use ../figures/p1b_2_exponential.png>
+Package pdftex.def Info: ../figures/p1b_2_exponential.png  used on input line 1
+95.
+(pdftex.def)             Requested size: 478.51494pt x 363.67238pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 195.
+See the caption package documentation for explanation.
+
+[8 <../figures/p1b_1_powerlaw.png>]
+<../figures/p1b_3_uniform.png, id=67, 722.7pt x 549.252pt>
+File: ../figures/p1b_3_uniform.png Graphic file (type png)
+<use ../figures/p1b_3_uniform.png>
+Package pdftex.def Info: ../figures/p1b_3_uniform.png  used on input line 198.
+(pdftex.def)             Requested size: 478.51494pt x 363.67238pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 198.
+See the caption package documentation for explanation.
+
+[9 <../figures/p1b_2_exponential.png>]
+<../figures/p1b_4_normal.png, id=74, 722.7pt x 549.252pt>
+File: ../figures/p1b_4_normal.png Graphic file (type png)
+<use ../figures/p1b_4_normal.png>
+Package pdftex.def Info: ../figures/p1b_4_normal.png  used on input line 201.
+(pdftex.def)             Requested size: 478.51494pt x 363.67238pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 201.
+See the caption package documentation for explanation.
+
+[10 <../figures/p1b_3_uniform.png>] [11 <../figures/p1b_4_normal.png>]
+<../figures/p2_1_age.png, id=87, 578.16pt x 260.172pt>
+File: ../figures/p2_1_age.png Graphic file (type png)
+<use ../figures/p2_1_age.png>
+Package pdftex.def Info: ../figures/p2_1_age.png  used on input line 213.
+(pdftex.def)             Requested size: 478.51494pt x 215.33131pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 213.
+See the caption package documentation for explanation.
+
+<../figures/p2_2_first_digit.png, id=88, 578.16pt x 317.988pt>
+File: ../figures/p2_2_first_digit.png Graphic file (type png)
+<use ../figures/p2_2_first_digit.png>
+Package pdftex.def Info: ../figures/p2_2_first_digit.png  used on input line 21
+6.
+(pdftex.def)             Requested size: 478.51494pt x 263.18274pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 216.
+See the caption package documentation for explanation.
+
+<../figures/p2_3_last_digit.png, id=89, 578.16pt x 317.988pt>
+File: ../figures/p2_3_last_digit.png Graphic file (type png)
+<use ../figures/p2_3_last_digit.png>
+Package pdftex.def Info: ../figures/p2_3_last_digit.png  used on input line 219
+.
+(pdftex.def)             Requested size: 478.51494pt x 263.18274pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 219.
+See the caption package documentation for explanation.
+
+[12
+
+ <../figures/p2_1_age.png> <../figures/p2_2_first_digit.png>] [13 <../figures/p
+2_3_last_digit.png>] (./hw2_taeklim_report.aux)
  ***********
 LaTeX2e <2026-06-01>
 L3 programming layer <2026-08-10>
@@ -432,12 +603,24 @@ Package rerunfilecheck Info: File `hw2_taeklim_report.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 12445 strings out of 469286
- 196483 string characters out of 5455466
- 620071 words of memory out of 5000000
- 41391 multiletter control sequences out of 15000+600000
- 637487 words of font info for 56 fonts, out of 8000000 for 9000
+ 13096 strings out of 468580
+ 206707 string characters out of 5444081
+ 628792 words of memory out of 5000000
+ 42070 multiletter control sequences out of 15000+600000
+ 634225 words of font info for 56 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
- 71i,5n,79p,253b,332s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 74i,6n,79p,253b,685s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ </Users/tio/Library/texlive/2026basic/texmf-var/fonts/pk/ljfour/jknappen/ec/
+ecrm1000.600pk> </Users/tio/Library/texlive/2026basic/texmf-var/fonts/pk/ljfour
+/jknappen/ec/ecbx1000.600pk> </Users/tio/Library/texlive/2026basic/texmf-var/fo
+nts/pk/ljfour/jknappen/ec/ecbx1095.600pk> </Users/tio/Library/texlive/2026basic
+/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1095.600pk></usr/local/texlive/2026b
+asic/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2
+026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
+Output written on hw2_taeklim_report.pdf (13 pages, 2326000 bytes).
+PDF statistics:
+ 264 PDF objects out of 1000 (max. 8388607)
+ 89 compressed objects within 1 object stream
+ 27 named destinations out of 1000 (max. 500000)
+ 66 words of extra memory for PDF output out of 10000 (max. 10000000)
 
-Output written on hw2_taeklim_report.xdv (3 pages, 4764 bytes).

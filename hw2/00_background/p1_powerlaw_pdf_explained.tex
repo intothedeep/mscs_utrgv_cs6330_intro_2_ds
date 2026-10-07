@@ -1,0 +1,260 @@
+% =====================================================================
+%  CS 6330 HW2 background: why the power-law PDF looks the way it does
+%  (Claude's chat answer typeset for reading; not part of the report)
+%  Build: latexmk -C && latexmk -xelatex p1_powerlaw_pdf_explained.tex
+% =====================================================================
+\documentclass[11pt]{article}
+
+\usepackage[letterpaper,margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{Apple SD Gothic Neo}
+\xeCJKsetup{CJKspace=true}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage[colorlinks,linkcolor=blue!60!black]{hyperref}
+\usepackage{cleveref}
+
+\newcommand{\term}[1]{\textbf{#1}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+\title{멱법칙(Power Law) PDF 식의 각 조각은 왜 있나}
+\author{Claude 답변 정리}
+\date{2026/09/28}
+
+\begin{document}
+\maketitle
+
+\[
+  f(x) = \frac{\alpha - 1}{x_{\min}} \left(\frac{x}{x_{\min}}\right)^{-\alpha},
+  \qquad x \ge x_{\min},\quad \alpha > 1
+\]
+
+\textbf{결론.} 분포의 모양을 정하는 것은 $x^{-\alpha}$ 하나뿐이다. 나머지
+($x \ge x_{\min}$, $\alpha > 1$, 앞의 상수 $\frac{\alpha-1}{x_{\min}}$)는 이 모양을
+\term{올바른 확률분포}(넓이가 유한하고 정확히 $1$)로 만드는 장치다.
+
+\begin{table}[H]
+  \centering
+  \caption{식의 각 조각과 그것이 막는 문제.}
+  \label{tab:pieces}
+  \begin{tabular}{lll}
+    \toprule
+    조각 & 하는 일 & 없으면 생기는 문제 \\
+    \midrule
+    $x^{-\alpha}$ & 천천히 줄어드는 꼬리(heavy tail) & 큰 값이 너무 드물게 나온다 \\
+    \midrule
+    $x \ge x_{\min}$ & $0$ 근처를 잘라 낸다 & $x \to 0$에서 넓이가 무한대 \\
+    \midrule
+    $\alpha > 1$ & 꼬리 넓이를 유한하게 & $x \to \infty$에서 넓이가 무한대 \\
+    \midrule
+    $\frac{\alpha-1}{x_{\min}}$ & 전체 넓이를 $1$로 & 확률의 합이 $1$이 아니다 \\
+    \midrule
+    $\frac{x}{x_{\min}}$ & ``최솟값의 몇 배인가''로 읽기 & (표기상 편의, 단위가 사라짐) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% ---------------------------------------------------------------------
+\section{핵심 모양: $x^{-\alpha}$}
+\label{sec:shape}
+
+\paragraph{고치는 문제.}
+부(wealth), 도시 인구, 웹페이지 링크 수, 단어 빈도 같은 데이터에는 작은 값이 매우 많고,
+아주 큰 값도 드물지만 무시할 수 없을 만큼 나온다. 정규분포(Normal)나
+지수분포(Exponential)는 큰 값의 확률을 너무 빨리 $0$으로 떨어뜨려 이런 데이터를
+설명하지 못한다.
+
+\paragraph{아이디어.}
+지수 $e^{-x}$ 대신 거듭제곱 $x^{-\alpha}$로 줄어들게 한다. \Cref{tab:tail}이 그 차이를
+숫자로 보여 준다.
+
+\begin{table}[H]
+  \centering
+  \caption{같은 $x$에서 지수분포와 멱법칙의 밀도 비교 ($\alpha = 2$).}
+  \label{tab:tail}
+  \begin{tabular}{rrr}
+    \toprule
+    $x$ & 지수 $e^{-x}$ & 멱법칙 $x^{-2}$ \\
+    \midrule
+    $1$ & $0.37$ & $1$ \\
+    \midrule
+    $10$ & $0.000045$ & $0.01$ \\
+    \midrule
+    $100$ & $3.7 \times 10^{-44}$ & $0.0001$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+$x = 100$에서 지수분포는 사실상 $0$이지만 멱법칙은 여전히 $1$만 분의 $1$이다.
+이것을 \term{두꺼운 꼬리}(heavy tail)라고 부른다. \Cref{fig:tail}은 같은 차이를
+세로축 로그 눈금으로 그린 것이다.
+
+% y = log10 f.  power: f = x^{-2}      -> y = -2 log10(x)
+%               exp:   f = e^{-(x-1)}  -> y = -(x-1)/ln10   (x_min = 1, rate 1)
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[x=1.1cm,y=0.9cm]
+    \foreach \k in {0,-1,-2,-3,-4}
+      \draw[black!12] (1,\k) -- (10,\k);
+    \draw[->] (1,-4.3) -- (10.3,-4.3) node[right] {$x$};
+    \draw[->] (1,-4.3) -- (1,0.5) node[above] {$f(x)$ (로그 눈금)};
+    \foreach \k/\lab in {0/1,-1/10^{-1},-2/10^{-2},-3/10^{-3},-4/10^{-4}}
+      \node[left,font=\small] at (1,\k) {$\lab$};
+    \foreach \x in {1,2,4,6,8,10}
+      \node[below,font=\small] at (\x,-4.3) {$\x$};
+    \draw[very thick,blue!70!black,domain=1:10,samples=60]
+      plot (\x,{-2*log10(\x)});
+    \draw[very thick,orange!85!black,dashed,domain=1:10,samples=60]
+      plot (\x,{max(-4.3,-(\x-1)/ln(10))});
+    \node[blue!70!black,font=\small,anchor=west] at (6.2,-1.2) {멱법칙 $x^{-2}$};
+    \node[orange!85!black,font=\small,anchor=west] at (4.8,-3.4) {지수 $e^{-(x-1)}$};
+  \end{tikzpicture}
+  \caption{멱법칙(파란 실선, $\alpha = 2$, $x_{\min} = 1$)과 지수분포(주황 점선,
+    비율 $1$, $x_{\min} = 1$에서 시작)의 밀도. 세로축은 로그 눈금이다.
+    $x = 10$에서 멱법칙은 $10^{-2}$, 지수분포는 약 $10^{-3.9}$로 약 $80$배 차이 난다.}
+  \label{fig:tail}
+\end{figure}
+
+\paragraph{척도 불변(scale-free).}
+$x$를 두 배로 늘리면 밀도는 $x$가 얼마이든 늘 같은 비율로 줄어든다.
+\[
+  \frac{f(2x)}{f(x)} = \frac{(2x)^{-\alpha}}{x^{-\alpha}} = 2^{-\alpha}
+  \qquad \text{($x$가 식에서 사라진다)}
+\]
+``1만 원에서 2만 원''과 ``1억에서 2억''이 같은 비율로 줄어든다는 뜻이다.
+지수분포는 $\frac{e^{-2x}}{e^{-x}} = e^{-x}$로 $x$에 따라 달라지므로 이 성질이 없다.
+
+\paragraph{로그-로그 축에서 직선.}
+양변에 로그를 씌우면
+\[
+  \log f(x) = \log\frac{\alpha-1}{x_{\min}} + \alpha \log x_{\min} - \alpha \log x
+  \qquad \text{(상수 $-\ \alpha \log x$)}
+\]
+이므로, $\log x$ 대 $\log f(x)$ 그래프에서 기울기 $-\alpha$인 직선이 된다.
+
+% ---------------------------------------------------------------------
+\section{왜 $x \ge x_{\min}$인가}
+\label{sec:xmin}
+
+$x^{-\alpha}$는 $x \to 0$에서 무한대로 커진다. $\alpha > 1$이면 $0$ 근처의 넓이도
+무한대다.
+\[
+  \int_{0}^{1} x^{-\alpha}\,dx = \left[\frac{x^{1-\alpha}}{1-\alpha}\right]_{0}^{1} = \infty
+  \qquad \text{($1-\alpha < 0$이므로 $x \to 0$에서 $x^{1-\alpha} \to \infty$)}
+\]
+그래서 하한 $x_{\min} > 0$을 두고, 그 위에서만 멱법칙이 성립한다고 본다.
+실제 데이터도 대개 어떤 값 이상의 꼬리에서만 멱법칙을 따른다.
+
+% ---------------------------------------------------------------------
+\section{왜 $\alpha > 1$인가}
+\label{sec:alpha}
+
+이번에는 반대쪽 끝, $x \to \infty$의 넓이가 문제다.
+\begin{align*}
+  \int_{x_{\min}}^{\infty} x^{-\alpha}\,dx
+    &= \left[\frac{x^{1-\alpha}}{1-\alpha}\right]_{x_{\min}}^{\infty}
+    && \text{거듭제곱의 적분}\\
+    &= 0 - \frac{x_{\min}^{1-\alpha}}{1-\alpha}
+    && \text{$1-\alpha<0$이면 $x^{1-\alpha} \to 0$}\\
+    &= \frac{x_{\min}^{1-\alpha}}{\alpha-1}
+    && \text{부호 정리}
+\end{align*}
+둘째 줄은 $1 - \alpha < 0$, 곧 $\alpha > 1$일 때만 성립한다. $\alpha \le 1$이면
+$x^{1-\alpha}$가 $0$으로 가지 않아 넓이가 무한대가 된다. 꼬리가 너무 두꺼워
+확률분포가 될 수 없다.
+
+% ---------------------------------------------------------------------
+\section{왜 앞에 $\frac{\alpha-1}{x_{\min}}$인가 (정규화)}
+\label{sec:normalize}
+
+전체 넓이를 $1$로 맞추는 상수다. $f(x) = C\,x^{-\alpha}$로 두고 $C$를 구한다.
+\begin{align*}
+  1 &= \int_{x_{\min}}^{\infty} C\,x^{-\alpha}\,dx
+    && \text{전체 넓이는 $1$}\\
+    &= C \cdot \frac{x_{\min}^{1-\alpha}}{\alpha-1}
+    && \text{\Cref{sec:alpha}의 적분}\\
+  C &= (\alpha-1)\,x_{\min}^{\alpha-1}
+    && \text{$C$에 대해 풀었다}
+\end{align*}
+다시 넣고 정리한다.
+\begin{align*}
+  f(x) &= (\alpha-1)\,x_{\min}^{\alpha-1}\,x^{-\alpha}
+    && \text{$C$를 대입}\\
+       &= \frac{\alpha-1}{x_{\min}} \cdot x_{\min}^{\alpha}\,x^{-\alpha}
+    && \text{$x_{\min}^{\alpha-1} = x_{\min}^{\alpha}/x_{\min}$}\\
+       &= \frac{\alpha-1}{x_{\min}} \left(\frac{x}{x_{\min}}\right)^{-\alpha}
+    && \text{$x_{\min}^{\alpha}x^{-\alpha} = (x/x_{\min})^{-\alpha}$}
+\end{align*}
+마지막 형태로 쓰는 이유는 읽기 쉬워서다. $\frac{x}{x_{\min}}$은 ``최솟값의 몇 배인가''이고
+단위(원, 명)가 사라진다.
+
+% ---------------------------------------------------------------------
+\section{작은 예제: $\alpha = 2$, $x_{\min} = 1$}
+\label{sec:example}
+
+\[
+  f(x) = \frac{2-1}{1}\left(\frac{x}{1}\right)^{-2} = \frac{1}{x^2}
+\]
+$x$ 이상일 확률(꼬리 확률)은 $f$를 $x$부터 적분해서 얻는다.
+\[
+  P(X \ge x) = \int_{x}^{\infty} \frac{1}{t^2}\,dt = \frac{1}{x}
+  \qquad \text{(일반형: $(x/x_{\min})^{-(\alpha-1)}$)}
+\]
+
+\begin{table}[H]
+  \centering
+  \caption{$\alpha = 2$, $x_{\min} = 1$일 때 밀도와 꼬리 확률.}
+  \label{tab:example}
+  \begin{tabular}{rrr}
+    \toprule
+    $x$ & $f(x) = 1/x^2$ & $P(X \ge x) = 1/x$ \\
+    \midrule
+    $1$ & $1$ & $1$ (전부) \\
+    \midrule
+    $2$ & $0.25$ & $0.5$ \\
+    \midrule
+    $10$ & $0.01$ & $0.1$ \\
+    \midrule
+    $100$ & $0.0001$ & $0.01$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+$100$명 중 $1$명은 최솟값의 $100$배를 넘는다. 지수분포였다면 사실상 한 명도 없다
+(\Cref{tab:tail}).
+
+% ---------------------------------------------------------------------
+\section{$\alpha$가 평균과 분산을 결정한다}
+\label{sec:moments}
+
+$E[X^k]$를 구하려면 $x^k f(x) \propto x^{-(\alpha-k)}$를 적분한다.
+\Cref{sec:alpha}와 같은 논리로 지수가 $1$보다 커야, 곧 $\alpha - k > 1$이어야 유한하다.
+
+\begin{table}[H]
+  \centering
+  \caption{$\alpha$의 범위에 따라 유한한 것.}
+  \label{tab:moments}
+  \begin{tabular}{lll}
+    \toprule
+    조건 & 유한한 것 & 적분하는 꼴 \\
+    \midrule
+    $\alpha > 1$ & 전체 넓이 (확률분포가 됨) & $x^{-\alpha}$ \\
+    \midrule
+    $\alpha > 2$ & 평균 $E[X] = \frac{\alpha-1}{\alpha-2}\,x_{\min}$ & $x^{-(\alpha-1)}$ \\
+    \midrule
+    $\alpha > 3$ & 분산 $\mathrm{Var}[X]$ & $x^{-(\alpha-2)}$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+예를 들어 $\alpha = 2.5$이면 평균은 있지만 분산은 무한대다. 표본을 늘려도 표본 분산이
+수렴하지 않는다. 멱법칙 데이터에서 평균과 표준편차만 보고하면 오해를 부르는 이유다.
+$\alpha$가 작을수록 꼬리가 두껍고, ``상위 소수가 전체 양의 대부분을 가진다''(80/20)는
+현상이 강해진다. 이 부분은 \texttt{p1\_distributions.tex}의 사람 대 양 그림과 이어진다.
+
+\end{document}

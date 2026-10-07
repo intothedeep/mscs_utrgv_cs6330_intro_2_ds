@@ -1,3 +1,4 @@
+% !TEX program = xelatex
 % =====================================================================
 %  CS 6330 - Introduction to Data Science
 %  Homework 3: YouTube comments, word clouds, comparison
@@ -81,19 +82,19 @@ Table~\ref{tab:pipeline} puts the assignment's R functions next to the Python sc
 \centering
 \caption{Pipeline: the R step of the assignment script and the Python step that replaces it.}\label{tab:pipeline}
 \footnotesize
-\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}p{0.22\linewidth}>{\raggedright\arraybackslash}p{0.27\linewidth}>{\raggedright\arraybackslash}X@{}}
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
   \toprule
-  Step & R function & Python function & Output file \\
+  Step & R function & Python function \\
   \midrule
-  1. Stats and details & \texttt{get\_stats}, \texttt{get\_video\_details} & \texttt{p1\_collect.fetch\_video} & \texttt{data/videos.csv} \\
+  1. Stats and details & \texttt{get\_stats}, \texttt{get\_video\_details} & \texttt{p1\_collect.fetch\_video} \\
   \midrule
-  2. Comments & \texttt{get\_comment\_threads}, \texttt{write.csv} & \texttt{p1\_collect.fetch\_comments} & \texttt{data/comments\_<label>\_all.csv}, \texttt{data/comments\_<label>.csv} \\
+  2. Comments & \texttt{get\_comment\_threads}, \texttt{write.csv} & \texttt{p1\_collect.fetch\_comments} \\
   \midrule
-  3. Terms & \texttt{Corpus}, \texttt{DocumentTermMatrix}, \texttt{colSums} & \texttt{common.clean\_terms}, \texttt{common.count\_terms} & \texttt{data/terms\_<label>\_<version>.csv} \\
+  3. Terms & \texttt{Corpus}, \texttt{DocumentTermMatrix}, \texttt{colSums} & \texttt{common.clean\_terms}, \texttt{common.count\_terms} \\
   \midrule
-  4. Word cloud & \texttt{wordcloud} & \texttt{p2\_wordcloud.make\_cloud} & \texttt{figures/wordcloud\_*.png} \\
+  4. Word cloud & \texttt{wordcloud} & \texttt{p2\_wordcloud.make\_cloud} \\
   \midrule
-  5. Comparison & none & \texttt{p3\_compare.py} & \texttt{data/compare\_videos.csv}, \texttt{data/compare\_terms.csv} \\
+  5. Comparison & none & \texttt{p3\_compare} \\
   \bottomrule
 \end{tabularx}
 \end{table}
@@ -107,7 +108,7 @@ for the English word clouds.
 
 \begin{table}[H]
 \centering
-\caption{Video details and statistics (\texttt{data/videos.csv}).}\label{tab:stats}
+\caption{Video details and statistics.}\label{tab:stats}
 \small
 \begin{tabular}{@{}lp{0.32\linewidth}p{0.32\linewidth}@{}}
   \toprule
@@ -127,7 +128,7 @@ detected language.
 
 \begin{table}[H]
 \centering
-\caption{Sample composition by fetch order and detected language (\texttt{data/sample\_composition.csv}). ``Time'' is newest first. ``No language'' means emoji or links only.}\label{tab:sample}
+\caption{Sample composition by fetch order and detected language. ``Time'' is newest first. ``No language'' means emoji or links only.}\label{tab:sample}
 \small
 \begin{tabular}{@{}llrrrr@{}}
   \toprule
@@ -254,7 +255,7 @@ in Section~\ref{sec:discussion}.
 
 \begin{table}[H]
 \centering
-\caption{Engagement of the two videos (\texttt{data/compare\_videos.csv}). ``Share fetched'' is comments fetched divided by the YouTube comment total; ``share English'' is English comments kept divided by the same total.}\label{tab:engagement}
+\caption{Engagement of the two videos. ``Share fetched'' is comments fetched divided by the YouTube comment total; ``share English'' is English comments kept divided by the same total.}\label{tab:engagement}
 \small
 \begin{tabular}{@{}lrr@{}}
   \toprule
@@ -267,7 +268,7 @@ in Section~\ref{sec:discussion}.
 
 \begin{table}[H]
 \centering
-\caption{Top 10 terms, English comments, with their counts (\texttt{data/terms\_<label>\_en.csv}).}\label{tab:top_en}
+\caption{Top 10 terms, English comments, with their counts.}\label{tab:top_en}
 \small
 \begin{tabular}{@{}rlrlr@{}}
   \toprule
@@ -280,7 +281,7 @@ in Section~\ref{sec:discussion}.
 
 \begin{table}[H]
 \centering
-\caption{Top 10 terms, non-English comments, with their counts (\texttt{data/terms\_<label>\_non\_en.csv}).}\label{tab:top_non_en}
+\caption{Top 10 terms, non-English comments, with their counts.}\label{tab:top_non_en}
 \small
 \begin{tabular}{@{}rlrlr@{}}
   \toprule
@@ -293,7 +294,7 @@ in Section~\ref{sec:discussion}.
 
 \begin{table}[H]
 \centering
-\caption{Top 10 terms, mixed comments (all languages), with their counts (\texttt{data/terms\_<label>\_mixed.csv}).}\label{tab:top_mixed}
+\caption{Top 10 terms, mixed comments (all languages), with their counts.}\label{tab:top_mixed}
 \small
 \begin{tabular}{@{}rlrlr@{}}
   \toprule
@@ -306,7 +307,7 @@ in Section~\ref{sec:discussion}.
 
 \begin{table}[H]
 \centering
-\caption{Top 30 terms of each version: in both videos, only in video A, only in video B (\texttt{data/compare\_terms.csv}).}\label{tab:shared}
+\caption{Top 30 terms of each version: in both videos, only in video A, only in video B.}\label{tab:shared}
 \scriptsize
 \begin{tabular}{@{}p{0.085\linewidth}p{0.27\linewidth}p{0.27\linewidth}p{0.27\linewidth}@{}}
   \toprule

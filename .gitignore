@@ -95,3 +95,4 @@ hw*/report/*.log
 
 # hw3: YouTube comment CSVs hold other users' handles; never committed (owner, 2026-10-04).
 hw3/data/comments_*.csv
+hw3/data/api_responses/

@@ -4,7 +4,7 @@ hw3/data/sample_composition.csv plus LaTeX table BODIES in hw3/report/tables/: r
 with \\midrule between every row. The report .tex owns the float, caption and column spec.
 
 Tables: stats, sample, first_comments_video_a, first_comments_video_b, engagement,
-top_terms_en, top_terms_non_en, top_terms_mixed, shared_terms.
+top_terms_en, top_terms_mixed, shared_terms.
 counts.tex holds \\newcommand macros (letters only), one per count a caption or sentence
 needs, for each video suffix VideoA / VideoB:
   \\nEn<V> \\nNonEn<V> \\nMixed<V>   comments in the English / non-English / mixed cloud
@@ -75,7 +75,8 @@ def body(rows: list[list[str]]) -> str:
 
 
 def video_name(label: str) -> str:
-    return label.replace("_", " ").title()
+    # \vidA / \vidB are defined in the report: singer and song (owner, 2026-10-07).
+    return {"video_a": r"\vidA", "video_b": r"\vidB"}[label]
 
 
 def count(n: float) -> str:

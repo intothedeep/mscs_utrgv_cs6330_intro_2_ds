@@ -62,7 +62,8 @@ VIDEOS: dict[str, str] = {
 # stopwords are English, so other languages would flood the cloud with their function words).
 # MAX_PAGES caps a run at 50 units per video when few comments are English.
 # Comment versions of one video: terms-file and cloud key -> display name.
-VERSIONS = {"en": "English", "non_en": "non-English", "mixed": "mixed (all languages)"}
+# non-English dropped from the report (owner, 2026-10-07); mixed still holds every language.
+VERSIONS = {"en": "English", "mixed": "mixed (all languages)"}
 
 MAX_COMMENTS = 1000
 MAX_PAGES = 50

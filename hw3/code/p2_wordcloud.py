@@ -1,7 +1,7 @@
 """
 Step 2 (R: Corpus, DocumentTermMatrix, colSums, wordcloud).
 
-For each video and each comment version (VERSIONS: English, non-English, mixed), count terms
+For each video and each comment version (VERSIONS: English, mixed), count terms
 over the comments (tm-style cleaning, see common.clean_terms), write
 hw3/data/terms_<label>_<version>.csv and draw hw3/figures/wordcloud_<label>_<version>.png,
 plus one grid hw3/figures/wordcloud_grid.png (rows = videos, columns = versions).
@@ -48,7 +48,7 @@ def make_cloud(counts: Counter[str]) -> WordCloud:
 if __name__ == "__main__":
     FIG_DIR.mkdir(parents=True, exist_ok=True)
     titles = pd.read_csv(DATA_DIR / "videos.csv").set_index("label")["title"]
-    fig, axes = plt.subplots(len(VIDEOS), len(VERSIONS), figsize=(18, 8))
+    fig, axes = plt.subplots(len(VIDEOS), len(VERSIONS), figsize=(6 * len(VERSIONS), 8))
     for row, label in zip(axes, VIDEOS):
         for ax, (version, name) in zip(row, VERSIONS.items()):
             texts = load_comments(label, version)

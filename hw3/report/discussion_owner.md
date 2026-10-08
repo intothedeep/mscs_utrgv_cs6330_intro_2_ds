@@ -125,3 +125,11 @@ Data check (terms_*_en.csv ranks, BTS / BLACKPINK): boys 76 / -, kings 139 / -, 
 ```
 
 Data check: miss in 24 English comments, area in 35 (comments_video_b_all.csv). The agency move is the owner's own knowledge, not in the data; written as the owner's reason.
+
+## Conclusion as a paragraph (verbatim, 2026-10-07)
+
+```
+conclusion에 남자 여자 그룹차이가 어느정도 보이고 등등 차이점과 공통점을 이야기 하면서 짧은 달락으로 심플하고 클리어하게 작성하는 건 어떨까?
+```
+
+Built only from lines already in the Discussion. The Spanish-share detail is left out of the paragraph (Spanish fans stay in the English vs. mixed list).

@@ -100,3 +100,28 @@ Owner adopted the assistant's suggested wording (Korean, as offered in chat):
 1. "BTS 팬이 댓글을 훨씬 많이 단다. 조회수는 비슷한데 댓글은 약 7배." (Table 5: comments per 1k views 7.41 vs 1.11)
 2. "두 팬덤 모두 글로벌하고 오래된 팬이 돌아온다. BTS는 기록과 공연, BLACKPINK는 멤버와 10주년이 중심이다."
 3. Move the que/amo line into "English vs. mixed".
+
+## Conclusion revision (verbatim, 2026-10-07)
+
+```
+- BTS centers on records and concerts: hmmm? do not know? but it seems their tour affects comments: see more spanish comments. 
+- both have global fandom, recent comments BLACKPINK centers on members and its 10th anniversary.
+```
+
+Data check (comments_video_a_all.csv): Spanish share is 8.8% in 2026-09/10 vs 11.7% before; 7 Spanish comments mention a concert or tour. So the tour does not raise the Spanish share; it shows in comment content (Bogota). Written as "the tour shows in recent comments ... Spanish comments are many, but not more recently".
+
+## Addition (verbatim, 2026-10-07)
+
+```
+we can see boys and girl group based on different words: boys, fighting, queens beautiful
+```
+
+Data check (terms_*_en.csv ranks, BTS / BLACKPINK): boys 76 / -, kings 139 / -, girls 620 / 34, queens - / 36, beautiful 54 / 72, fighting 35 / 165. beautiful is in both clouds (higher for BTS); fighting is the Korean cheer, not gendered. Written as boys, kings vs girls, queens; fighting kept as its own BTS line; beautiful dropped.
+
+## Addition (verbatim, 2026-10-07)
+
+```
+  - BLACKPINK: fans miss the group (miss): 속속사 하나에서 각자 소속사로 흩어져서 개인활동을 많이 하는 걸 알 수 있다.   - BLACKPINK: the fan chant "BLACKPINK in your area" (area).: 2 are ok to add
+```
+
+Data check: miss in 24 English comments, area in 35 (comments_video_b_all.csv). The agency move is the owner's own knowledge, not in the data; written as the owner's reason.
